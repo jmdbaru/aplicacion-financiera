@@ -1,7 +1,7 @@
 # Fase 1 — Fundaciones técnicas y experiencia base
 
 - Fecha de inicio: 2026-08-27
-- Estado: bloqueada
+- Estado final: en revisión
 
 ## Alcance aprobado
 
@@ -46,19 +46,25 @@ No se instaló ninguna dependencia externa en local. El frontend React/Vite se p
 
 ## Seguridad, pruebas y migraciones
 
-No hay migraciones ni despliegues. Se ejecutó `python -m compileall -q apps\\api\\src apps\\api\\tests` correctamente; solo valida sintaxis. No fue posible ejecutar Ruff, Pytest, FastAPI, tipos o build porque las dependencias de API no están instaladas y no se autorizan descargas externas. La configuración y los tests quedan preparados para su ejecución posterior.
+No hay migraciones ni despliegues. Se ejecutó `python -m compileall -q apps\\api\\src apps\\api\\tests` correctamente. La validación remota final del commit `v1.005` fue correcta:
+
+- API: instalación de dependencias, `ruff check .` sin incidencias y `pytest` con 3 pruebas superadas.
+- Web: `npm ci`, ESLint, Vitest, comprobación TypeScript incluida en `npm run build` y build de Vite correctos.
+- Seguridad revisada en esta fase: sin secretos en el repositorio, `.env.example` sin valores sensibles, CORS sin comodín, correlación segura de errores y permisos mínimos de GitHub Actions.
+
+El único aviso fue una deprecación emitida por dependencias de FastAPI/Starlette durante el uso de `TestClient`; no es un error funcional ni una exposición de seguridad. Se reevaluará al actualizar dependencias.
 
 ## Acción necesaria
 
-La validación remota de `v1.003` fue correcta. Solo se necesita un entorno autorizado con Node.js LTS y npm para generar el lockfile y reproducir la validación local; no bloquea la comprobación remota actual.
-
-El lockfile web se generó sin Node local, se comprobó contra el manifiesto y se integró en `apps/web/package-lock.json`. El workflow temporal de generación se retira porque ya no aporta valor; el job de calidad pasa a usar `npm ci`. Falta validar esta transición remotamente.
+La validación remota de `v1.005` fue correcta. Solo se necesita un entorno autorizado con Node.js LTS y npm para reproducir la validación y visualizar el frontend localmente; no bloquea esta fase.
 
 ## Criterios de aceptación
 
-- [ ] Node/npm disponibles en el entorno de desarrollo.
-- [x] Base declarativa y sintácticamente válida de backend configurada.
-- [x] Frontend declarativo, layout y componentes base accesibles configurados.
-- [x] Calidad, pruebas y build correctos en GitHub Actions.
+- [x] Node/npm disponibles en el runner de validación remoto con versión fijada.
+- [x] Backend FastAPI configurado con contratos, errores y logging comunes.
+- [x] Frontend React/Vite/Tailwind, layout responsive y componentes base accesibles configurados.
+- [x] Calidad, tipos, pruebas y build correctos en GitHub Actions.
 - [x] CI de comprobación de API y web creado y validado remotamente.
-- [ ] Instalación web reproducible mediante `npm ci` validada remotamente.
+- [x] Instalación web reproducible mediante `npm ci` validada remotamente.
+- [x] Documentación, estado, acciones y changelog actualizados.
+- [ ] Aprobación expresa del usuario para cerrar la Fase 1.

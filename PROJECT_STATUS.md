@@ -2,7 +2,7 @@
 
 - Fase actual: Fase 1 — Fundaciones técnicas y experiencia base.
 - Última fase aprobada: Fase 0 — Auditoría, definición y base.
-- Estado: bloqueada antes de implementar por ausencia de Node/npm.
+- Estado: implementada y en revisión del usuario.
 - Actualización: 2026-08-27.
 
 ## Stack objetivo
@@ -11,21 +11,23 @@ React/TypeScript/Vite/Tailwind; FastAPI/Pydantic/Uvicorn; Supabase PostgreSQL/Au
 
 ## Comandos
 
-Todavía no existen comandos de instalación, desarrollo, pruebas o build: la Fase 1 está autorizada, pero no puede comenzar hasta disponer de Node/npm compatibles.
+- API (en un entorno con dependencias): `python -m pip install -e ".[dev]"`, `pytest`, `ruff check .`.
+- Web (Node 24.19.0): `npm ci`, `npm run check`, `npm run build`.
+- Validación remota: GitHub Actions ejecuta ambos jobs en cada push a `main`.
 
 ## Terminado
 
 Auditoría; arquitectura; modelo e invariantes; estrategia RLS; pruebas/mantenimiento/entornos/despliegue; documentación viva y ADR.
 
-Base declarativa de la API: configuración segura, CORS explícito, contratos de error, health check, correlación de peticiones y tests preparados. Frontend React/Vite/Tailwind: shell responsive, tokens visuales, accesibilidad y pruebas de componente. CI remoto de API y web creado y validado correctamente en `v1.003`: Ruff correcto, 3 pruebas API correctas y job web con lint, tests y build correctos. La sintaxis Python también fue validada localmente con `compileall`.
+Base de API FastAPI: configuración segura, CORS explícito, contratos de error, health check, correlación de peticiones y tests. Frontend React/Vite/Tailwind: shell responsive, tokens visuales, accesibilidad y prueba de componente. CI remoto validado en `v1.005` con instalaciones deterministas: Ruff correcto, 3 pruebas API correctas, y job web con `npm ci`, lint, tests, tipos y build correctos. La sintaxis Python también fue validada localmente con `compileall`.
 
 ## Bloqueos y acciones
 
-Node/npm no pueden instalarse en este equipo por restricción del usuario. `apps/web/package-lock.json` ya está disponible, coincide con el manifiesto y el workflow se ha actualizado a `npm ci`; queda pendiente la validación remota de este cambio. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
+Node/npm no pueden instalarse en este equipo por restricción del usuario, por lo que el desarrollo local completo sigue pendiente de una máquina autorizada. No bloquea la validación remota actual. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
 
 ## Siguiente fase propuesta (no iniciada)
 
-Reanudar Fase 1 cuando Node/npm estén disponibles en un entorno autorizado: scaffolding web/API, calidad, tests, contratos, layout y sistema visual.
+Fase 2 — Supabase, autenticación y seguridad multiusuario. No iniciada; requiere aprobación expresa.
 
 ## Referencias
 

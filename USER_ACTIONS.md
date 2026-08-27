@@ -9,14 +9,14 @@
 - Verificación: se registrará la fase como aprobada.
 - Consecuencia de posponer: no se inicia la Fase 1.
 
-## Preparación de Fase 1 — Node.js
+## Desarrollo local futuro — Node.js
 
-- Estado: `BLOQUEADA`
-- Motivo: Node/npm no están disponibles y no está permitido instalar aplicaciones externas en este equipo. React/Vite/Tailwind los requieren.
-- Pasos: usar, cuando sea posible, un equipo o entorno autorizado que ya disponga de Node.js LTS y npm. No es necesario instalar nada en este equipo ni enviar credenciales.
-- Dato que debes devolver: confirma cuándo exista un entorno autorizado o indícame si deseas reconsiderar formalmente el stack.
-- Verificación futura: `node --version` y `npm --version` deben ejecutarse correctamente.
-- Consecuencia de posponer: la Fase 1 y las siguientes no pueden implementarse ni validarse con el stack aprobado.
+- Estado: `PENDIENTE`
+- Motivo: Node/npm no están disponibles y no está permitido instalar aplicaciones externas en este equipo. React/Vite/Tailwind los requieren para desarrollo local.
+- Pasos: cuando exista un equipo o entorno autorizado con Node.js 24.19.0 y npm, ejecutar `npm ci` dentro de `apps/web`.
+- Dato que debes devolver: confirma cuando el entorno esté disponible; no envíes secretos.
+- Verificación futura: `node --version`, `npm --version` y `npm run check` deben ejecutarse correctamente.
+- Consecuencia de posponer: no afecta a la CI remota ni a esta fase, pero impide el desarrollo y la previsualización local del frontend.
 
 ## Generar el lockfile web sin Node local
 

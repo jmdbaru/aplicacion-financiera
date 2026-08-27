@@ -16,3 +16,4 @@
 ### Changed
 
 - Fase 0 aprobada; Fase 1 iniciada y bloqueada antes de implementación por ausencia de Node/npm en el entorno autorizado.
+- Fase 1 implementada y validada en GitHub Actions; queda en revisión del usuario antes de iniciar la Fase 2.
