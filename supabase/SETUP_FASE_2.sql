@@ -50,6 +50,8 @@ begin
 end;
 $$;
 
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
@@ -58,11 +60,13 @@ for each row execute procedure public.handle_new_user();
 drop policy if exists "profiles_select_own" on public.profiles;
 create policy "profiles_select_own"
 on public.profiles for select
+to authenticated
 using ((select auth.uid()) = user_id);
 
 drop policy if exists "profiles_update_own" on public.profiles;
 create policy "profiles_update_own"
 on public.profiles for update
+to authenticated
 using ((select auth.uid()) = user_id)
 with check ((select auth.uid()) = user_id);
 
@@ -75,4 +79,3 @@ commit;
 -- 1. Crea dos usuarios de prueba con Supabase Auth.
 -- 2. Comprueba que se generan dos filas en public.profiles.
 -- 3. Con el JWT de cada usuario, verifica que solo puede leer/actualizar su perfil.
-

@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-- Fase actual: Fase 1 — Fundaciones técnicas y experiencia base.
+- Fase actual: Fase 2 — Supabase, autenticación y seguridad multiusuario.
 - Última fase aprobada: Fase 1 — Fundaciones técnicas y experiencia base.
-- Estado: Fase 2 en curso; bloqueada parcialmente por configuración externa de Supabase.
+- Estado: Fase 2 en curso; Supabase y migraciones base aplicadas.
 - Actualización: 2026-08-27.
 
 ## Stack objetivo
@@ -23,11 +23,11 @@ Base de API FastAPI: configuración segura, CORS explícito, contratos de error,
 
 ## Bloqueos y acciones
 
-El proyecto Supabase `supabase-copper-clock` se restauró mediante la conexión autorizada y está arrancando (`COMING_UP`). Hasta que pase a activo no se aplicará ninguna migración. Node/npm no pueden instalarse en este equipo, pero no bloquean la validación remota. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
+Supabase está activo y contiene las migraciones de perfiles aplicadas. RLS y políticas de `profiles` fueron verificadas, y la función privilegiada del trigger fue cerrada a roles de API. Las pruebas negativas con dos usuarios y la integración real de sesión siguen pendientes. Node/npm no pueden instalarse en este equipo, pero no bloquean la CI remota. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
 
 ## Siguiente fase propuesta (no iniciada)
 
-Completar Fase 2 tras configurar Supabase: aplicar migración, Auth, sesión, rutas protegidas y pruebas RLS con dos usuarios.
+Completar Fase 2: pruebas RLS con dos usuarios, sesión/rutas protegidas e integración de Auth.
 
 ## Referencias
 

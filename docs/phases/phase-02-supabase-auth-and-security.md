@@ -15,8 +15,8 @@ La Fase 1 fue aprobada por autorización explícita para continuar. API y web se
 
 - Se creó la primera migración versionada para perfiles y preferencias regionales.
 - Se activó y forzó RLS en `public.profiles`.
-- Se definieron políticas explícitas de lectura y actualización del propio perfil.
-- Se añadió un trigger de alta desde `auth.users`, con nombre visible normalizado y sin confiar en valores del cliente.
+- Se definieron políticas explícitas de lectura y actualización del propio perfil, limitadas a `authenticated`.
+- Se añadió un trigger de alta desde `auth.users`, con nombre visible normalizado y sin confiar en valores del cliente; su función `SECURITY DEFINER` revoca ejecución a `PUBLIC`.
 - Se documentó el procedimiento de aplicación y rollback.
 - Se añadió `supabase/SETUP_FASE_2.sql` para aplicar el alcance de esta fase desde el SQL Editor sin instalar la CLI.
 
@@ -24,20 +24,28 @@ La Fase 1 fue aprobada por autorización explícita para continuar. API y web se
 
 La tabla no permite operaciones de `anon`. El usuario autenticado solo puede consultar o actualizar su fila. La creación de perfil se realiza desde un trigger `security definer` con `search_path` fijo. La prueba obligatoria pendiente es verificar con dos usuarios que no pueden leer ni actualizar el perfil del otro.
 
-## Bloqueo externo
+El asesor de seguridad detectó que el privilegio por defecto de ejecución seguía exponiendo la función del trigger a roles de API. Se añade una migración correctiva que revoca explícitamente `PUBLIC`, `anon` y `authenticated`. También se detectó una tabla `public.categories` preexistente, con RLS activo pero políticas antiguas dirigidas a `public`; no se modifica porque corresponde a la Fase 4 y requiere una revisión específica de producto y datos existentes.
 
-Se identificó el proyecto conectado `supabase-copper-clock` y se inició su restauración con autorización del usuario. Su estado actual es `COMING_UP`. Hasta que esté activo no se puede aplicar la migración, validar Auth, probar RLS contra PostgreSQL ni completar las rutas protegidas reales.
+## Estado del proyecto Supabase
+
+Se identificó el proyecto conectado `supabase-copper-clock`, se restauró con autorización del usuario y alcanzó estado activo. Se aplicaron las migraciones remotas `profiles_and_preferences` y `revoke_profile_trigger_execute`.
+
+La verificación directa confirmó que `public.profiles` tiene RLS habilitada y forzada, con una política `SELECT` y otra `UPDATE`, ambas dirigidas solo al rol `authenticated` y restringidas por `(select auth.uid()) = user_id`.
+
+El asesor de seguridad confirmó que ya no hay funciones `SECURITY DEFINER` de perfiles ejecutables desde `anon` ni `authenticated`. Mantiene un aviso informativo de exposición GraphQL para `profiles`: es esperado porque el rol autenticado necesita acceder a su propio perfil y RLS restringe las filas.
+
+Los avisos restantes de seguridad y rendimiento pertenecen a `public.categories`, una tabla preexistente: usa políticas antiguas para `public`, se expone por GraphQL y tiene un índice/recomendaciones de RLS pendientes. No se modificó porque es alcance de la Fase 4 y requerirá revisión específica.
 
 ## Próximas acciones de esta fase
 
-Cuando exista el proyecto, aplicar la migración, crear dos usuarios de prueba no sensibles, ejecutar la matriz RLS y conectar el cliente web/API con variables de entorno validadas.
+Crear dos usuarios de prueba no sensibles con autorización del usuario, ejecutar la matriz RLS y conectar el cliente web/API con variables de entorno validadas.
 
 ## Criterios de aceptación
 
 - [x] Migración base de perfiles y preferencias versionada.
 - [x] RLS y políticas explícitas definidas.
 - [x] Alta de perfil atómica asociada a Auth.
-- [ ] Proyecto Supabase configurado y migración aplicada.
+- [x] Proyecto Supabase configurado y migración aplicada.
 - [ ] Sesión y rutas protegidas integradas.
 - [ ] Pruebas RLS negativas con dos usuarios.
 - [ ] Flujo de registro, acceso, salida y recuperación probado.
