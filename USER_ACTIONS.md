@@ -81,6 +81,15 @@
 - Verificación: el formulario de acceso permitirá usar las funciones de Supabase Auth y cargará el perfil protegido por RLS.
 - Consecuencia de posponer: la aplicación se mostrará, pero el acceso no podrá conectarse al proyecto Supabase.
 
+## Fase 2 — Autorizar la URL de vista previa en Supabase Auth
+
+- Estado: `PENDIENTE`
+- Motivo: los enlaces de confirmación de cuenta y recuperación de contraseña deben volver a la vista previa de GitHub Pages.
+- Pasos: en Supabase abre **Authentication → URL Configuration**. Añade `https://jmdbaru.github.io/aplicacion-financiera/` a **Redirect URLs** y usa esa misma URL como **Site URL** mientras se prueba la aplicación.
+- Dato que debes devolver: confirma que has guardado la configuración; no compartas claves ni contraseñas.
+- Verificación: al crear una cuenta o recuperar la contraseña, el correo volverá a la aplicación de prueba en lugar de a una URL genérica.
+- Consecuencia de posponer: el inicio de sesión con una cuenta ya creada funciona, pero los enlaces de confirmación y recuperación no podrán regresar correctamente a la web.
+
 ## Estado de Git
 
 - Estado: `COMPLETADA`
