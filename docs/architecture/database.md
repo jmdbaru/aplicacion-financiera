@@ -23,6 +23,12 @@ profiles 1--N portfolios 1--N investment_transactions
 
 Las relaciones se implementan por fase; este diseño no autoriza crear todas las tablas anticipadamente.
 
+## Implementado en la Fase 3
+
+`financial_accounts`, `ledger_transactions` y `ledger_entries` están creadas y protegidas por RLS forzada. Las cuentas admiten archivo reversible. Los saldos se calculan agregando entradas y no se almacenan como una columna mutable.
+
+Las RPC `create_ledger_transaction` y `reverse_ledger_transaction` concentran la escritura atómica. Validan `auth.uid()`, propiedad, estado de las cuentas, moneda, importes, suma cero y trazabilidad del reverso. Los clientes autenticados pueden leer únicamente sus filas mediante RLS y no pueden insertar, actualizar ni borrar directamente el ledger.
+
 ## Invariantes
 
 - Cada transacción contabilizada tiene al menos dos entradas y suma cero por moneda.
@@ -45,7 +51,8 @@ Las relaciones se implementan por fase; este diseño no autoriza crear todas las
 
 Se confirmarán con consultas y `EXPLAIN`, evitando índices decorativos.
 
+En la Fase 3 se añadieron índices por usuario/fecha, cuenta/fecha y claves foráneas de transacción y reverso. El asesor remoto ya no informa claves foráneas sin índice. El índice por cuenta/fecha aparece todavía como no usado porque no existe carga representativa; se medirá antes de decidir retirarlo.
+
 ## Migraciones y recuperación
 
 Migraciones ordenadas en `supabase/migrations/`, cambios compatibles y estrategia expand/contract con datos reales. Cada fase documentará rollback; cambios destructivos exigirán copia y restauración ensayada. Seeds solo ficticios.
-

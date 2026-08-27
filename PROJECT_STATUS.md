@@ -1,13 +1,13 @@
 # Estado del proyecto
 
-- Fase actual: Fase 3 — Núcleo financiero: cuentas y ledger.
+- Fase actual: Fase 3 — Núcleo financiero: cuentas y ledger, finalizada técnicamente y en revisión.
 - Última fase aprobada: Fase 2 — Supabase, autenticación y seguridad multiusuario.
-- Estado: Fase 2 aprobada tras la validación real de autenticación y preferencias; Fase 3 en curso.
+- Estado: implementación, migraciones, pruebas y despliegue de la Fase 3 correctos; pendiente la validación funcional autenticada y la aprobación expresa del usuario.
 - Actualización: 2026-08-27.
 
 ## Stack objetivo
 
-React/TypeScript/Vite/Tailwind; FastAPI/Pydantic/Uvicorn; Supabase PostgreSQL/Auth/RLS. Versiones aún no fijadas. Detectados: Python 3.12.10 y Git 2.53.0; Node/npm ausentes.
+React 19/TypeScript 5.9/Vite 7/Tailwind 4; FastAPI/Pydantic/Uvicorn; Supabase PostgreSQL/Auth/RLS. Detectados: Python 3.12.10 y Git 2.53.0. Node no está instalado globalmente; las comprobaciones web se ejecutan con el runtime aislado y en CI con Node 24.
 
 ## Comandos
 
@@ -19,15 +19,15 @@ React/TypeScript/Vite/Tailwind; FastAPI/Pydantic/Uvicorn; Supabase PostgreSQL/Au
 
 Auditoría; arquitectura; modelo e invariantes; estrategia RLS; pruebas/mantenimiento/entornos/despliegue; documentación viva y ADR.
 
-Base de API FastAPI: configuración segura, CORS explícito, contratos de error, health check, correlación de peticiones y tests. Frontend React/Vite/Tailwind: shell responsive, tokens visuales, accesibilidad y prueba de componente. CI remoto validado en `v1.005` con instalaciones deterministas: Ruff correcto, 3 pruebas API correctas, y job web con `npm ci`, lint, tests, tipos y build correctos. La sintaxis Python también fue validada localmente con `compileall`.
+Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles y preferencias protegidos por RLS. La Fase 3 añade cuentas financieras privadas, saldos derivados, ledger de doble partida, ingresos, gastos, ajustes, transferencias y reversos atómicos, listados paginados con filtros y una interfaz responsive completa. Última validación local: Ruff correcto, 12 pruebas API correctas, lint web correcto, 3 pruebas web correctas y build correcto. GitHub Actions y GitHub Pages finalizaron correctamente en `v1.025`.
 
 ## Bloqueos y acciones
 
-Supabase está activo y contiene las migraciones de perfiles aplicadas. RLS y políticas de `profiles` fueron verificadas, incluida una matriz de dos usuarios: no hay lectura ni actualización horizontal y se mantiene la edición del propio perfil. El flujo real de autenticación y preferencias fue validado en la vista previa. Node/npm no pueden instalarse en este equipo, pero no bloquean la CI remota. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
+Supabase contiene las migraciones de perfiles, cuentas y ledger aplicadas. RLS, atomicidad, descuadres, transferencia y reverso fueron comprobados. Falta que el usuario complete el recorrido financiero autenticado indicado en `USER_ACTIONS.md`. Los pendientes previos a producción de Auth siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
 
 ## Siguiente fase propuesta (no iniciada)
 
-Fase 3: implementar cuentas financieras y el ledger de doble partida con operaciones atómicas y RLS.
+Fase 4: categorías y presupuestos. No debe iniciarse hasta que el usuario apruebe expresamente la Fase 3.
 
 ## Referencias
 
@@ -35,3 +35,4 @@ Fase 3: implementar cuentas financieras y el ledger de doble partida con operaci
 - `docs/architecture/overview.md`
 - `docs/architecture/database.md`
 - `docs/architecture/security.md`
+- `docs/phases/phase-03-financial-core.md`
