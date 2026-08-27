@@ -63,6 +63,33 @@
 - Verificación: el aviso `auth_leaked_password_protection` dejará de aparecer en el asesor de seguridad.
 - Consecuencia de posponer: el registro seguirá funcionando, pero aceptará contraseñas conocidas como comprometidas.
 
+## Fase 2 — Pendientes antes de cerrar la autenticación
+
+- Estado: `PENDIENTE TEMPORAL`
+- Motivo: Supabase Auth alcanzó el límite de solicitudes de correo durante las pruebas. El flujo de alta no se ha podido comprobar tras desactivar la confirmación de correo.
+- Pasos cuando el límite se restablezca: desde la vista previa de GitHub Pages crea una cuenta con un correo personal válido y una contraseña nueva; comprueba que entras directamente al panel, cierra sesión y vuelve a entrar.
+- Dato que debes devolver: indica qué pasos funcionaron y cualquier mensaje de error, sin compartir la contraseña.
+- Verificación: debe existir un perfil asociado y la aplicación debe mostrar la sesión iniciada; el cierre y el siguiente inicio deben funcionar.
+- Consecuencia de posponer: la Fase 2 mantiene la implementación y las pruebas técnicas correctas, pero no puede declararse aprobada para iniciar la Fase 3.
+
+## Antes de producción — Restaurar endurecimiento de Auth
+
+- Estado: `PENDIENTE`
+- Motivo: para permitir la prueba inmediata se desactivó temporalmente la confirmación de correo.
+- Pasos: en **Authentication → Sign In / Providers → Email**, activa de nuevo **Confirm email**; mantén habilitado **Enable Email Signups**. Configura un SMTP propio antes de abrir el registro a usuarios reales y activa la protección contra contraseñas filtradas.
+- Dato que debes devolver: confirma los cambios cuando se prepare producción, sin copiar credenciales SMTP.
+- Verificación: una cuenta nueva no obtiene sesión hasta confirmar el enlace recibido; los avisos de contraseña comprometida dejan de aparecer en el asesor de seguridad.
+- Consecuencia de posponer: cualquier persona podría registrar una dirección que no controla y la entrega de correos seguirá limitada por el servicio predeterminado.
+
+## Después de las pruebas — Limpiar cuentas temporales
+
+- Estado: `PENDIENTE`
+- Motivo: existen cuentas de prueba creadas para comprobar RLS y el flujo de alta.
+- Pasos: cuando finalicen las pruebas, elimina desde **Authentication → Users** las cuentas temporales identificadas como pruebas RLS o vista previa. No eliminar perfiles directamente desde SQL.
+- Dato que debes devolver: confirma que se han retirado, sin enviar correos ni identificadores.
+- Verificación: no quedan usuarios de prueba en Auth ni perfiles asociados por el borrado en cascada.
+- Consecuencia de posponer: las cuentas no suponen acceso a datos ajenos por RLS, pero ensucian el entorno de desarrollo.
+
 ## Fase 2 — Incorporar el lockfile del SDK de Supabase
 
 - Estado: `COMPLETADA`

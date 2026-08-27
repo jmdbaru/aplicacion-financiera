@@ -44,7 +44,7 @@ El asesor de seguridad mantiene dos avisos de GraphQL ya documentados: `categori
 
 ## Próximas acciones de esta fase
 
-Configurar las dos variables públicas del cliente en el entorno de despliegue, validar remotamente la compilación y probar con una cuenta real el registro, acceso, salida y recuperación.
+La vista previa y la compilación remota ya están disponibles. Se debe retomar la prueba de alta, acceso, salida y recuperación cuando se restablezca el límite temporal de solicitudes de Auth. Todos los pendientes operativos y de endurecimiento antes de producción se mantienen en `USER_ACTIONS.md`.
 
 ## Criterios de aceptación
 
