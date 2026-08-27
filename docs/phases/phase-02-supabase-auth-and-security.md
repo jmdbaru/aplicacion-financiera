@@ -18,6 +18,7 @@ La Fase 1 fue aprobada por autorización explícita para continuar. API y web se
 - Se definieron políticas explícitas de lectura y actualización del propio perfil.
 - Se añadió un trigger de alta desde `auth.users`, con nombre visible normalizado y sin confiar en valores del cliente.
 - Se documentó el procedimiento de aplicación y rollback.
+- Se añadió `supabase/SETUP_FASE_2.sql` para aplicar el alcance de esta fase desde el SQL Editor sin instalar la CLI.
 
 ## Seguridad y RLS
 
@@ -40,4 +41,3 @@ Cuando exista el proyecto, aplicar la migración, crear dos usuarios de prueba n
 - [ ] Sesión y rutas protegidas integradas.
 - [ ] Pruebas RLS negativas con dos usuarios.
 - [ ] Flujo de registro, acceso, salida y recuperación probado.
-
