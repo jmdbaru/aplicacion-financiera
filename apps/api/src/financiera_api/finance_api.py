@@ -166,6 +166,7 @@ async def list_transactions(
     offset: int = Query(default=0, ge=0),
     date_from: date | None = None,
     date_to: date | None = None,
+    search: str | None = Query(default=None, max_length=80),
 ) -> list[LedgerTransactionResponse]:
     base, headers = _connection(user)
     params = {
@@ -178,10 +179,18 @@ async def list_transactions(
         "limit": str(limit),
         "offset": str(offset),
     }
-    if date_from:
+    if date_from and date_to:
+        params["and"] = (
+            f"(effective_date.gte.{date_from.isoformat()},"
+            f"effective_date.lte.{date_to.isoformat()})"
+        )
+    elif date_from:
         params["effective_date"] = f"gte.{date_from.isoformat()}"
-    if date_to:
+    elif date_to:
         params["effective_date"] = f"lte.{date_to.isoformat()}"
+    if search and search.strip():
+        safe_search = search.strip().replace("*", "").replace(",", "")
+        params["description"] = f"ilike.*{safe_search}*"
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(
