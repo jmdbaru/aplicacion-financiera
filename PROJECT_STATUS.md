@@ -1,8 +1,8 @@
 # Estado del proyecto
 
 - Fase actual: Fase 1 — Fundaciones técnicas y experiencia base.
-- Última fase aprobada: Fase 0 — Auditoría, definición y base.
-- Estado: implementada y en revisión del usuario.
+- Última fase aprobada: Fase 1 — Fundaciones técnicas y experiencia base.
+- Estado: Fase 2 en curso; bloqueada parcialmente por configuración externa de Supabase.
 - Actualización: 2026-08-27.
 
 ## Stack objetivo
@@ -27,7 +27,7 @@ Node/npm no pueden instalarse en este equipo por restricción del usuario, por l
 
 ## Siguiente fase propuesta (no iniciada)
 
-Fase 2 — Supabase, autenticación y seguridad multiusuario. No iniciada; requiere aprobación expresa.
+Completar Fase 2 tras configurar Supabase: aplicar migración, Auth, sesión, rutas protegidas y pruebas RLS con dos usuarios.
 
 ## Referencias
 

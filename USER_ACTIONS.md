@@ -36,7 +36,14 @@
 - Verificación: API: Ruff correcto y 3 pruebas superadas. Web: ejecución completa con tic verde.
 - Consecuencia de posponer: no aplica.
 
-No hay cuentas externas, credenciales ni pagos pendientes en esta fase.
+## Fase 2 — Crear o seleccionar el proyecto Supabase
+
+- Estado: `PENDIENTE`
+- Motivo: Auth, PostgreSQL y RLS necesitan un proyecto Supabase externo para aplicar y probar la migración.
+- Pasos: crea o selecciona un proyecto Supabase destinado a desarrollo. No compartas claves ni tokens en el chat. Cuando esté listo, indícame solo que el proyecto existe; te guiaré para configurar las variables de entorno localmente y aplicar la migración.
+- Dato que debes devolver: confirmación de que el proyecto de desarrollo existe.
+- Verificación: se podrá configurar la URL y la clave anónima en archivos locales ignorados, y el panel permitirá ejecutar migraciones.
+- Consecuencia de posponer: se puede diseñar código y SQL, pero no validar Auth, RLS ni las rutas protegidas reales.
 
 ## Estado de Git
 
