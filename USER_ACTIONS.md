@@ -63,6 +63,15 @@
 - Verificación: el aviso `auth_leaked_password_protection` dejará de aparecer en el asesor de seguridad.
 - Consecuencia de posponer: el registro seguirá funcionando, pero aceptará contraseñas conocidas como comprometidas.
 
+## Fase 2 — Incorporar el lockfile del SDK de Supabase
+
+- Estado: `PENDIENTE`
+- Motivo: el cliente web usará el SDK oficial `@supabase/supabase-js`; su lockfile debe generarse con Node en GitHub porque este equipo no puede instalarlo.
+- Pasos: cuando el workflow **Generate web lockfile** aparezca con tic verde, abre el run, descarga el artefacto `web-package-lock` y extrae `package-lock.json` en `apps/web/package-lock.json`, reemplazando el existente. Después indícame que está listo.
+- Dato que debes devolver: “lockfile de Supabase listo”. No compartas claves ni contraseñas.
+- Verificación: tras incorporarlo, el workflow `Quality` volverá a pasar `npm ci`, pruebas y build sin instalaciones locales.
+- Consecuencia de posponer: no se puede importar el SDK oficial sin romper la instalación determinista de CI.
+
 ## Estado de Git
 
 - Estado: `COMPLETADA`

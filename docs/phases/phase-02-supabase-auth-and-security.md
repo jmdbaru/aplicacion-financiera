@@ -44,7 +44,7 @@ El asesor de seguridad mantiene dos avisos de GraphQL ya documentados: `categori
 
 ## Próximas acciones de esta fase
 
-Conectar el cliente web/API con variables de entorno validadas y completar los flujos de sesión.
+Incorporar el lockfile reproducible del SDK oficial, conectar el cliente web/API con variables de entorno validadas y completar los flujos de sesión.
 
 ## Criterios de aceptación
 
