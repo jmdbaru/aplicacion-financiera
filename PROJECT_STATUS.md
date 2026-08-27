@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-- Fase actual: Fase 2 — Supabase, autenticación y seguridad multiusuario.
-- Última fase aprobada: Fase 1 — Fundaciones técnicas y experiencia base.
-- Estado: Fase 2 en curso; Supabase, migraciones base y aislamiento RLS verificados.
+- Fase actual: Fase 3 — Núcleo financiero: cuentas y ledger.
+- Última fase aprobada: Fase 2 — Supabase, autenticación y seguridad multiusuario.
+- Estado: Fase 2 aprobada tras la validación real de autenticación y preferencias; Fase 3 en curso.
 - Actualización: 2026-08-27.
 
 ## Stack objetivo
@@ -23,11 +23,11 @@ Base de API FastAPI: configuración segura, CORS explícito, contratos de error,
 
 ## Bloqueos y acciones
 
-Supabase está activo y contiene las migraciones de perfiles aplicadas. RLS y políticas de `profiles` fueron verificadas, incluida una matriz de dos usuarios: no hay lectura ni actualización horizontal y se mantiene la edición del propio perfil. La integración real de sesión sigue pendiente. Node/npm no pueden instalarse en este equipo, pero no bloquean la CI remota. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
+Supabase está activo y contiene las migraciones de perfiles aplicadas. RLS y políticas de `profiles` fueron verificadas, incluida una matriz de dos usuarios: no hay lectura ni actualización horizontal y se mantiene la edición del propio perfil. El flujo real de autenticación y preferencias fue validado en la vista previa. Node/npm no pueden instalarse en este equipo, pero no bloquean la CI remota. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
 
 ## Siguiente fase propuesta (no iniciada)
 
-Completar Fase 2: pruebas RLS con dos usuarios, sesión/rutas protegidas e integración de Auth.
+Fase 3: implementar cuentas financieras y el ledger de doble partida con operaciones atómicas y RLS.
 
 ## Referencias
 

@@ -1,7 +1,7 @@
 # Fase 2 — Supabase, autenticación y seguridad multiusuario
 
 - Fecha de inicio: 2026-08-27
-- Estado: en curso
+- Estado: aprobada
 
 ## Objetivo y alcance
 
@@ -44,7 +44,7 @@ El asesor de seguridad mantiene dos avisos de GraphQL ya documentados: `categori
 
 ## Próximas acciones de esta fase
 
-La vista previa y la compilación remota ya están disponibles. Se debe retomar la prueba de alta, acceso, salida y recuperación cuando se restablezca el límite temporal de solicitudes de Auth. Todos los pendientes operativos y de endurecimiento antes de producción se mantienen en `USER_ACTIONS.md`.
+La validación real en la vista previa confirmó el alta/acceso, sesión, cierre y edición de preferencias. Los pendientes no funcionales de endurecimiento para producción y limpieza de cuentas de prueba se mantienen en `USER_ACTIONS.md`.
 
 ## Criterios de aceptación
 
@@ -54,4 +54,8 @@ La vista previa y la compilación remota ya están disponibles. Se debe retomar 
 - [x] Proyecto Supabase configurado y migración aplicada.
 - [x] Sesión y rutas protegidas integradas en el cliente web.
 - [x] Pruebas RLS negativas con dos usuarios.
-- [ ] Flujo de registro, acceso, salida y recuperación probado en un navegador con variables de entorno configuradas.
+- [x] Flujo de registro, acceso, salida y edición de preferencias probado en un navegador con variables de entorno configuradas.
+
+## Cierre de fase
+
+La Fase 2 queda aprobada por la validación funcional reportada por el usuario y su autorización explícita para continuar. La confirmación de correo, SMTP propio, protección contra contraseñas filtradas y la limpieza de cuentas temporales son tareas de endurecimiento previas a producción, documentadas y fuera del alcance de la funcionalidad base ya aceptada.

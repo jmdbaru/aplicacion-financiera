@@ -63,14 +63,14 @@
 - Verificación: el aviso `auth_leaked_password_protection` dejará de aparecer en el asesor de seguridad.
 - Consecuencia de posponer: el registro seguirá funcionando, pero aceptará contraseñas conocidas como comprometidas.
 
-## Fase 2 — Pendientes antes de cerrar la autenticación
+## Fase 2 — Validación funcional de autenticación
 
-- Estado: `PENDIENTE TEMPORAL`
-- Motivo: Supabase Auth alcanzó el límite de solicitudes de correo durante las pruebas. El flujo de alta no se ha podido comprobar tras desactivar la confirmación de correo.
-- Pasos cuando el límite se restablezca: desde la vista previa de GitHub Pages crea una cuenta con un correo personal válido y una contraseña nueva; comprueba que entras directamente al panel, cierra sesión y vuelve a entrar.
-- Dato que debes devolver: indica qué pasos funcionaron y cualquier mensaje de error, sin compartir la contraseña.
-- Verificación: debe existir un perfil asociado y la aplicación debe mostrar la sesión iniciada; el cierre y el siguiente inicio deben funcionar.
-- Consecuencia de posponer: la Fase 2 mantiene la implementación y las pruebas técnicas correctas, pero no puede declararse aprobada para iniciar la Fase 3.
+- Estado: `COMPLETADA`
+- Motivo: se verificaron en la vista previa el alta/acceso, la sesión, el cierre y la edición de preferencias.
+- Pasos: no requiere ninguna acción adicional.
+- Dato que debes devolver: ninguno.
+- Verificación: la aplicación creó o recuperó el perfil protegido y mantuvo la sesión esperada.
+- Consecuencia de posponer: no aplica.
 
 ## Antes de producción — Restaurar endurecimiento de Auth
 
@@ -101,12 +101,12 @@
 
 ## Fase 2 — Configuración pública del cliente en despliegue
 
-- Estado: `PENDIENTE`
+- Estado: `COMPLETADA`
 - Motivo: el cliente necesita la URL y clave publishable de Supabase al ejecutarse en un navegador.
-- Pasos: en el entorno donde publiques la web, configura `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` con los datos públicos del proyecto. No uses ni compartas una clave `service_role`.
-- Dato que debes devolver: confirma que las variables están configuradas, sin copiar sus valores.
-- Verificación: el formulario de acceso permitirá usar las funciones de Supabase Auth y cargará el perfil protegido por RLS.
-- Consecuencia de posponer: la aplicación se mostrará, pero el acceso no podrá conectarse al proyecto Supabase.
+- Pasos: no requiere ninguna acción para la vista previa actual. Al crear otro despliegue, configura `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` con los datos públicos del proyecto. No uses ni compartas una clave `service_role`.
+- Dato que debes devolver: ninguno para la vista previa actual.
+- Verificación: el formulario de acceso ya usa Supabase Auth y carga el perfil protegido por RLS.
+- Consecuencia de posponer: no aplica a la vista previa; sí bloqueará el acceso en un despliegue nuevo.
 
 ## Fase 2 — Autorizar la URL de vista previa en Supabase Auth
 
