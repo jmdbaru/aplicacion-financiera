@@ -51,6 +51,10 @@ def create_app() -> FastAPI:
         request.state.request_id = request_id
         started_at = time.perf_counter()
         response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "no-referrer"
+        response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
         response.headers["X-Request-ID"] = request_id
         elapsed_ms = round((time.perf_counter() - started_at) * 1_000, 2)
         logger.info(
@@ -79,4 +83,3 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-

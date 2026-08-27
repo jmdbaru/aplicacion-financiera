@@ -10,6 +10,8 @@ def test_health_returns_safe_status() -> None:
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
     assert "x-request-id" in response.headers
+    assert response.headers["x-frame-options"] == "DENY"
+    assert response.headers["x-content-type-options"] == "nosniff"
 
 
 def test_session_requires_bearer_token() -> None:
