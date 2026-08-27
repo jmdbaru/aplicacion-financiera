@@ -1,13 +1,17 @@
 """Rutas HTTP de la API v1."""
 
+from typing import Annotated
+
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from financiera_api.auth import AuthenticatedUser, require_bearer_token
 from financiera_api.config import Settings, get_settings
+from financiera_api.finance_api import router as finance_router
 from financiera_api.schemas import HealthResponse, ProfileResponse, ProfileUpdateRequest
 
 router = APIRouter(prefix="/api/v1", tags=["system"])
+CurrentUser = Annotated[AuthenticatedUser, Depends(require_bearer_token)]
 
 
 @router.get(
@@ -24,14 +28,14 @@ async def health(request: Request) -> HealthResponse:
 
 
 @router.get("/session", summary="Comprueba que la solicitud contiene una sesión")
-async def session(user: AuthenticatedUser = Depends(require_bearer_token)) -> dict[str, bool]:
+async def session(user: CurrentUser) -> dict[str, bool]:
     """Contrato base para rutas protegidas; nunca devuelve el token recibido."""
     _ = user
     return {"authenticated": True}
 
 
 @router.get("/profile", response_model=ProfileResponse, summary="Perfil del usuario autenticado")
-async def profile(user: AuthenticatedUser = Depends(require_bearer_token)) -> ProfileResponse:
+async def profile(user: CurrentUser) -> ProfileResponse:
     """Obtiene el perfil a través de RLS, usando el JWT del usuario solicitante."""
     settings = get_settings()
     if not settings.supabase_url or not settings.supabase_publishable_key:
@@ -76,10 +80,13 @@ async def profile(user: AuthenticatedUser = Depends(require_bearer_token)) -> Pr
     return ProfileResponse.model_validate(profiles[0])
 
 
+router.include_router(finance_router)
+
+
 @router.patch("/profile", response_model=ProfileResponse, summary="Actualiza el perfil autenticado")
 async def update_profile(
     update: ProfileUpdateRequest,
-    user: AuthenticatedUser = Depends(require_bearer_token),
+    user: CurrentUser,
 ) -> ProfileResponse:
     """Actualiza solo el perfil propio, filtrado y autorizado por RLS."""
     settings = get_settings()

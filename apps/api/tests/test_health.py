@@ -33,3 +33,25 @@ def test_profile_update_requires_bearer_token() -> None:
         response = client.patch("/api/v1/profile", json={"locale": "es-ES"})
 
     assert response.status_code == 401
+
+
+def test_accounts_require_bearer_token() -> None:
+    with TestClient(create_app()) as client:
+        response = client.get("/api/v1/accounts")
+
+    assert response.status_code == 401
+
+
+def test_account_creation_requires_bearer_token() -> None:
+    with TestClient(create_app()) as client:
+        response = client.post(
+            "/api/v1/accounts",
+            json={"name": "Principal", "account_type": "bank", "currency_code": "EUR"},
+        )
+    assert response.status_code == 401
+
+
+def test_transactions_require_bearer_token() -> None:
+    with TestClient(create_app()) as client:
+        response = client.get("/api/v1/transactions")
+    assert response.status_code == 401
