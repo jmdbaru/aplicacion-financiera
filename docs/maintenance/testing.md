@@ -12,5 +12,8 @@ Frontend: formato, ESLint, TypeScript, tests y build. Backend: Ruff, comprobaci�
 
 ## Estado actual
 
-No hay c처digo ejecutable ni dependencias. En Fase 0 se valida documentaci처n, estructura, limpieza y ausencia de secretos evidentes.
+La Fase 1 ya dispone de c처digo ejecutable y validaci처n remota. En local, mientras no se autorice instalar dependencias, se limita la comprobaci처n a sintaxis Python y estructura; GitHub Actions ejecuta el resto de la suite.
 
+## Lockfile web
+
+Mientras no exista Node local, el workflow manual `Generate web lockfile` crea `apps/web/package-lock.json` en un runner de GitHub. Una vez versionado, el job de calidad web debe usar exclusivamente `npm ci`.

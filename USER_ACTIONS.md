@@ -18,14 +18,23 @@
 - Verificación futura: `node --version` y `npm --version` deben ejecutarse correctamente.
 - Consecuencia de posponer: la Fase 1 y las siguientes no pueden implementarse ni validarse con el stack aprobado.
 
+## Generar el lockfile web sin Node local
+
+- Estado: `PENDIENTE`
+- Motivo: el proyecto necesita un `package-lock.json` versionado para instalaciones reproducibles con `npm ci`; se puede generar en GitHub Actions sin instalar Node en este equipo.
+- Pasos: en GitHub abre **Actions** > **Generate web lockfile** > **Run workflow**. Cuando finalice en verde, descarga el artefacto **web-package-lock**, extrae `package-lock.json` y súbelo a la ruta `apps/web/package-lock.json` del repositorio mediante la interfaz web de GitHub.
+- Dato que debes devolver: confirma que el archivo se ha subido o indícame el hash del commit que lo contiene. No compartas secretos.
+- Verificación: el archivo debe figurar en `apps/web/package-lock.json`; el workflow `Quality` se actualizará posteriormente para usar `npm ci`.
+- Consecuencia de posponer: la validación remota seguirá funcionando, pero la instalación aún no será completamente reproducible.
+
 ## Validación remota mediante GitHub Actions
 
-- Estado: `EN CURSO`
-- Motivo: el commit `v1.001` fue enviado a GitHub y activó el workflow `Quality` en un runner remoto, sin requerir Node local.
-- Pasos: abrir el repositorio en GitHub y revisar la pestaña **Actions**. No realizar despliegues desde Vercel ni Render en esta fase.
-- Dato que debes devolver: el resultado de los jobs `API quality` y `Web quality`, o sus errores si alguno falla. No compartas secretos.
-- Verificación: ambos jobs deben terminar correctamente para cerrar las comprobaciones remotas de la Fase 1.
-- Consecuencia de posponer: la fase no puede considerarse validada completamente.
+- Estado: `COMPLETADA`
+- Motivo: el workflow `Quality` del commit `v1.003` finalizó correctamente para API y web.
+- Pasos: no requiere ninguna acción adicional. No realizar despliegues desde Vercel ni Render en esta fase.
+- Dato que debes devolver: ninguno.
+- Verificación: API: Ruff correcto y 3 pruebas superadas. Web: ejecución completa con tic verde.
+- Consecuencia de posponer: no aplica.
 
 No hay cuentas externas, credenciales ni pagos pendientes en esta fase.
 

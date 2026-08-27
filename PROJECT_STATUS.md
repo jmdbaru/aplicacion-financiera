@@ -17,11 +17,11 @@ Todavía no existen comandos de instalación, desarrollo, pruebas o build: la Fa
 
 Auditoría; arquitectura; modelo e invariantes; estrategia RLS; pruebas/mantenimiento/entornos/despliegue; documentación viva y ADR.
 
-Base declarativa de la API: configuración segura, CORS explícito, contratos de error, health check, correlación de peticiones y tests preparados. Frontend React/Vite: shell responsive, tokens visuales, accesibilidad y pruebas de componente preparadas. CI remoto de API y web creado. La sintaxis Python fue validada con `compileall`.
+Base declarativa de la API: configuración segura, CORS explícito, contratos de error, health check, correlación de peticiones y tests preparados. Frontend React/Vite/Tailwind: shell responsive, tokens visuales, accesibilidad y pruebas de componente. CI remoto de API y web creado y validado correctamente en `v1.003`: Ruff correcto, 3 pruebas API correctas y job web con lint, tests y build correctos. La sintaxis Python también fue validada localmente con `compileall`.
 
 ## Bloqueos y acciones
 
-Node/npm no pueden instalarse en este equipo por restricción del usuario. Mantener React/Vite/Tailwind bloquea la ejecución local, build y validación completa de la Fase 1 hasta disponer de un entorno autorizado con Node. El commit `v1.001` ya fue enviado a GitHub y activó la validación remota; su detalle no se puede consultar anónimamente al ser un repositorio privado. Las dependencias Python tampoco se instalaron localmente; solo se verificó sintaxis. Falta generar y versionar `package-lock.json` en una máquina con Node para pasar de `npm install` a `npm ci`. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
+Node/npm no pueden instalarse en este equipo por restricción del usuario. La validación completa se realiza correctamente de forma remota en GitHub Actions, pero falta generar y versionar `package-lock.json` en una máquina con Node para sustituir el `npm install` temporal del workflow por `npm ci` y reproducirlo localmente. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
 
 ## Siguiente fase propuesta (no iniciada)
 

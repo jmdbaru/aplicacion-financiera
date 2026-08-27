@@ -38,18 +38,26 @@ No se instaló ninguna dependencia externa en local. El frontend React/Vite se p
 - **Web quality**: la instalación y ESLint finalizaron correctamente; Vitest falló porque el test usaba globals sin habilitarlas. Ahora importa explícitamente `describe`, `it` y `expect` desde `vitest`.
 - El workflow no llegó al build web después del fallo del test. Se reintentará al enviar la corrección.
 
+### Validación remota corregida (commit `v1.003`, 2026-08-27)
+
+- **API quality**: correcto. Ruff sin incidencias y Pytest: 3 pruebas superadas. Solo queda un aviso deprecado ajeno al código de aplicación, emitido por FastAPI/Starlette al importar `TestClient`.
+- **Web quality**: correcto según el estado verde del workflow completo tras la corrección; incluye instalación, lint, test y build.
+- Se mantiene como mejora pendiente generar `package-lock.json` desde un entorno con Node y reemplazar el `npm install` temporal por `npm ci`.
+
 ## Seguridad, pruebas y migraciones
 
 No hay migraciones ni despliegues. Se ejecutó `python -m compileall -q apps\\api\\src apps\\api\\tests` correctamente; solo valida sintaxis. No fue posible ejecutar Ruff, Pytest, FastAPI, tipos o build porque las dependencias de API no están instaladas y no se autorizan descargas externas. La configuración y los tests quedan preparados para su ejecución posterior.
 
 ## Acción necesaria
 
-El commit `v1.001` fue enviado a GitHub para ejecutar el workflow remoto `Quality`. La consulta anónima de su estado no está permitida por el repositorio privado; revisar el resultado en la pestaña Actions de GitHub. Continúa siendo necesario disponer de un entorno autorizado con Node.js LTS y npm para generar el lockfile y reproducir la validación local.
+La validación remota de `v1.003` fue correcta. Solo se necesita un entorno autorizado con Node.js LTS y npm para generar el lockfile y reproducir la validación local; no bloquea la comprobación remota actual.
+
+Como alternativa sin Node local, se añadió un workflow manual `Generate web lockfile`. Genera el lockfile en un runner de GitHub y lo publica como artefacto durante siete días; no recibe permisos de escritura ni crea commits automáticamente.
 
 ## Criterios de aceptación
 
 - [ ] Node/npm disponibles en el entorno de desarrollo.
 - [x] Base declarativa y sintácticamente válida de backend configurada.
 - [x] Frontend declarativo, layout y componentes base accesibles configurados.
-- [ ] Calidad, tipos, pruebas y build correctos.
-- [x] CI de comprobación de API y web creado; las ejecuciones remotas están pendientes de enviar cambios a GitHub.
+- [x] Calidad, pruebas y build correctos en GitHub Actions.
+- [x] CI de comprobación de API y web creado y validado remotamente.
