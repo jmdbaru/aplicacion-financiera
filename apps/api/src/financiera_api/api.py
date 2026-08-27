@@ -2,9 +2,9 @@
 
 from fastapi import APIRouter, Depends, Request, status
 
+from financiera_api.auth import require_bearer_token
 from financiera_api.config import Settings, get_settings
 from financiera_api.schemas import HealthResponse
-from financiera_api.auth import require_bearer_token
 
 router = APIRouter(prefix="/api/v1", tags=["system"])
 
