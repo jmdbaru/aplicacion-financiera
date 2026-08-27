@@ -18,6 +18,8 @@ class Settings(BaseSettings):
 
     app_env: Literal["local", "staging", "production"] = "local"
     cors_allowed_origins: str = "http://localhost:5173"
+    supabase_url: str | None = None
+    supabase_publishable_key: str | None = None
 
     @field_validator("cors_allowed_origins")
     @classmethod
@@ -39,4 +41,3 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
-
