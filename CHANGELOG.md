@@ -11,6 +11,7 @@
 - Reglas de exclusión y formato.
 - Base declarativa de API FastAPI con health check, configuración segura y pruebas preparadas.
 - Workflow de GitHub Actions para calidad de API.
+- Lockfile versionado del frontend y CI web con instalaciones deterministas mediante `npm ci`.
 
 ### Changed
 

@@ -16,4 +16,4 @@ La Fase 1 ya dispone de código ejecutable y validación remota. En local, mient
 
 ## Lockfile web
 
-Mientras no exista Node local, el workflow manual `Generate web lockfile` crea `apps/web/package-lock.json` en un runner de GitHub. Una vez versionado, el job de calidad web debe usar exclusivamente `npm ci`.
+`apps/web/package-lock.json` está versionado y coincide con el manifiesto. El job de calidad web usa exclusivamente `npm ci` para instalaciones deterministas.

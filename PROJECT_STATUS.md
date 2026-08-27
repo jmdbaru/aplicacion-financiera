@@ -21,7 +21,7 @@ Base declarativa de la API: configuración segura, CORS explícito, contratos de
 
 ## Bloqueos y acciones
 
-Node/npm no pueden instalarse en este equipo por restricción del usuario. La validación completa se realiza correctamente de forma remota en GitHub Actions, pero falta generar y versionar `package-lock.json` en una máquina con Node para sustituir el `npm install` temporal del workflow por `npm ci` y reproducirlo localmente. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
+Node/npm no pueden instalarse en este equipo por restricción del usuario. `apps/web/package-lock.json` ya está disponible, coincide con el manifiesto y el workflow se ha actualizado a `npm ci`; queda pendiente la validación remota de este cambio. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
 
 ## Siguiente fase propuesta (no iniciada)
 

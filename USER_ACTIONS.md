@@ -20,12 +20,12 @@
 
 ## Generar el lockfile web sin Node local
 
-- Estado: `PENDIENTE`
-- Motivo: el proyecto necesita un `package-lock.json` versionado para instalaciones reproducibles con `npm ci`; se puede generar en GitHub Actions sin instalar Node en este equipo.
-- Pasos: en GitHub abre **Actions** > **Generate web lockfile** > **Run workflow**. Cuando finalice en verde, descarga el artefacto **web-package-lock**, extrae `package-lock.json` y súbelo a la ruta `apps/web/package-lock.json` del repositorio mediante la interfaz web de GitHub.
-- Dato que debes devolver: confirma que el archivo se ha subido o indícame el hash del commit que lo contiene. No compartas secretos.
-- Verificación: el archivo debe figurar en `apps/web/package-lock.json`; el workflow `Quality` se actualizará posteriormente para usar `npm ci`.
-- Consecuencia de posponer: la validación remota seguirá funcionando, pero la instalación aún no será completamente reproducible.
+- Estado: `COMPLETADA`
+- Motivo: `apps/web/package-lock.json` está disponible y coincide con `package.json`.
+- Pasos: no requiere ninguna acción adicional.
+- Dato que debes devolver: ninguno.
+- Verificación: el workflow `Quality` usará `npm ci` tras el siguiente commit.
+- Consecuencia de posponer: no aplica.
 
 ## Validación remota mediante GitHub Actions
 

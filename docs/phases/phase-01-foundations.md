@@ -52,7 +52,7 @@ No hay migraciones ni despliegues. Se ejecutó `python -m compileall -q apps\\ap
 
 La validación remota de `v1.003` fue correcta. Solo se necesita un entorno autorizado con Node.js LTS y npm para generar el lockfile y reproducir la validación local; no bloquea la comprobación remota actual.
 
-Como alternativa sin Node local, se añadió un workflow manual `Generate web lockfile`. Genera el lockfile en un runner de GitHub y lo publica como artefacto durante siete días; no recibe permisos de escritura ni crea commits automáticamente.
+El lockfile web se generó sin Node local, se comprobó contra el manifiesto y se integró en `apps/web/package-lock.json`. El workflow temporal de generación se retira porque ya no aporta valor; el job de calidad pasa a usar `npm ci`. Falta validar esta transición remotamente.
 
 ## Criterios de aceptación
 
@@ -61,3 +61,4 @@ Como alternativa sin Node local, se añadió un workflow manual `Generate web lo
 - [x] Frontend declarativo, layout y componentes base accesibles configurados.
 - [x] Calidad, pruebas y build correctos en GitHub Actions.
 - [x] CI de comprobación de API y web creado y validado remotamente.
+- [ ] Instalación web reproducible mediante `npm ci` validada remotamente.
