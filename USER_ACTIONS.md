@@ -20,12 +20,12 @@
 
 ## Validación remota mediante GitHub Actions
 
-- Estado: `PENDIENTE`
-- Motivo: el workflow puede instalar y verificar las dependencias en un runner de GitHub sin Node local, pero requiere que los cambios se añadan y envíen al remoto.
-- Pasos: no realizar todavía ningún despliegue. Cuando autorices registrar los cambios de esta fase en Git, se enviarán al repositorio para activar las validaciones remotas.
-- Dato que debes devolver: autorización explícita para crear un commit y hacer push, cuando quieras activar la comprobación remota.
-- Verificación: la pestaña Actions de GitHub debe mostrar el workflow `Quality` correcto para API y web.
-- Consecuencia de posponer: el código queda preparado, pero no se podrá validar en un entorno remoto.
+- Estado: `EN CURSO`
+- Motivo: el commit `v1.001` fue enviado a GitHub y activó el workflow `Quality` en un runner remoto, sin requerir Node local.
+- Pasos: abrir el repositorio en GitHub y revisar la pestaña **Actions**. No realizar despliegues desde Vercel ni Render en esta fase.
+- Dato que debes devolver: el resultado de los jobs `API quality` y `Web quality`, o sus errores si alguno falla. No compartas secretos.
+- Verificación: ambos jobs deben terminar correctamente para cerrar las comprobaciones remotas de la Fase 1.
+- Consecuencia de posponer: la fase no puede considerarse validada completamente.
 
 No hay cuentas externas, credenciales ni pagos pendientes en esta fase.
 

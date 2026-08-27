@@ -36,7 +36,7 @@ No hay migraciones ni despliegues. Se ejecutó `python -m compileall -q apps\\ap
 
 ## Acción necesaria
 
-Disponer de un entorno autorizado con Node.js LTS y npm. Consultar `USER_ACTIONS.md`. Tras resolverlo, se reanudará esta fase desde la inspección de herramientas y se definirá la versión exacta de las dependencias.
+El commit `v1.001` fue enviado a GitHub para ejecutar el workflow remoto `Quality`. La consulta anónima de su estado no está permitida por el repositorio privado; revisar el resultado en la pestaña Actions de GitHub. Continúa siendo necesario disponer de un entorno autorizado con Node.js LTS y npm para generar el lockfile y reproducir la validación local.
 
 ## Criterios de aceptación
 

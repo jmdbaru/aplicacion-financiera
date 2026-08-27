@@ -21,7 +21,7 @@ Base declarativa de la API: configuración segura, CORS explícito, contratos de
 
 ## Bloqueos y acciones
 
-Node/npm no pueden instalarse en este equipo por restricción del usuario. Mantener React/Vite/Tailwind bloquea la ejecución local, build y validación completa de la Fase 1 hasta disponer de un entorno autorizado con Node. GitHub Actions podrá ejecutar estas comprobaciones después de añadir y enviar los cambios a GitHub. Las dependencias Python tampoco se instalaron localmente; solo se verificó sintaxis. Falta generar y versionar `package-lock.json` en una máquina con Node para pasar de `npm install` a `npm ci`. Git está conectado a `origin` en GitHub, rama `main`; los archivos aún están sin añadir al control de versiones. Véase `USER_ACTIONS.md`.
+Node/npm no pueden instalarse en este equipo por restricción del usuario. Mantener React/Vite/Tailwind bloquea la ejecución local, build y validación completa de la Fase 1 hasta disponer de un entorno autorizado con Node. El commit `v1.001` ya fue enviado a GitHub y activó la validación remota; su detalle no se puede consultar anónimamente al ser un repositorio privado. Las dependencias Python tampoco se instalaron localmente; solo se verificó sintaxis. Falta generar y versionar `package-lock.json` en una máquina con Node para pasar de `npm install` a `npm ci`. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
 
 ## Siguiente fase propuesta (no iniciada)
 
