@@ -55,3 +55,29 @@ def test_unbalanced_transaction_is_rejected() -> None:
                 ],
             }
         )
+
+
+def test_transfer_rejects_category() -> None:
+    with pytest.raises(ValidationError, match="no admiten categoría"):
+        LedgerTransactionCreate.model_validate(
+            {
+                "effective_date": "2026-08-27",
+                "description": "Transferencia",
+                "transaction_type": "transfer",
+                "category_id": "category-id",
+                "entries": [
+                    {
+                        "account_id": "account-1",
+                        "entry_kind": "account",
+                        "currency_code": "EUR",
+                        "amount": "-10",
+                    },
+                    {
+                        "account_id": "account-2",
+                        "entry_kind": "account",
+                        "currency_code": "EUR",
+                        "amount": "10",
+                    },
+                ],
+            }
+        )

@@ -171,7 +171,7 @@ async def list_transactions(
     base, headers = _connection(user)
     params = {
         "select": (
-            "id,effective_date,description,transaction_type,reversed_transaction_id,"
+            "id,effective_date,description,transaction_type,category_id,reversed_transaction_id,"
             "ledger_entries(account_id,entry_kind,currency_code,amount)"
         ),
         "user_id": f"eq.{user.user_id}",

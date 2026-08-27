@@ -25,6 +25,7 @@ export type LedgerTransaction = {
   effective_date: string;
   description: string;
   transaction_type: TransactionType;
+  category_id: string | null;
   reversed_transaction_id: string | null;
   ledger_entries: LedgerEntry[];
 };
@@ -68,7 +69,7 @@ export async function loadTransactions(session: Session, page: number, search: s
   const pageSize = 10;
   let query = client()
     .from("ledger_transactions")
-    .select("id,effective_date,description,transaction_type,reversed_transaction_id,ledger_entries(account_id,entry_kind,currency_code,amount)", { count: "exact" })
+    .select("id,effective_date,description,transaction_type,category_id,reversed_transaction_id,ledger_entries(account_id,entry_kind,currency_code,amount)", { count: "exact" })
     .eq("user_id", session.user.id)
     .order("effective_date", { ascending: false })
     .order("id", { ascending: false })
@@ -89,6 +90,7 @@ export type TransactionInput = {
   account: FinancialAccount;
   destination?: FinancialAccount;
   adjustmentDirection?: "credit" | "debit";
+  categoryId?: string | null;
 };
 
 export function buildLedgerEntries(input: TransactionInput): LedgerEntry[] {
@@ -111,6 +113,7 @@ export async function createTransaction(input: TransactionInput) {
     p_description: input.description.trim(),
     p_transaction_type: input.type,
     p_entries: entries,
+    p_category_id: input.categoryId ?? null,
   });
   if (error) throw error;
 }

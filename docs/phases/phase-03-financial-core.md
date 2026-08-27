@@ -2,7 +2,7 @@
 
 - Fecha de inicio: 2026-08-27
 - Fecha de finalización técnica: 2026-08-27
-- Estado final: en revisión, pendiente de validación funcional del usuario y aprobación expresa
+- Estado final: aprobada por el usuario el 2026-08-27
 
 ## Objetivo y alcance
 
@@ -105,6 +105,6 @@ Entrar en la vista previa con un usuario de prueba, crear dos cuentas EUR, regis
 - [x] Saldos derivados y listado paginado con filtros y búsqueda.
 - [x] CRUD seguro sin destrucción de historial contabilizado.
 - [x] Pruebas de dominio, RLS, API, frontend, build y despliegue correctas.
-- [ ] Validación funcional autenticada y aprobación expresa del usuario.
+- [x] Validación funcional autenticada y aprobación expresa del usuario.
 
-La implementación técnica de la Fase 3 está completa. La fase permanece en revisión y no autoriza iniciar la Fase 4.
+La Fase 3 fue validada y aprobada por el usuario. La Fase 4 quedó autorizada expresamente a continuación.

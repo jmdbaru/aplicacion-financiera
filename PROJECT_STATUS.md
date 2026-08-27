@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-- Fase actual: Fase 3 — Núcleo financiero: cuentas y ledger, finalizada técnicamente y en revisión.
-- Última fase aprobada: Fase 2 — Supabase, autenticación y seguridad multiusuario.
-- Estado: implementación, migraciones, pruebas y despliegue de la Fase 3 correctos; pendiente la validación funcional autenticada y la aprobación expresa del usuario.
+- Fase actual: Fase 4 — Categorías y presupuestos.
+- Última fase aprobada: Fase 3 — Núcleo financiero: cuentas y ledger.
+- Estado: Fase 3 aprobada tras la validación funcional del usuario; Fase 4 en curso.
 - Actualización: 2026-08-27.
 
 ## Stack objetivo
@@ -23,11 +23,11 @@ Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles 
 
 ## Bloqueos y acciones
 
-Supabase contiene las migraciones de perfiles, cuentas y ledger aplicadas. RLS, atomicidad, descuadres, transferencia y reverso fueron comprobados. Falta que el usuario complete el recorrido financiero autenticado indicado en `USER_ACTIONS.md`. Los pendientes previos a producción de Auth siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
+Supabase contiene las migraciones de perfiles, cuentas y ledger aplicadas. RLS, atomicidad, descuadres, transferencia y reverso fueron comprobados. Los pendientes previos a producción de Auth siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
 
 ## Siguiente fase propuesta (no iniciada)
 
-Fase 4: categorías y presupuestos. No debe iniciarse hasta que el usuario apruebe expresamente la Fase 3.
+Fase 4: adaptar las categorías existentes e implementar presupuestos mensuales, agregaciones y alertas.
 
 ## Referencias
 

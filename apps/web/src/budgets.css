@@ -1,0 +1,43 @@
+.section-copy { max-width: 42rem; margin: .65rem 0 0; color: #91a49a; line-height: 1.55; }
+.category-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .9rem; }
+.category-card { min-height: 180px; padding: 1.15rem; display: flex; flex-direction: column; gap: 1rem; border: 1px solid #29453a; border-radius: 1rem; background: linear-gradient(150deg, rgba(27,52,42,.92), rgba(15,28,23,.92)); transition: transform .18s ease, border-color .18s ease; }
+.category-card:hover { transform: translateY(-2px); border-color: #47705e; }
+.category-card.is-archived { opacity: .55; }
+.category-card__heading, .budget-card__top { display: flex; align-items: center; gap: .75rem; }
+.category-card__heading h2, .budget-card__top h2 { margin: 0 0 .2rem; font-size: 1rem; }
+.category-card small, .budget-card small { color: #8da097; }
+.category-swatch { display: inline-block; flex: 0 0 auto; width: .72rem; height: .72rem; border-radius: 50%; box-shadow: 0 0 0 4px rgba(255,255,255,.04); }
+.category-card ul { display: grid; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.category-card li { display: flex; align-items: center; justify-content: space-between; padding: .48rem .55rem; border-radius: .5rem; color: #b8c8be; background: #12251e; font-size: .8rem; }
+.category-card li button, .budget-card__footer button { border: 0; border-radius: .45rem; padding: .35rem; color: #9eb1a6; background: transparent; cursor: pointer; }
+.category-card li button:hover, .budget-card__footer button:hover { color: #d7ffb8; background: #243e33; }
+.card-actions { display: flex; justify-content: space-between; gap: .6rem; margin-top: auto; }
+.month-controls { width: max-content; margin: 0 auto 1.4rem; display: flex; align-items: center; gap: .85rem; padding: .4rem; border: 1px solid #29443a; border-radius: .75rem; background: #12211b; text-transform: capitalize; }
+.month-controls button { width: 2rem; height: 2rem; display: grid; place-items: center; border: 0; border-radius: .5rem; color: #a9bbb0; background: transparent; cursor: pointer; }
+.month-controls button:hover { color: #fff; background: #254438; }
+.month-controls svg { width: 1rem; }
+.month-controls strong { min-width: 10.5rem; text-align: center; font-size: .85rem; }
+.budget-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
+.budget-card { padding: 1.15rem; border: 1px solid #29443a; border-radius: 1rem; background: rgba(18,34,28,.82); }
+.budget-card--warning { border-color: #806d36; background: linear-gradient(145deg, rgba(82,65,28,.25), rgba(18,34,28,.84)); }
+.budget-card--exceeded { border-color: #77473d; background: linear-gradient(145deg, rgba(91,41,32,.28), rgba(18,34,28,.84)); }
+.budget-card__top > svg { margin-left: auto; width: 1rem; color: #f0c86a; }
+.budget-card--exceeded .budget-card__top > svg { color: #ff9f8d; }
+.budget-progress { height: .5rem; margin: 1rem 0 .75rem; overflow: hidden; border-radius: 1rem; background: #263b33; }
+.budget-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#70a66a,#b7f180); transition: width .35s ease; }
+.budget-card--warning .budget-progress span { background: linear-gradient(90deg,#bb9341,#f0c86a); }
+.budget-card--exceeded .budget-progress span { background: linear-gradient(90deg,#d06050,#ff9f8d); }
+.budget-card__footer { display: flex; align-items: center; justify-content: space-between; gap: .7rem; color: #91a49a; font-size: .78rem; }
+.budget-card__footer > div { display: flex; }
+.form-context { grid-column: 1 / -1; display: flex; align-items: center; gap: .6rem; margin: 0; padding: .7rem; border: 1px solid #2c473b; border-radius: .6rem; color: #dbe8de; background: #102019; }
+.empty-state p { max-width: 28rem; margin: 0; color: #82958b; line-height: 1.5; }
+.budget-metrics .metric-card:nth-child(2) { background: linear-gradient(145deg,rgba(42,73,58,.72),rgba(20,35,30,.76)); }
+
+@media (max-width: 1050px) { .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .category-grid, .budget-list, .budget-metrics { grid-template-columns: 1fr; }
+  .view-tabs { padding-bottom: .35rem; }
+  .view-tabs button { white-space: nowrap; }
+  .month-controls { width: 100%; justify-content: space-between; }
+  .budget-card__footer { align-items: flex-start; }
+}

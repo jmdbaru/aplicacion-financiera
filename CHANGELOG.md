@@ -26,3 +26,4 @@
 - Fase 1 aprobada; Fase 2 iniciada con migración base y pendiente de conexión a Supabase.
 - Fase 2 aprobada tras validar en navegador el flujo de sesión y preferencias; Fase 3 iniciada.
 - Implementación técnica de la Fase 3 completada y detenida para validación funcional y aprobación del usuario.
+- Fase 3 aprobada por el usuario; Fase 4 de categorías y presupuestos iniciada.

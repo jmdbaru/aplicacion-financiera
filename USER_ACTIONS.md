@@ -2,12 +2,12 @@
 
 ## Fase 3 — Validar cuentas y movimientos en la vista previa
 
-- Estado: `PENDIENTE`
+- Estado: `COMPLETADA`
 - Motivo: la implementación automática, la base de datos, la API, el frontend y el despliegue están comprobados; falta confirmar con tu criterio el recorrido financiero completo usando una sesión real.
 - Pasos: abre `https://jmdbaru.github.io/aplicacion-financiera/`, inicia sesión con una cuenta de prueba y crea dos cuentas en EUR. Registra un ingreso, un gasto y una transferencia entre ambas. Comprueba los saldos, usa la búsqueda y el filtro de fechas, revierte la transferencia, archiva una cuenta y restáurala.
 - Dato que debes devolver: indica si todo funciona o describe el paso exacto y el mensaje visible si encuentras un problema. No compartas la contraseña ni ningún token.
 - Verificación: los saldos cambian una sola vez por operación; la transferencia mantiene el total conjunto; el reverso devuelve ambos saldos; el histórico sigue visible tras archivar y la cuenta se puede restaurar.
-- Consecuencia de posponer: la Fase 3 seguirá en revisión y no se iniciará la Fase 4.
+- Consecuencia de posponer: no aplica; el usuario aprobó la fase y autorizó la Fase 4.
 
 ## Fase 0 — Revisar y aprobar la base
 

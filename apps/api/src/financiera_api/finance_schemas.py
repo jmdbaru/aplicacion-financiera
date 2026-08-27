@@ -47,10 +47,13 @@ class LedgerTransactionCreate(BaseModel):
     effective_date: date
     description: str = Field(min_length=1, max_length=240)
     transaction_type: TransactionType
+    category_id: str | None = None
     entries: list[LedgerEntryCreate] = Field(min_length=2)
 
     @model_validator(mode="after")
     def validate_balance(self) -> "LedgerTransactionCreate":
+        if self.transaction_type in ("transfer", "adjustment") and self.category_id:
+            raise ValueError("Las transferencias y ajustes no admiten categoría.")
         totals: dict[str, Decimal] = {}
         for entry in self.entries:
             if entry.amount == 0:
@@ -68,6 +71,7 @@ class LedgerTransactionResponse(BaseModel):
     effective_date: date
     description: str
     transaction_type: str
+    category_id: str | None = None
     reversed_transaction_id: str | None = None
     entries: list[dict[str, object]] = Field(default_factory=list)
 
