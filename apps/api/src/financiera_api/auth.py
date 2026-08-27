@@ -1,12 +1,24 @@
 """Identidad de usuario delegada en Supabase Auth."""
 
+from dataclasses import dataclass
+
 import httpx
 from fastapi import Header, HTTPException, status
 
 from financiera_api.config import get_settings
 
 
-async def require_bearer_token(authorization: str | None = Header(default=None)) -> str:
+@dataclass(frozen=True)
+class AuthenticatedUser:
+    """Identidad obtenida de Supabase después de validar el token."""
+
+    access_token: str
+    user_id: str
+
+
+async def require_bearer_token(
+    authorization: str | None = Header(default=None),
+) -> AuthenticatedUser:
     """Exige el formato Bearer; la verificación remota se conecta al desplegar la API."""
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(
@@ -39,4 +51,14 @@ async def require_bearer_token(authorization: str | None = Header(default=None))
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="authentication_required"
         )
-    return token
+    try:
+        user_id = response.json()["id"]
+    except (KeyError, TypeError, ValueError) as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="auth_unavailable"
+        ) from exc
+    if not isinstance(user_id, str):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="auth_unavailable"
+        )
+    return AuthenticatedUser(access_token=token, user_id=user_id)

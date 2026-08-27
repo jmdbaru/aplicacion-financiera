@@ -26,3 +26,10 @@ def test_profile_requires_bearer_token() -> None:
         response = client.get("/api/v1/profile")
 
     assert response.status_code == 401
+
+
+def test_profile_update_requires_bearer_token() -> None:
+    with TestClient(create_app()) as client:
+        response = client.patch("/api/v1/profile", json={"locale": "es-ES"})
+
+    assert response.status_code == 401
