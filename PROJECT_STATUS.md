@@ -2,7 +2,7 @@
 
 - Fase actual: Fase 2 — Supabase, autenticación y seguridad multiusuario.
 - Última fase aprobada: Fase 1 — Fundaciones técnicas y experiencia base.
-- Estado: Fase 2 en curso; Supabase y migraciones base aplicadas.
+- Estado: Fase 2 en curso; Supabase, migraciones base y aislamiento RLS verificados.
 - Actualización: 2026-08-27.
 
 ## Stack objetivo
@@ -23,7 +23,7 @@ Base de API FastAPI: configuración segura, CORS explícito, contratos de error,
 
 ## Bloqueos y acciones
 
-Supabase está activo y contiene las migraciones de perfiles aplicadas. RLS y políticas de `profiles` fueron verificadas, y la función privilegiada del trigger fue cerrada a roles de API. Las pruebas negativas con dos usuarios y la integración real de sesión siguen pendientes. Node/npm no pueden instalarse en este equipo, pero no bloquean la CI remota. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
+Supabase está activo y contiene las migraciones de perfiles aplicadas. RLS y políticas de `profiles` fueron verificadas, incluida una matriz de dos usuarios: no hay lectura ni actualización horizontal y se mantiene la edición del propio perfil. La integración real de sesión sigue pendiente. Node/npm no pueden instalarse en este equipo, pero no bloquean la CI remota. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
 
 ## Siguiente fase propuesta (no iniciada)
 

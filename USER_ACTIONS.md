@@ -47,12 +47,21 @@
 
 ## Fase 2 — Pruebas con dos usuarios de Auth
 
+- Estado: `COMPLETADA`
+- Motivo: se crearon dos cuentas de prueba y se verificó RLS sin compartir contraseñas.
+- Pasos: no requiere ninguna acción adicional.
+- Dato que debes devolver: ninguno.
+- Verificación: cada cuenta vio solo su perfil; el intento de actualizar el perfil ajeno devolvió cero filas y el propio se pudo actualizar. Las pruebas se revirtieron.
+- Consecuencia de posponer: no aplica.
+
+## Fase 2 — Activar protección contra contraseñas filtradas
+
 - Estado: `PENDIENTE`
-- Motivo: la validación RLS requiere dos usuarios de prueba reales y confirma que no existe acceso horizontal.
-- Pasos: confirma que autorizas crear dos cuentas de prueba en el proyecto Supabase de desarrollo. Se usarán identificadores aleatorios, no datos personales y no se enviarán credenciales por el chat.
-- Dato que debes devolver: una autorización explícita para crear cuentas de prueba o una indicación de que prefieres crearlas tú.
-- Verificación: cada usuario podrá ver y editar únicamente su propio perfil; el acceso al perfil del otro será rechazado.
-- Consecuencia de posponer: la seguridad RLS estará diseñada y revisada, pero no probada de extremo a extremo.
+- Motivo: el asesor de seguridad de Supabase detecta desactivada la comprobación de contraseñas comprometidas de Auth.
+- Pasos: en Supabase abre **Authentication → Configuration → Password Security** y activa la protección contra contraseñas filtradas.
+- Dato que debes devolver: confirma que está activada; no compartas claves ni contraseñas.
+- Verificación: el aviso `auth_leaked_password_protection` dejará de aparecer en el asesor de seguridad.
+- Consecuencia de posponer: el registro seguirá funcionando, pero aceptará contraseñas conocidas como comprometidas.
 
 ## Estado de Git
 
