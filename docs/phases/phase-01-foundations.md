@@ -30,6 +30,14 @@ Se verificaron las herramientas y se intentó iniciar la instalación oficial de
 
 No se instaló ninguna dependencia externa en local. El frontend React/Vite se preparó de forma declarativa, pero no puede ejecutarse ni validarse localmente sin Node/npm. Hasta disponer de `package-lock.json`, el job web remoto usa temporalmente `npm install`; se sustituirá obligatoriamente por `npm ci` al generar y versionar el lockfile.
 
+## Incidencias
+
+### Validación remota inicial (2026-08-27)
+
+- **API quality**: falló porque `pip install -e ".[dev]"` no reconoce `dependency-groups` como extra instalable. Se sustituyó por `project.optional-dependencies.dev`, compatible con el comando del workflow.
+- **Web quality**: la instalación y ESLint finalizaron correctamente; Vitest falló porque el test usaba globals sin habilitarlas. Ahora importa explícitamente `describe`, `it` y `expect` desde `vitest`.
+- El workflow no llegó al build web después del fallo del test. Se reintentará al enviar la corrección.
+
 ## Seguridad, pruebas y migraciones
 
 No hay migraciones ni despliegues. Se ejecutó `python -m compileall -q apps\\api\\src apps\\api\\tests` correctamente; solo valida sintaxis. No fue posible ejecutar Ruff, Pytest, FastAPI, tipos o build porque las dependencias de API no están instaladas y no se autorizan descargas externas. La configuración y los tests quedan preparados para su ejecución posterior.
