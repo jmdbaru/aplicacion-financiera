@@ -23,7 +23,7 @@ Base de API FastAPI: configuración segura, CORS explícito, contratos de error,
 
 ## Bloqueos y acciones
 
-Node/npm no pueden instalarse en este equipo por restricción del usuario, por lo que el desarrollo local completo sigue pendiente de una máquina autorizada. No bloquea la validación remota actual. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
+El proyecto Supabase `supabase-copper-clock` se restauró mediante la conexión autorizada y está arrancando (`COMING_UP`). Hasta que pase a activo no se aplicará ninguna migración. Node/npm no pueden instalarse en este equipo, pero no bloquean la validación remota. Git está conectado a `origin` en GitHub, rama `main`. Véase `USER_ACTIONS.md`.
 
 ## Siguiente fase propuesta (no iniciada)
 

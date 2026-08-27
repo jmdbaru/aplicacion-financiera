@@ -38,12 +38,12 @@
 
 ## Fase 2 — Crear o seleccionar el proyecto Supabase
 
-- Estado: `PENDIENTE`
-- Motivo: Auth, PostgreSQL y RLS necesitan un proyecto Supabase externo para aplicar y probar la migración.
-- Pasos: crea o selecciona un proyecto Supabase destinado a desarrollo. No compartas claves ni tokens en el chat. Cuando esté listo, indícame solo que el proyecto existe; te guiaré para configurar las variables de entorno localmente y aplicar la migración.
-- Dato que debes devolver: confirmación de que el proyecto de desarrollo existe.
-- Verificación: se podrá configurar la URL y la clave anónima en archivos locales ignorados, y el panel permitirá ejecutar migraciones.
-- Consecuencia de posponer: se puede diseñar código y SQL, pero no validar Auth, RLS ni las rutas protegidas reales.
+- Estado: `EN CURSO`
+- Motivo: el proyecto Supabase conectado se restauró y está arrancando; Auth, PostgreSQL y RLS aún no admiten cambios hasta que esté activo.
+- Pasos: no necesitas realizar ninguna acción ni compartir claves. Espera a que el proyecto termine de arrancar.
+- Dato que debes devolver: ninguno.
+- Verificación: el estado del proyecto pasará de `COMING_UP` a activo.
+- Consecuencia de posponer: no aplica; la continuación depende solo del arranque del proveedor.
 
 ## Estado de Git
 

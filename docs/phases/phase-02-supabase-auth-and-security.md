@@ -26,7 +26,7 @@ La tabla no permite operaciones de `anon`. El usuario autenticado solo puede con
 
 ## Bloqueo externo
 
-Falta crear o seleccionar un proyecto Supabase y configurar sus variables públicas/servidor fuera del repositorio. Sin ello no se puede aplicar la migración, validar Auth, probar RLS contra PostgreSQL ni completar las rutas protegidas reales.
+Se identificó el proyecto conectado `supabase-copper-clock` y se inició su restauración con autorización del usuario. Su estado actual es `COMING_UP`. Hasta que esté activo no se puede aplicar la migración, validar Auth, probar RLS contra PostgreSQL ni completar las rutas protegidas reales.
 
 ## Próximas acciones de esta fase
 
