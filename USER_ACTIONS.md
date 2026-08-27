@@ -65,12 +65,21 @@
 
 ## Fase 2 — Incorporar el lockfile del SDK de Supabase
 
+- Estado: `COMPLETADA`
+- Motivo: el lockfile reproducible del SDK oficial ya está incorporado.
+- Pasos: no requiere ninguna acción adicional.
+- Dato que debes devolver: ninguno.
+- Verificación: el workflow `Quality` validará `npm ci`, pruebas y build con el SDK.
+- Consecuencia de posponer: no aplica.
+
+## Fase 2 — Configuración pública del cliente en despliegue
+
 - Estado: `PENDIENTE`
-- Motivo: el cliente web usará el SDK oficial `@supabase/supabase-js`; su lockfile debe generarse con Node en GitHub porque este equipo no puede instalarlo.
-- Pasos: cuando el workflow **Generate web lockfile** aparezca con tic verde, abre el run, descarga el artefacto `web-package-lock` y extrae `package-lock.json` en `apps/web/package-lock.json`, reemplazando el existente. Después indícame que está listo.
-- Dato que debes devolver: “lockfile de Supabase listo”. No compartas claves ni contraseñas.
-- Verificación: tras incorporarlo, el workflow `Quality` volverá a pasar `npm ci`, pruebas y build sin instalaciones locales.
-- Consecuencia de posponer: no se puede importar el SDK oficial sin romper la instalación determinista de CI.
+- Motivo: el cliente necesita la URL y clave publishable de Supabase al ejecutarse en un navegador.
+- Pasos: en el entorno donde publiques la web, configura `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` con los datos públicos del proyecto. No uses ni compartas una clave `service_role`.
+- Dato que debes devolver: confirma que las variables están configuradas, sin copiar sus valores.
+- Verificación: el formulario de acceso permitirá usar las funciones de Supabase Auth y cargará el perfil protegido por RLS.
+- Consecuencia de posponer: la aplicación se mostrará, pero el acceso no podrá conectarse al proyecto Supabase.
 
 ## Estado de Git
 

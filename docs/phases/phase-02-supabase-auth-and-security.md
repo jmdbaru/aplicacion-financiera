@@ -44,7 +44,7 @@ El asesor de seguridad mantiene dos avisos de GraphQL ya documentados: `categori
 
 ## Próximas acciones de esta fase
 
-Incorporar el lockfile reproducible del SDK oficial, conectar el cliente web/API con variables de entorno validadas y completar los flujos de sesión.
+Configurar las dos variables públicas del cliente en el entorno de despliegue, validar remotamente la compilación y probar con una cuenta real el registro, acceso, salida y recuperación.
 
 ## Criterios de aceptación
 
@@ -52,6 +52,6 @@ Incorporar el lockfile reproducible del SDK oficial, conectar el cliente web/API
 - [x] RLS y políticas explícitas definidas.
 - [x] Alta de perfil atómica asociada a Auth.
 - [x] Proyecto Supabase configurado y migración aplicada.
-- [ ] Sesión y rutas protegidas integradas.
+- [x] Sesión y rutas protegidas integradas en el cliente web.
 - [x] Pruebas RLS negativas con dos usuarios.
-- [ ] Flujo de registro, acceso, salida y recuperación probado.
+- [ ] Flujo de registro, acceso, salida y recuperación probado en un navegador con variables de entorno configuradas.

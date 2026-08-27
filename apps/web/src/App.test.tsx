@@ -7,10 +7,7 @@ describe("App", () => {
   it("muestra el punto de entrada principal", () => {
     render(<App />);
 
-    expect(screen.getByRole("heading", { name: "Empieza con una visión clara." })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Ir al contenido principal" })).toHaveAttribute(
-      "href",
-      "#main-content",
-    );
+    expect(screen.getByRole("heading", { name: "Tu dinero, con calma y claridad." })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Entrar" })).toBeInTheDocument();
   });
 });
