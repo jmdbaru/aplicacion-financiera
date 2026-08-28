@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-- Fase actual: Fase 4 — Categorías y presupuestos.
+- Fase actual: Fase 4 — Categorías y presupuestos, finalizada técnicamente y en revisión.
 - Última fase aprobada: Fase 3 — Núcleo financiero: cuentas y ledger.
-- Estado: Fase 3 aprobada tras la validación funcional del usuario; Fase 4 en curso.
+- Estado: Fase 3 aprobada; implementación, migraciones, pruebas y despliegue de la Fase 4 correctos, pendiente de validación funcional autenticada y aprobación expresa.
 - Actualización: 2026-08-27.
 
 ## Stack objetivo
@@ -19,15 +19,15 @@ React 19/TypeScript 5.9/Vite 7/Tailwind 4; FastAPI/Pydantic/Uvicorn; Supabase Po
 
 Auditoría; arquitectura; modelo e invariantes; estrategia RLS; pruebas/mantenimiento/entornos/despliegue; documentación viva y ADR.
 
-Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles y preferencias protegidos por RLS. La Fase 3 añade cuentas financieras privadas, saldos derivados, ledger de doble partida, ingresos, gastos, ajustes, transferencias y reversos atómicos, listados paginados con filtros y una interfaz responsive completa. Última validación local: Ruff correcto, 12 pruebas API correctas, lint web correcto, 3 pruebas web correctas y build correcto. GitHub Actions y GitHub Pages finalizaron correctamente en `v1.025`.
+Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles, cuentas, ledger, categorías y presupuestos están protegidos por RLS. La Fase 4 añade catálogo global conservado, categorías personales/subcategorías, presupuestos mensuales, alertas, comparación mensual y categorización opcional de ingresos y gastos. Última validación: Ruff correcto, 17 pruebas API correctas, lint y TypeScript correctos, 6 pruebas web correctas, build correcto, y GitHub Actions/Pages correctos en `v1.027`.
 
 ## Bloqueos y acciones
 
-Supabase contiene las migraciones de perfiles, cuentas y ledger aplicadas. RLS, atomicidad, descuadres, transferencia y reverso fueron comprobados. Los pendientes previos a producción de Auth siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
+Supabase contiene las migraciones de perfiles, cuentas, ledger, categorías y presupuestos aplicadas. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios fueron comprobados. Falta la validación manual autenticada de la Fase 4 indicada en `USER_ACTIONS.md`. Los pendientes previos a producción de Auth siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
 
 ## Siguiente fase propuesta (no iniciada)
 
-Fase 4: adaptar las categorías existentes e implementar presupuestos mensuales, agregaciones y alertas.
+Fase 5: dashboard y resumen financiero. No debe iniciarse hasta que el usuario apruebe expresamente la Fase 4.
 
 ## Referencias
 
@@ -36,3 +36,4 @@ Fase 4: adaptar las categorías existentes e implementar presupuestos mensuales,
 - `docs/architecture/database.md`
 - `docs/architecture/security.md`
 - `docs/phases/phase-03-financial-core.md`
+- `docs/phases/phase-04-categories-and-budgets.md`

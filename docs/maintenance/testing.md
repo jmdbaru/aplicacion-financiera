@@ -12,7 +12,7 @@ Frontend: formato, ESLint, TypeScript, tests y build. Backend: Ruff, comprobaci�
 
 ## Estado actual
 
-La Fase 3 se validó localmente con Ruff y 12 pruebas API. El frontend pasó lint, 3 pruebas y build mediante el runtime aislado disponible; GitHub Actions repite la instalación determinista, tipos, pruebas y build con Node 24. Las comprobaciones SQL remotas cubrieron aislamiento entre dos usuarios, rechazo de asientos descuadrados, transferencia y reverso con saldo cero.
+La Fase 4 se validó localmente con Ruff y 17 pruebas API. El frontend pasó ESLint, TypeScript, 6 pruebas y build mediante el runtime aislado disponible; GitHub Actions repite la instalación determinista, tipos, pruebas y build con Node 24. Las comprobaciones SQL remotas cubrieron aislamiento entre dos usuarios, presupuesto mensual, gasto en subcategoría, reverso, categoría ajena, transferencias categorizadas y ciclo de archivo/restauración.
 
 Comandos de referencia:
 

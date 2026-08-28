@@ -29,6 +29,12 @@ Las relaciones se implementan por fase; este diseño no autoriza crear todas las
 
 Las RPC `create_ledger_transaction` y `reverse_ledger_transaction` concentran la escritura atómica. Validan `auth.uid()`, propiedad, estado de las cuentas, moneda, importes, suma cero y trazabilidad del reverso. Los clientes autenticados pueden leer únicamente sus filas mediante RLS y no pueden insertar, actualizar ni borrar directamente el ledger.
 
+## Implementado en la Fase 4
+
+`categories` conserva el catálogo global y añade categorías personales, una subcategoría como máximo, archivo reversible y políticas RLS explícitas. `budgets` es privado por usuario y usa una restricción única por categoría raíz, periodo mensual y moneda. Las categorías globales son visibles pero inmutables; las personales solo pueden modificarse por su propietario.
+
+`ledger_transactions.category_id` es opcional y se valida en la RPC de creación. Solo se acepta en ingresos y gastos, con una categoría activa y visible para el usuario. `get_budget_overview` agrega los gastos por categoría raíz, separa gasto fuera de presupuesto y compensa reversos en el mes de su fecha contable.
+
 ## Invariantes
 
 - Cada transacción contabilizada tiene al menos dos entradas y suma cero por moneda.
