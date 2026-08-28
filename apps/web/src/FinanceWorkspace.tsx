@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { BudgetWorkspace } from "./BudgetWorkspace";
 import { DashboardWorkspace } from "./DashboardWorkspace";
+import { RecurringWorkspace } from "./RecurringWorkspace";
 import { loadCategories, type Category } from "./budgets";
 import {
   createAccount,
@@ -26,7 +27,7 @@ import {
   type TransactionType,
 } from "./finance";
 
-type View = "summary" | "accounts" | "transactions" | "categories" | "budgets";
+type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring";
 
 const accountLabels: Record<AccountType, string> = {
   cash: "Efectivo",
@@ -168,6 +169,7 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
         <Tab active={view === "transactions"} onClick={() => setView("transactions")}>Movimientos</Tab>
         <Tab active={view === "categories"} onClick={() => setView("categories")}>Categorías</Tab>
         <Tab active={view === "budgets"} onClick={() => setView("budgets")}>Presupuestos</Tab>
+        <Tab active={view === "recurring"} onClick={() => setView("recurring")}>Recurrentes</Tab>
       </div>
       {showQuickMovement && <button className="primary-button" type="button" onClick={() => setDialog("transaction")} disabled={!activeAccounts.length}><Plus size={18} /> Añadir movimiento</button>}
     </header>
@@ -178,6 +180,7 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
         {view === "accounts" && <AccountsView accounts={accounts} busy={busy} onCreate={() => setDialog("account")} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} />}
         {view === "transactions" && <TransactionsView movements={movements} transactions={transactions} count={count} page={page} search={search} dateFrom={dateFrom} dateTo={dateTo} categoryNames={categoryNames} canCreate={Boolean(activeAccounts.length)} onCreate={() => setDialog("transaction")} onSearch={(value) => { setSearch(value); setPage(0); }} onDateFrom={(value) => { setDateFrom(value); setPage(0); }} onDateTo={(value) => { setDateTo(value); setPage(0); }} onPage={setPage} onReverse={(id) => void runAction(async () => { await reverseTransaction(id); await refresh(); }, "No se pudo revertir el movimiento.")} />}
         {(view === "categories" || view === "budgets") && <BudgetWorkspace session={session} currency={defaultCurrency} categories={categories} mode={view} onCategoriesChanged={refreshCategories} />}
+        {view === "recurring" && <RecurringWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
       </>}
     </main>
     {dialog && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}><section className="finance-dialog" role="dialog" aria-modal="true" aria-labelledby="finance-dialog-title"><h2 id="finance-dialog-title">{dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"}</h2>{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</section></div>}

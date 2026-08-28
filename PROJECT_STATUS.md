@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-- Fase actual: Fase 5 — Dashboard y resumen financiero, en implementación.
-- Última fase aprobada: Fase 4 — Categorías y presupuestos.
-- Estado: la Fase 4 fue aprobada por autorización expresa; la Fase 5 está pendiente de comprobaciones finales.
+- Fase actual: Fase 6 — Recurrentes y calendario, finalizada técnicamente y en revisión.
+- Última fase aprobada: Fase 5 — Dashboard y resumen financiero.
+- Estado: la Fase 5 fue aprobada por autorización expresa; la Fase 6 está pendiente de comprobaciones finales y validación funcional.
 - Actualización: 2026-08-28.
 
 ## Stack objetivo
