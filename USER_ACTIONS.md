@@ -2,12 +2,12 @@
 
 ## Fase 4 — Validar categorías y presupuestos en la vista previa
 
-- Estado: `PENDIENTE`
-- Motivo: migraciones, reglas, API, interfaz y despliegue están comprobados; falta confirmar el recorrido financiero completo con tu sesión real.
+- Estado: `COMPLETADA`
+- Motivo: migraciones, reglas, API, interfaz y despliegue están comprobados; el usuario autorizó expresamente el avance a la Fase 5.
 - Pasos: abre `https://jmdbaru.github.io/aplicacion-financiera/`, inicia sesión y entra en **Categorías**. Crea una categoría personal de gasto y una subcategoría. Registra un gasto en esa subcategoría desde **Movimientos**. En **Presupuestos**, crea un límite mensual para la categoría raíz, comprueba el gasto y el restante, y después revierte el movimiento. Prueba un gasto sin categoría, una transferencia y archivar/restaurar una categoría personal.
 - Dato que debes devolver: indica si todo funciona o el paso exacto y el mensaje visible si algo falla. No compartas contraseñas, tokens ni capturas con datos privados.
 - Verificación: el gasto de la subcategoría consume el presupuesto raíz; el reverso lo compensa; el gasto sin categoría aparece como fuera de presupuesto; transferencia y ajuste no permiten categoría; el archivo conserva el histórico.
-- Consecuencia de posponer: la Fase 4 seguirá en revisión y no se iniciará la Fase 5.
+- Consecuencia de posponer: no aplica; la Fase 4 está aprobada.
 
 ## Fase 3 — Validar cuentas y movimientos en la vista previa
 

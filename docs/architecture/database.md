@@ -35,6 +35,10 @@ Las RPC `create_ledger_transaction` y `reverse_ledger_transaction` concentran la
 
 `ledger_transactions.category_id` es opcional y se valida en la RPC de creación. Solo se acepta en ingresos y gastos, con una categoría activa y visible para el usuario. `get_budget_overview` agrega los gastos por categoría raíz, separa gasto fuera de presupuesto y compensa reversos en el mes de su fecha contable.
 
+## Implementado en la Fase 5
+
+`get_dashboard_overview(period_start, currency_code)` devuelve un único documento agregado y limitado al usuario autenticado: disponible de cuentas activas, ingresos, gastos, balance, presupuesto, seis meses de evolución y cinco movimientos recientes. Es `SECURITY INVOKER`, valida el periodo/moneda y hereda RLS; no almacena saldos ni materializa datos de otros usuarios.
+
 ## Invariantes
 
 - Cada transacción contabilizada tiene al menos dos entradas y suma cero por moneda.

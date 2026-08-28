@@ -11,6 +11,7 @@ import type { FormEvent } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { BudgetWorkspace } from "./BudgetWorkspace";
+import { DashboardWorkspace } from "./DashboardWorkspace";
 import { loadCategories, type Category } from "./budgets";
 import {
   createAccount,
@@ -97,10 +98,6 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
     () => new Map(categories.map((category) => [category.id, category.name])),
     [categories],
   );
-  const total = activeAccounts.reduce(
-    (sum, account) => account.currency_code === defaultCurrency ? sum + account.balance : sum,
-    0,
-  );
   const movements = useMemo(() => transactions.map((transaction) => {
     const entry = transaction.ledger_entries.find((item) => item.entry_kind === "account");
     return {
@@ -177,7 +174,7 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
     <main id="main-content" className="main-content">
       {error && <p className="inline-error" role="alert">{error}</p>}
       {loading ? <section className="skeleton-grid" aria-label="Cargando"><i /><i /><i /></section> : <>
-        {view === "summary" && <SummaryView total={total} currency={defaultCurrency} accounts={activeAccounts} count={count} onCreateAccount={() => setDialog("account")} />}
+        {view === "summary" && <DashboardWorkspace currency={defaultCurrency} onCreateAccount={() => setDialog("account")} />}
         {view === "accounts" && <AccountsView accounts={accounts} busy={busy} onCreate={() => setDialog("account")} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} />}
         {view === "transactions" && <TransactionsView movements={movements} transactions={transactions} count={count} page={page} search={search} dateFrom={dateFrom} dateTo={dateTo} categoryNames={categoryNames} canCreate={Boolean(activeAccounts.length)} onCreate={() => setDialog("transaction")} onSearch={(value) => { setSearch(value); setPage(0); }} onDateFrom={(value) => { setDateFrom(value); setPage(0); }} onDateTo={(value) => { setDateTo(value); setPage(0); }} onPage={setPage} onReverse={(id) => void runAction(async () => { await reverseTransaction(id); await refresh(); }, "No se pudo revertir el movimiento.")} />}
         {(view === "categories" || view === "budgets") && <BudgetWorkspace session={session} currency={defaultCurrency} categories={categories} mode={view} onCategoriesChanged={refreshCategories} />}
@@ -189,10 +186,6 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
 
 function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return <button className={active ? "is-active" : ""} onClick={onClick}>{children}</button>;
-}
-
-function SummaryView({ total, currency, accounts, count, onCreateAccount }: { total: number; currency: string; accounts: FinancialAccount[]; count: number; onCreateAccount: () => void }) {
-  return <><section className="welcome"><div><p className="eyebrow">NÚCLEO FINANCIERO</p><h1>Tu dinero, sin ruido.</h1><p className="intro">Saldos derivados de un ledger de doble partida; cada cambio conserva su historia.</p></div><button className="secondary-button" onClick={onCreateAccount}><WalletCards size={18} /> Crear cuenta</button></section><section className="metrics-grid"><article className="metric-card"><p>Disponible en {currency}</p><strong>{money(total, currency)}</strong><span className="metric-detail">{accounts.length} cuentas activas</span></article><article className="metric-card"><p>Movimientos filtrados</p><strong>{count}</strong><span className="metric-detail">Histórico trazable</span></article><article className="metric-card"><p>Monedas</p><strong>{new Set(accounts.map((item) => item.currency_code)).size || 0}</strong><span className="metric-detail">Sin mezclar saldos</span></article></section></>;
 }
 
 function AccountsView({ accounts, busy, onCreate, onToggle }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onToggle: (account: FinancialAccount) => void }) {

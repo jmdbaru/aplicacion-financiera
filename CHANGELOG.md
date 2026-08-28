@@ -20,6 +20,7 @@
 - Espacio web responsive de resumen, cuentas y movimientos con formularios, filtros y estados de carga, vacío y error.
 - Categorías globales preservadas, categorías personales/subcategorías y archivo reversible.
 - Presupuestos mensuales por categoría y moneda, con alertas, comparación mensual y cálculo que compensa reversos.
+- Dashboard agregado con disponible, balance mensual, presupuestos, actividad reciente y gráfica de seis meses.
 
 ### Changed
 
@@ -30,3 +31,4 @@
 - Implementación técnica de la Fase 3 completada y detenida para validación funcional y aprobación del usuario.
 - Fase 3 aprobada por el usuario; Fase 4 de categorías y presupuestos iniciada.
 - Implementación técnica de la Fase 4 completada y detenida para validación funcional y aprobación del usuario.
+- Fase 4 aprobada por el usuario; Fase 5 de dashboard y resumen financiero iniciada.

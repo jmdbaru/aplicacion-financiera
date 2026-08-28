@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-- Fase actual: Fase 4 — Categorías y presupuestos, finalizada técnicamente y en revisión.
-- Última fase aprobada: Fase 3 — Núcleo financiero: cuentas y ledger.
-- Estado: Fase 3 aprobada; implementación, migraciones, pruebas y despliegue de la Fase 4 correctos, pendiente de validación funcional autenticada y aprobación expresa.
-- Actualización: 2026-08-27.
+- Fase actual: Fase 5 — Dashboard y resumen financiero, en implementación.
+- Última fase aprobada: Fase 4 — Categorías y presupuestos.
+- Estado: la Fase 4 fue aprobada por autorización expresa; la Fase 5 está pendiente de comprobaciones finales.
+- Actualización: 2026-08-28.
 
 ## Stack objetivo
 
@@ -23,11 +23,11 @@ Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles,
 
 ## Bloqueos y acciones
 
-Supabase contiene las migraciones de perfiles, cuentas, ledger, categorías y presupuestos aplicadas. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios fueron comprobados. Falta la validación manual autenticada de la Fase 4 indicada en `USER_ACTIONS.md`. Los pendientes previos a producción de Auth siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
+Supabase contiene las migraciones de perfiles, cuentas, ledger, categorías, presupuestos y dashboard aplicadas. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios fueron comprobados. Los pendientes previos a producción de Auth siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
 
-## Siguiente fase propuesta (no iniciada)
+## Fase en curso
 
-Fase 5: dashboard y resumen financiero. No debe iniciarse hasta que el usuario apruebe expresamente la Fase 4.
+Fase 5: dashboard y resumen financiero. La siguiente fase no se iniciará hasta que esta quede finalizada y autorizada.
 
 ## Referencias
 

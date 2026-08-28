@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from financiera_api.auth import AuthenticatedUser, require_bearer_token
 from financiera_api.budget_api import router as budget_router
 from financiera_api.config import Settings, get_settings
+from financiera_api.dashboard_api import router as dashboard_router
 from financiera_api.finance_api import router as finance_router
 from financiera_api.schemas import HealthResponse, ProfileResponse, ProfileUpdateRequest
 
@@ -83,6 +84,7 @@ async def profile(user: CurrentUser) -> ProfileResponse:
 
 router.include_router(finance_router)
 router.include_router(budget_router)
+router.include_router(dashboard_router)
 
 
 @router.patch("/profile", response_model=ProfileResponse, summary="Actualiza el perfil autenticado")
