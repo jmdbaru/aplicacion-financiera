@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-- Fase actual: Fase 9 — Estadísticas e informes, finalizada técnicamente y en revisión funcional.
+- Fase actual: Fase 10 — Importación y reglas automáticas, finalizada técnicamente y en revisión funcional.
 - Última fase aprobada: Fase 6 — Recurrentes y calendario.
-- Estado: la Fase 9 está pendiente de validación funcional en la vista previa.
+- Estado: la Fase 10 está pendiente de validación funcional en la vista previa.
 - Actualización: 2026-08-31.
 
 ## Stack objetivo
@@ -23,11 +23,11 @@ Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles,
 
 ## Bloqueos y acciones
 
-Supabase contiene las migraciones de perfiles, cuentas, ledger, categorías, presupuestos, dashboard, objetivos, patrimonio e informes aplicadas. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios fueron comprobados en fases previas. Los pendientes previos a producción de Auth y GraphQL siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
+Supabase contiene las migraciones de perfiles, cuentas, ledger, categorías, presupuestos, dashboard, objetivos, patrimonio, informes e importación aplicadas. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios fueron comprobados en fases previas. Los pendientes previos a producción de Auth, GraphQL y Excel `.xlsx` siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
 
 ## Fase en curso
 
-Fase 9: estadísticas e informes. La siguiente fase no se iniciará hasta que esta quede validada y autorizada.
+Fase 10: importación y reglas automáticas. La siguiente fase no se iniciará hasta que esta quede validada y autorizada.
 
 ## Referencias
 
@@ -40,3 +40,4 @@ Fase 9: estadísticas e informes. La siguiente fase no se iniciará hasta que es
 - `docs/phases/phase-07-savings-goals.md`
 - `docs/phases/phase-08-wealth.md`
 - `docs/phases/phase-09-reports.md`
+- `docs/phases/phase-10-imports-and-rules.md`

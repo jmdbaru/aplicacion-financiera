@@ -1,5 +1,20 @@
 # Acciones del usuario
 
+## Fase 10 — Validar importación y reglas
+
+- Estado: `PENDIENTE`
+- Pasos: entra en **Importar**, crea una regla de categorización, sube un CSV pequeño con columnas `fecha`, `concepto` e `importe`, revisa preview, guarda preview, confirma y comprueba movimientos/saldos.
+- Dato a devolver: indica si funciona o el paso exacto y mensaje visible si falla.
+- Verificación: las filas inválidas no se importan, los duplicados no se duplican, las reglas asignan categoría y la confirmación crea movimientos balanceados.
+
+## Fase 10 — Lectura directa de Excel `.xlsx`
+
+- Estado: `PENDIENTE`
+- Motivo: la fase queda operativa con CSV y Excel exportado como CSV, pero falta añadir un parser `.xlsx` real con dependencia versionada.
+- Pasos: cuando autorices dependencias o estemos en la máquina virtual final, incorporar un parser Excel, actualizar lockfile y ampliar pruebas.
+- Dato a devolver: autorización para añadir dependencia o confirmación de que basta CSV exportado desde Excel.
+- Verificación: se puede subir `.xlsx` directo y obtener el mismo preview que con CSV.
+
 ## Fase 9 — Validar informes en la vista previa
 
 - Estado: `PENDIENTE`
