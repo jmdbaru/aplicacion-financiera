@@ -12,6 +12,7 @@ from financiera_api.dashboard_api import router as dashboard_router
 from financiera_api.finance_api import router as finance_router
 from financiera_api.goals_api import router as goals_router
 from financiera_api.recurring_api import router as recurring_router
+from financiera_api.reports_api import router as reports_router
 from financiera_api.schemas import HealthResponse, ProfileResponse, ProfileUpdateRequest
 from financiera_api.wealth_api import router as wealth_router
 
@@ -91,6 +92,7 @@ router.include_router(dashboard_router)
 router.include_router(recurring_router)
 router.include_router(goals_router)
 router.include_router(wealth_router)
+router.include_router(reports_router)
 
 
 @router.patch("/profile", response_model=ProfileResponse, summary="Actualiza el perfil autenticado")

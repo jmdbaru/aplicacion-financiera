@@ -1,5 +1,12 @@
 # Acciones del usuario
 
+## Fase 9 — Validar informes en la vista previa
+
+- Estado: `PENDIENTE`
+- Pasos: inicia sesión, entra en **Informes**, cambia el rango de fechas, revisa ingresos/gastos/balance, comprueba el ranking por categorías y descarga el CSV.
+- Dato a devolver: indica si funciona o el paso exacto y mensaje visible si falla.
+- Verificación: los importes coinciden con los movimientos del periodo, la comparación usa el periodo anterior de igual duración y el CSV se descarga con filas legibles.
+
 ## Fase 8 — Validar patrimonio en la vista previa
 
 - Estado: `PENDIENTE`
