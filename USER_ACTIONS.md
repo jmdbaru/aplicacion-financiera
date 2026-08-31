@@ -1,5 +1,21 @@
 # Acciones del usuario
 
+## UX futura — Completar mejoras de navegación y personalización
+
+- Estado: `PENDIENTE`
+- Motivo: la auditoría UI/UX ya se ha aplicado en la estructura principal, pero hay mejoras que conviene desarrollar como fase propia para no meter interacciones incompletas.
+- Pasos: implementar paleta de comandos `Ctrl+K`, personalización de widgets del dashboard, navegación móvil inferior si la app se usa mucho desde móvil y revisión visual pantalla por pantalla.
+- Dato a devolver: prioriza si prefieres productividad (`Ctrl+K`), móvil, dashboard configurable o pulido visual de pantallas.
+- Verificación: el usuario puede moverse por la aplicación con menos clics, reorganizar su resumen y usar la app cómodamente en escritorio y móvil.
+
+## UX futura — Revisar categorías y taxonomía
+
+- Estado: `PENDIENTE`
+- Motivo: las categorías ya no son navegación principal, pero falta una revisión específica para evitar desorden cuando crezcan.
+- Pasos: definir grupos base, límites de profundidad, reglas de archivado, categorías sugeridas y experiencia de edición masiva.
+- Dato a devolver: validar si quieres categorías simples para uso personal o una taxonomía más potente orientada a análisis avanzado.
+- Verificación: crear, buscar y mantener categorías no debe sentirse como administrar un ERP.
+
 ## Fase 11 — Validar inversiones
 
 - Estado: `PENDIENTE`

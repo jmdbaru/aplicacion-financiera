@@ -3,9 +3,24 @@ import {
   ArrowDownLeft,
   ArrowLeftRight,
   ArrowUpRight,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  CircleDollarSign,
+  FolderTree,
+  Goal,
+  Home,
+  Import,
+  Landmark,
+  LineChart,
+  LogOut,
+  Menu,
+  PieChart,
   Plus,
   RotateCcw,
+  Wallet,
   WalletCards,
+  X,
 } from "lucide-react";
 import type { FormEvent } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -16,8 +31,10 @@ import { RecurringWorkspace } from "./RecurringWorkspace";
 import { GoalsWorkspace } from "./GoalsWorkspace";
 import { WealthWorkspace } from "./WealthWorkspace";
 import { ReportsWorkspace } from "./ReportsWorkspace";
+import { PreferencesPanel } from "./PreferencesPanel";
 import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
+import { getInitials, type Profile } from "./supabase";
 import { loadCategories, type Category } from "./budgets";
 import {
   createAccount,
@@ -33,6 +50,33 @@ import {
 } from "./finance";
 
 type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments";
+type NavigationGroup = {
+  id: "principal" | "dinero" | "planificacion" | "analisis" | "sistema";
+  label: string;
+  items: Array<{ view: View; label: string; helper: string; icon: typeof Home }>;
+};
+
+const navigationGroups: NavigationGroup[] = [
+  { id: "principal", label: "Principal", items: [{ view: "summary", label: "Inicio", helper: "Situación actual", icon: Home }] },
+  { id: "dinero", label: "Dinero", items: [
+    { view: "transactions", label: "Movimientos", helper: "Ledger y búsqueda", icon: WalletCards },
+    { view: "accounts", label: "Cuentas", helper: "Saldos y archivo", icon: Wallet },
+    { view: "imports", label: "Importar", helper: "CSV y reglas", icon: Import },
+  ] },
+  { id: "planificacion", label: "Planificación", items: [
+    { view: "budgets", label: "Presupuestos", helper: "Límites mensuales", icon: CircleDollarSign },
+    { view: "goals", label: "Objetivos", helper: "Metas y aportes", icon: Goal },
+    { view: "recurring", label: "Recurrentes", helper: "Automatización", icon: RotateCcw },
+  ] },
+  { id: "analisis", label: "Análisis", items: [
+    { view: "reports", label: "Informes", helper: "Tendencias", icon: PieChart },
+    { view: "wealth", label: "Patrimonio", helper: "Activos y pasivos", icon: Landmark },
+    { view: "investments", label: "Inversiones", helper: "Carteras", icon: LineChart },
+  ] },
+  { id: "sistema", label: "Sistema", items: [{ view: "categories", label: "Categorías", helper: "Taxonomía", icon: FolderTree }] },
+];
+
+const viewMeta = Object.fromEntries(navigationGroups.flatMap((group) => group.items.map((item) => [item.view, { ...item, group: group.label }])) ) as Record<View, NavigationGroup["items"][number] & { group: string }>;
 
 const accountLabels: Record<AccountType, string> = {
   cash: "Efectivo",
@@ -55,7 +99,7 @@ function money(value: number, currency: string) {
   return new Intl.NumberFormat("es-ES", { style: "currency", currency }).format(value);
 }
 
-export function FinanceWorkspace({ session, defaultCurrency }: { session: Session; defaultCurrency: string }) {
+export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileSaved, onSignOut }: { session: Session; defaultCurrency: string; profile: Profile | null; onProfileSaved: (profile: Profile) => void; onSignOut: () => void }) {
   const [accounts, setAccounts] = useState<FinancialAccount[]>([]);
   const [transactions, setTransactions] = useState<LedgerTransaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -69,6 +113,15 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
   const [search, setSearch] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.localStorage.getItem("financiera.sidebar") === "collapsed");
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<NavigationGroup["id"], boolean>>({
+    principal: true,
+    dinero: true,
+    planificacion: true,
+    analisis: true,
+    sistema: false,
+  });
 
   const refreshCategories = useCallback(async () => {
     setCategories(await loadCategories(session, true));
@@ -97,6 +150,9 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
   useEffect(() => {
     void refresh();
   }, [refresh]);
+  useEffect(() => {
+    window.localStorage.setItem("financiera.sidebar", sidebarCollapsed ? "collapsed" : "expanded");
+  }, [sidebarCollapsed]);
 
   const activeAccounts = accounts.filter((account) => account.is_active);
   const activeCategories = categories.filter((category) => category.is_active);
@@ -164,24 +220,27 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
     }, "No se pudo registrar el movimiento.");
   }
 
-  const showQuickMovement = view === "summary" || view === "accounts" || view === "transactions";
+  const currentView = viewMeta[view];
+  const name = profile?.display_name || session.user.email?.split("@")[0] || "Tu espacio";
 
-  return <>
-    <header className="topbar">
-      <div className="view-tabs" aria-label="Secciones">
-        <Tab active={view === "summary"} onClick={() => setView("summary")}>Resumen</Tab>
-        <Tab active={view === "accounts"} onClick={() => setView("accounts")}>Cuentas</Tab>
-        <Tab active={view === "transactions"} onClick={() => setView("transactions")}>Movimientos</Tab>
-        <Tab active={view === "categories"} onClick={() => setView("categories")}>Categorías</Tab>
-        <Tab active={view === "budgets"} onClick={() => setView("budgets")}>Presupuestos</Tab>
-        <Tab active={view === "recurring"} onClick={() => setView("recurring")}>Recurrentes</Tab>
-        <Tab active={view === "goals"} onClick={() => setView("goals")}>Objetivos</Tab>
-        <Tab active={view === "wealth"} onClick={() => setView("wealth")}>Patrimonio</Tab>
-        <Tab active={view === "reports"} onClick={() => setView("reports")}>Informes</Tab>
-        <Tab active={view === "imports"} onClick={() => setView("imports")}>Importar</Tab>
-        <Tab active={view === "investments"} onClick={() => setView("investments")}>Inversiones</Tab>
-      </div>
-      {showQuickMovement && <button className="primary-button" type="button" onClick={() => setDialog("transaction")} disabled={!activeAccounts.length}><Plus size={18} /> Añadir movimiento</button>}
+  return <div className={`app-shell ${sidebarCollapsed ? "sidebar-is-collapsed" : ""}`}>
+    <a className="skip-link" href="#main-content">Ir al contenido principal</a>
+    <aside className={`sidebar ${sidebarCollapsed ? "sidebar--collapsed" : ""} ${mobileSidebarOpen ? "sidebar--open" : ""}`} aria-label="Navegación principal">
+      <div className="brand-row"><div className="brand"><span className="brand-mark">F</span><span>Financiera</span></div><button className="icon-action sidebar-collapse" type="button" aria-label={sidebarCollapsed ? "Expandir menú" : "Contraer menú"} onClick={() => setSidebarCollapsed((value) => !value)}>{sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}</button><button className="icon-action sidebar-close" type="button" aria-label="Cerrar menú" onClick={() => setMobileSidebarOpen(false)}><X size={16} /></button></div>
+      <div className="sidebar-note"><span>Ledger protegido</span><p>Tus saldos se calculan desde movimientos trazables.</p></div>
+      <nav className="sidebar-nav">
+        {navigationGroups.map((group) => <section className="sidebar-nav-group" key={group.id}>
+          <button className="nav-group-title" type="button" aria-expanded={openGroups[group.id]} onClick={() => setOpenGroups((current) => ({ ...current, [group.id]: !current[group.id] }))}><span>{group.label}</span><ChevronDown size={14} /></button>
+          {openGroups[group.id] && <div className="nav-group-items">{group.items.map((item) => <NavItem key={item.view} item={item} active={view === item.view} onClick={() => { setView(item.view); setMobileSidebarOpen(false); }} />)}</div>}
+        </section>)}
+      </nav>
+      <div className="sidebar-footer"><PreferencesPanel profile={profile} session={session} onSaved={onProfileSaved} /><div className="profile"><span className="profile-avatar">{getInitials(session, profile)}</span><span className="profile-copy"><strong>{name}</strong><small>{profile?.currency_code || "EUR"} · sesión activa</small></span></div><button className="nav-link sign-out" type="button" onClick={onSignOut}><LogOut aria-hidden="true" size={19} /><span>Cerrar sesión</span></button></div>
+    </aside>
+    <div className="content-shell">
+    <header className="topbar workspace-topbar">
+      <button className="icon-action mobile-menu" type="button" aria-label="Abrir navegación" onClick={() => setMobileSidebarOpen(true)}><Menu size={19} /></button>
+      <div className="topbar-title"><p className="eyebrow">{currentView.group}</p><h1>{currentView.label}</h1><span>{currentView.helper}</span></div>
+      <div className="topbar-actions"><button className="secondary-button command-palette-preview" type="button" disabled title="Pendiente: paleta de comandos Ctrl+K">Ctrl K</button><button className="primary-button" type="button" onClick={() => setDialog("transaction")} disabled={!activeAccounts.length}><Plus size={18} /> Añadir movimiento</button></div>
     </header>
     <main id="main-content" className="main-content">
       {error && <p className="inline-error" role="alert">{error}</p>}
@@ -199,11 +258,13 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
       </>}
     </main>
     {dialog && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}><section className="finance-dialog" role="dialog" aria-modal="true" aria-labelledby="finance-dialog-title"><h2 id="finance-dialog-title">{dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"}</h2>{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</section></div>}
-  </>;
+    </div>
+  </div>;
 }
 
-function Tab({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return <button className={active ? "is-active" : ""} onClick={onClick}>{children}</button>;
+function NavItem({ item, active, onClick }: { item: NavigationGroup["items"][number]; active: boolean; onClick: () => void }) {
+  const Icon = item.icon;
+  return <button className={`nav-link nav-link--stacked ${active ? "is-active" : ""}`} type="button" aria-current={active ? "page" : undefined} title={`${item.label}: ${item.helper}`} onClick={onClick}><Icon aria-hidden="true" size={19} /><span><strong>{item.label}</strong><small>{item.helper}</small></span></button>;
 }
 
 function AccountsView({ accounts, busy, onCreate, onToggle }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onToggle: (account: FinancialAccount) => void }) {

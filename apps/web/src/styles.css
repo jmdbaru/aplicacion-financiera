@@ -59,3 +59,62 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b7f180; outline-offs
 .report-filters{grid-template-columns:auto auto;justify-content:start}.report-list{margin-top:1.2rem}@media(max-width:760px){.report-filters{grid-template-columns:1fr}}
 .import-layout{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1rem}.import-panel{min-height:0}.import-panel label{display:grid;gap:.45rem;margin-top:1rem;color:#cbdcd0;font-size:.82rem;font-weight:600}.import-panel select,.rule-form input,.rule-form select{min-width:0;border:1px solid #294137;background:#111f1a;color:#edf6ee;border-radius:.62rem;padding:.68rem;font:inherit;color-scheme:dark}.file-drop{border:1px dashed #426454;border-radius:.8rem;padding:1rem;background:#111f1a;cursor:pointer}.file-drop input{width:100%;margin-bottom:.55rem}.file-drop span{color:#8fa39a}.import-stats{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}.import-stats span{border:1px solid #2b4439;border-radius:.55rem;padding:.42rem .58rem;color:#cfe0d3;background:#172820;font-size:.78rem}.rule-form{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.rule-form button{justify-content:center}.rule-list{display:grid;margin-top:1rem}.rule-list>div{display:flex;justify-content:space-between;gap:.8rem;align-items:center;padding:.65rem 0;border-top:1px solid #24372f}.rule-list p{margin:0;display:grid;gap:.18rem}.rule-list small{color:#82958b}.import-preview{margin-top:1rem}.status-dot{width:.8rem;height:.8rem;border-radius:50%;background:#b7f180}.status-dot--invalid{background:#ffb2a1}.status-dot--duplicate{background:#ffd37a}@media(max-width:900px){.import-layout,.rule-form{grid-template-columns:1fr}}
 .investment-actions{display:flex;justify-content:flex-end;margin:-.6rem 0 1rem}.investment-list article{grid-template-columns:auto minmax(0,1fr) minmax(12rem,auto)}@media(max-width:760px){.investment-actions{justify-content:flex-start}.investment-list article{grid-template-columns:auto minmax(0,1fr)}}
+
+:root{
+  --finance-primary:#b7f180;
+  --finance-secondary:#72d6df;
+  --finance-bg:#0d1713;
+  --finance-border:#263f35;
+}
+.app-shell{display:grid;grid-template-columns:252px minmax(0,1fr);background:radial-gradient(circle at 18% 8%,rgba(114,214,223,.12),transparent 26%),radial-gradient(circle at 88% 0,rgba(183,241,128,.1),transparent 30%),var(--finance-bg);transition:grid-template-columns .22s ease}
+.app-shell.sidebar-is-collapsed{grid-template-columns:84px minmax(0,1fr)}
+.content-shell{min-width:0}
+.sidebar{position:sticky;top:0;width:auto;min-height:100vh;max-height:100vh;overflow:auto;background:linear-gradient(180deg,#10221c 0%,#0c1713 100%);box-shadow:inset -1px 0 0 rgba(114,214,223,.08)}
+.brand-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.8rem}
+.sidebar-collapse{border:1px solid rgba(114,214,223,.18);background:rgba(114,214,223,.08)}
+.sidebar-close{display:none}
+.sidebar-nav{display:grid;gap:.65rem;margin-top:.9rem;padding-bottom:1rem}
+.sidebar-nav-group{display:grid;gap:.28rem}
+.nav-group-title{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:transparent;color:var(--finance-secondary);font:700 .68rem "DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase;padding:.45rem .5rem;cursor:pointer}
+.nav-group-title svg{transition:transform .18s ease}
+.nav-group-title[aria-expanded="false"] svg{transform:rotate(-90deg)}
+.nav-group-items{display:grid;gap:.24rem}
+.nav-link--stacked{align-items:center;border:1px solid transparent}
+.nav-link--stacked span{display:grid;gap:.12rem;min-width:0}
+.nav-link--stacked strong{font-size:.88rem;color:inherit}
+.nav-link--stacked small{color:#789188;font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-link.is-active{color:#efffed;background:linear-gradient(135deg,rgba(183,241,128,.18),rgba(114,214,223,.1));border-color:rgba(183,241,128,.28);box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.sidebar--collapsed{padding-inline:.85rem}
+.sidebar--collapsed .brand span:last-child,.sidebar--collapsed .sidebar-note,.sidebar--collapsed .nav-group-title span,.sidebar--collapsed .nav-link span,.sidebar--collapsed .profile-copy,.sidebar--collapsed .sidebar-footer .nav-link span{display:none}
+.sidebar--collapsed .brand-row{justify-content:center}
+.sidebar--collapsed .sidebar-collapse{position:absolute;right:.55rem;top:4.45rem}
+.sidebar--collapsed .nav-group-title{justify-content:center;padding:.42rem 0}
+.sidebar--collapsed .nav-group-title svg{display:none}
+.sidebar--collapsed .nav-link{justify-content:center;padding:.75rem .2rem}
+.workspace-topbar{height:auto;min-height:88px;gap:1rem}
+.topbar-title{display:grid;gap:.18rem}
+.topbar-title h1{margin:0;font-size:clamp(1.35rem,2.3vw,2.15rem);letter-spacing:-.045em}
+.topbar-title span{color:#7f968c;font-size:.86rem}
+.command-palette-preview{font-family:"DM Mono",monospace;color:var(--finance-secondary);border:1px solid rgba(114,214,223,.24);opacity:.68}
+.metrics-grid{grid-template-columns:repeat(auto-fit,minmax(13.5rem,1fr))}
+.metric-card,.surface{box-shadow:0 18px 50px rgba(0,0,0,.14)}
+.metric-card:nth-child(4){border-color:rgba(114,214,223,.28);background:linear-gradient(145deg,rgba(114,214,223,.08),rgba(20,35,30,.76))}
+.surface-badge{color:var(--finance-secondary);border:1px solid rgba(114,214,223,.24);border-radius:999px;padding:.28rem .5rem;background:rgba(114,214,223,.07)}
+.bar-income{background:linear-gradient(180deg,var(--finance-primary),#5fa86c)}
+.bar-expense{background:linear-gradient(180deg,#ffb2a1,#ad5b52)}
+.budget-track i{background:linear-gradient(90deg,var(--finance-primary),var(--finance-secondary))}
+@media(max-width:760px){
+  .app-shell,.app-shell.sidebar-is-collapsed{display:block}
+  .sidebar,.sidebar.sidebar--collapsed{display:flex;position:fixed;z-index:35;inset:0 auto 0 0;width:min(84vw,286px);min-height:100vh;transform:translateX(-105%);transition:transform .22s ease;box-shadow:20px 0 50px rgba(0,0,0,.36)}
+  .sidebar.sidebar--open{transform:translateX(0)}
+  .sidebar--collapsed .brand span:last-child,.sidebar--collapsed .sidebar-note,.sidebar--collapsed .nav-group-title span,.sidebar--collapsed .nav-link span,.sidebar--collapsed .profile-copy,.sidebar--collapsed .sidebar-footer .nav-link span{display:grid}
+  .sidebar--collapsed .brand-row{justify-content:space-between}
+  .sidebar--collapsed .sidebar-collapse{display:none}
+  .sidebar--collapsed .nav-link{justify-content:flex-start;padding:.68rem .75rem}
+  .sidebar-close{display:grid}
+  .mobile-menu{display:grid}
+  .workspace-topbar{display:grid;grid-template-columns:auto 1fr;align-items:center}
+  .workspace-topbar .topbar-actions{grid-column:1/-1}
+  .workspace-topbar .primary-button,.section-heading .primary-button,.empty-state .secondary-button,.dialog-actions .primary-button{font-size:.86rem}
+  .command-palette-preview{display:none}
+}
