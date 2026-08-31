@@ -1,5 +1,11 @@
 # Acciones del usuario
 
+## Fase 7 — Validar objetivos de ahorro en la vista previa
+
+- Estado: `PENDIENTE`
+- Pasos: inicia sesión, entra en **Objetivos**, crea una meta, registra dos aportaciones, comprueba progreso e historial y prueba cerrar/archivar.
+- Dato a devolver: indica si funciona o el paso exacto y mensaje visible si falla.
+
 ## Fase 4 — Validar categorías y presupuestos en la vista previa
 
 - Estado: `COMPLETADA`

@@ -1,8 +1,8 @@
 # Estado del proyecto
 
-- Fase actual: Fase 6 — Recurrentes y calendario, finalizada técnicamente y en revisión.
-- Última fase aprobada: Fase 5 — Dashboard y resumen financiero.
-- Estado: la Fase 5 fue aprobada por autorización expresa; la Fase 6 está pendiente de comprobaciones finales y validación funcional.
+- Fase actual: Fase 7 — Objetivos de ahorro, finalizada técnicamente y en revisión funcional.
+- Última fase aprobada: Fase 6 — Recurrentes y calendario.
+- Estado: la Fase 7 está pendiente de validación funcional en la vista previa.
 - Actualización: 2026-08-28.
 
 ## Stack objetivo
@@ -27,7 +27,7 @@ Supabase contiene las migraciones de perfiles, cuentas, ledger, categorías, pre
 
 ## Fase en curso
 
-Fase 5: dashboard y resumen financiero. La siguiente fase no se iniciará hasta que esta quede finalizada y autorizada.
+Fase 7: objetivos de ahorro. La siguiente fase no se iniciará hasta que esta quede validada y autorizada.
 
 ## Referencias
 

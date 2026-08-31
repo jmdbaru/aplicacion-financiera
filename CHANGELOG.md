@@ -21,6 +21,7 @@
 - Categorías globales preservadas, categorías personales/subcategorías y archivo reversible.
 - Presupuestos mensuales por categoría y moneda, con alertas, comparación mensual y cálculo que compensa reversos.
 - Dashboard agregado con disponible, balance mensual, presupuestos, actividad reciente y gráfica de seis meses.
+- Objetivos de ahorro con aportaciones, progreso derivado, historial reciente y estados de cierre/archivo.
 
 ### Changed
 
