@@ -22,6 +22,7 @@
 - Presupuestos mensuales por categoría y moneda, con alertas, comparación mensual y cálculo que compensa reversos.
 - Dashboard agregado con disponible, balance mensual, presupuestos, actividad reciente y gráfica de seis meses.
 - Objetivos de ahorro con aportaciones, progreso derivado, historial reciente y estados de cierre/archivo.
+- Patrimonio con activos, pasivos, valoraciones por fecha, resumen de patrimonio neto y separación explícita respecto al flujo de efectivo.
 
 ### Changed
 
@@ -33,3 +34,4 @@
 - Fase 3 aprobada por el usuario; Fase 4 de categorías y presupuestos iniciada.
 - Implementación técnica de la Fase 4 completada y detenida para validación funcional y aprobación del usuario.
 - Fase 4 aprobada por el usuario; Fase 5 de dashboard y resumen financiero iniciada.
+- Fase 8 implementada técnicamente y pendiente de validación funcional del usuario.

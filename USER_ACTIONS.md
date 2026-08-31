@@ -1,5 +1,20 @@
 # Acciones del usuario
 
+## Fase 8 — Validar patrimonio en la vista previa
+
+- Estado: `PENDIENTE`
+- Pasos: inicia sesión, entra en **Patrimonio**, crea un activo y un pasivo, actualiza una valoración, comprueba patrimonio neto, variación e historial, y prueba archivar/restaurar.
+- Dato a devolver: indica si funciona o el paso exacto y mensaje visible si falla.
+- Verificación: los activos suman en positivo, los pasivos restan, la valoración no crea movimientos ni cambia saldos de cuentas, y el histórico conserva snapshots por fecha.
+
+## Endurecimiento futuro — Exposición GraphQL de tablas públicas
+
+- Estado: `PENDIENTE`
+- Motivo: el asesor de seguridad de Supabase avisa que las tablas con `SELECT` para `authenticated`, incluidas `wealth_items` y `wealth_valuations`, son visibles en el esquema GraphQL.
+- Pasos: en una fase de endurecimiento, decidir si se deshabilita GraphQL para el proyecto o se revocan permisos específicos manteniendo PostgREST operativo.
+- Dato que debes devolver: decisión de arquitectura cuando preparemos producción.
+- Verificación: los avisos `pg_graphql_authenticated_table_exposed` dejan de aparecer sin romper la app.
+
 ## Fase 7 — Validar objetivos de ahorro en la vista previa
 
 - Estado: `PENDIENTE`
