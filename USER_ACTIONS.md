@@ -1,5 +1,28 @@
 # Acciones del usuario
 
+## Fase 11 — Validar inversiones
+
+- Estado: `PENDIENTE`
+- Pasos: entra en **Inversiones**, crea una cartera, crea un instrumento, registra una compra, añade una valoración y comprueba valor de mercado, coste neto y resultado.
+- Dato a devolver: indica si funciona o el paso exacto y mensaje visible si falla.
+- Verificación: las operaciones no crean movimientos de efectivo automáticamente y el rendimiento coincide con la metodología documentada.
+
+## Fase 11 — Reconciliar historial remoto de migraciones
+
+- Estado: `PENDIENTE`
+- Motivo: el wrapper de migración de Supabase devolvió `INVALID_ARGUMENT` en Fase 11; la estructura se aplicó por SQL directo y está verificada, pero la migración no aparece aún en `supabase_migrations`.
+- Pasos: antes de producción, reconciliar historial remoto con la migración local `202608310004_investments.sql` o regenerar una migración equivalente desde el estado remoto.
+- Dato a devolver: no requiere secretos; solo autorización cuando hagamos endurecimiento final.
+- Verificación: la lista remota de migraciones incluye la fase de inversiones o una migración equivalente sin diff pendiente.
+
+## Fase 11 — Fuentes de mercado
+
+- Estado: `PENDIENTE`
+- Motivo: no se han integrado proveedores de precios para evitar costes, límites o dependencias externas sin aprobación.
+- Pasos: decidir proveedor gratuito/de pago, frecuencia, caché y responsabilidades antes de automatizar precios.
+- Dato a devolver: proveedor autorizado y límites de uso aceptados.
+- Verificación: las valoraciones se actualizan sin romper precios manuales ni duplicar rendimiento.
+
 ## Fase 10 — Validar importación y reglas
 
 - Estado: `PENDIENTE`

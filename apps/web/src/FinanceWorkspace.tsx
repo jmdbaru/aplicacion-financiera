@@ -17,6 +17,7 @@ import { GoalsWorkspace } from "./GoalsWorkspace";
 import { WealthWorkspace } from "./WealthWorkspace";
 import { ReportsWorkspace } from "./ReportsWorkspace";
 import { ImportsWorkspace } from "./ImportsWorkspace";
+import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
 import { loadCategories, type Category } from "./budgets";
 import {
   createAccount,
@@ -31,7 +32,7 @@ import {
   type TransactionType,
 } from "./finance";
 
-type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports";
+type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments";
 
 const accountLabels: Record<AccountType, string> = {
   cash: "Efectivo",
@@ -178,6 +179,7 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
         <Tab active={view === "wealth"} onClick={() => setView("wealth")}>Patrimonio</Tab>
         <Tab active={view === "reports"} onClick={() => setView("reports")}>Informes</Tab>
         <Tab active={view === "imports"} onClick={() => setView("imports")}>Importar</Tab>
+        <Tab active={view === "investments"} onClick={() => setView("investments")}>Inversiones</Tab>
       </div>
       {showQuickMovement && <button className="primary-button" type="button" onClick={() => setDialog("transaction")} disabled={!activeAccounts.length}><Plus size={18} /> Añadir movimiento</button>}
     </header>
@@ -193,6 +195,7 @@ export function FinanceWorkspace({ session, defaultCurrency }: { session: Sessio
         {view === "wealth" && <WealthWorkspace session={session} currency={defaultCurrency} />}
         {view === "reports" && <ReportsWorkspace currency={defaultCurrency} />}
         {view === "imports" && <ImportsWorkspace session={session} accounts={accounts} categories={categories} currency={defaultCurrency} onImported={refresh} />}
+        {view === "investments" && <InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
       </>}
     </main>
     {dialog && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}><section className="finance-dialog" role="dialog" aria-modal="true" aria-labelledby="finance-dialog-title"><h2 id="finance-dialog-title">{dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"}</h2>{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</section></div>}

@@ -25,6 +25,7 @@
 - Patrimonio con activos, pasivos, valoraciones por fecha, resumen de patrimonio neto y separación explícita respecto al flujo de efectivo.
 - Informes con tendencias, comparativas por periodo, ranking de categorías y exportación CSV inicial.
 - Importación CSV con staging, preview, validación por fila, deduplicación y reglas de categorización por prioridad.
+- Inversiones con carteras, instrumentos, operaciones, valoraciones manuales y rendimiento simple documentado.
 
 ### Changed
 
@@ -39,3 +40,4 @@
 - Fase 8 implementada técnicamente y pendiente de validación funcional del usuario.
 - Fase 9 implementada técnicamente y pendiente de validación funcional del usuario.
 - Fase 10 implementada técnicamente para CSV y Excel exportado como CSV; lectura directa `.xlsx` queda documentada como pendiente.
+- Fase 11 implementada técnicamente con valoración manual y sin fuentes de mercado de pago.
