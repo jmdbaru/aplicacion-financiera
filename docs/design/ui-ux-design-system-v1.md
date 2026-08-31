@@ -45,3 +45,19 @@ El resumen inicial se simplifica para responder cuatro preguntas rápidas:
 - Mantener una proporción visual aproximada de 70 % neutros, 20 % color principal y 10 % color secundario/semántico.
 - Usar animaciones sutiles solo para orientación, estados activos y microinteracciones.
 - Mantener siempre accesible la acción de crear movimiento, salvo cuando no existan cuentas activas.
+
+## Modales
+
+Los modales deben usar un marco común con:
+
+- un único backdrop visual;
+- cierre por botón explícito;
+- cierre con `Escape`;
+- cierre al pulsar fuera del contenido;
+- `role="dialog"` y `aria-modal="true"`.
+
+Si una acción requiere pasos complejos, debe preferirse un flujo guiado dentro de un solo modal o una pantalla dedicada antes que abrir un modal encima de otro.
+
+## Simplificación UX prioritaria
+
+Cuando el usuario no pueda completar una acción por falta de datos previos, la interfaz debe ofrecer el siguiente paso útil en vez de desactivar el botón sin salida. Ejemplo aplicado: si no hay cuentas activas, el botón global muestra `Crear cuenta primero`.

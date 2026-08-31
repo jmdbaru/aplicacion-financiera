@@ -103,6 +103,10 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b7f180; outline-offs
 .bar-income{background:linear-gradient(180deg,var(--finance-primary),#5fa86c)}
 .bar-expense{background:linear-gradient(180deg,#ffb2a1,#ad5b52)}
 .budget-track i{background:linear-gradient(90deg,var(--finance-primary),var(--finance-secondary))}
+.finance-dialog{position:relative}
+.dialog-close{position:absolute;top:.85rem;right:.85rem;border:1px solid rgba(114,214,223,.18);background:rgba(114,214,223,.08)}
+.finance-dialog .preferences-panel{width:100%;padding:0;border:0;background:transparent;box-shadow:none}
+body:has(.dialog-backdrop){overflow:hidden}
 @media(max-width:760px){
   .app-shell,.app-shell.sidebar-is-collapsed{display:block}
   .sidebar,.sidebar.sidebar--collapsed{display:flex;position:fixed;z-index:35;inset:0 auto 0 0;width:min(84vw,286px);min-height:100vh;transform:translateX(-105%);transition:transform .22s ease;box-shadow:20px 0 50px rgba(0,0,0,.36)}

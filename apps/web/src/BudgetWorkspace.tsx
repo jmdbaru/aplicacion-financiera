@@ -28,6 +28,7 @@ import {
   type Category,
   type CategoryType,
 } from "./budgets";
+import { ModalFrame } from "./ModalFrame";
 
 type Props = {
   session: Session;
@@ -197,7 +198,7 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
 }
 
 function Dialog({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
-  return <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><section className="finance-dialog" role="dialog" aria-modal="true" aria-labelledby="budget-dialog-title"><h2 id="budget-dialog-title">{title}</h2>{children}</section></div>;
+  return <ModalFrame title={title} onClose={onClose} labelledBy="budget-dialog-title">{children}</ModalFrame>;
 }
 
 function CategoryForm({ categories, category, busy, onSubmit, onCancel }: { categories: Category[]; category: Category | null; busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => void; onCancel: () => void }) {

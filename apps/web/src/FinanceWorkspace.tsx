@@ -32,6 +32,7 @@ import { GoalsWorkspace } from "./GoalsWorkspace";
 import { WealthWorkspace } from "./WealthWorkspace";
 import { ReportsWorkspace } from "./ReportsWorkspace";
 import { PreferencesPanel } from "./PreferencesPanel";
+import { ModalFrame } from "./ModalFrame";
 import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
 import { getInitials, type Profile } from "./supabase";
@@ -240,7 +241,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     <header className="topbar workspace-topbar">
       <button className="icon-action mobile-menu" type="button" aria-label="Abrir navegación" onClick={() => setMobileSidebarOpen(true)}><Menu size={19} /></button>
       <div className="topbar-title"><p className="eyebrow">{currentView.group}</p><h1>{currentView.label}</h1><span>{currentView.helper}</span></div>
-      <div className="topbar-actions"><button className="secondary-button command-palette-preview" type="button" disabled title="Pendiente: paleta de comandos Ctrl+K">Ctrl K</button><button className="primary-button" type="button" onClick={() => setDialog("transaction")} disabled={!activeAccounts.length}><Plus size={18} /> Añadir movimiento</button></div>
+      <div className="topbar-actions"><button className="secondary-button command-palette-preview" type="button" disabled title="Pendiente: paleta de comandos Ctrl+K">Ctrl K</button><button className="primary-button" type="button" onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={18} /> {activeAccounts.length ? "Añadir movimiento" : "Crear cuenta primero"}</button></div>
     </header>
     <main id="main-content" className="main-content">
       {error && <p className="inline-error" role="alert">{error}</p>}
@@ -257,7 +258,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
         {view === "investments" && <InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
       </>}
     </main>
-    {dialog && <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setDialog(null); }}><section className="finance-dialog" role="dialog" aria-modal="true" aria-labelledby="finance-dialog-title"><h2 id="finance-dialog-title">{dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"}</h2>{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</section></div>}
+    {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"} onClose={() => setDialog(null)} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</ModalFrame>}
     </div>
   </div>;
 }
