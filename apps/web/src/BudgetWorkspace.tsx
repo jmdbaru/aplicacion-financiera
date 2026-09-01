@@ -64,6 +64,7 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
   const [dialog, setDialog] = useState<"category" | "budget" | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingBudget, setEditingBudget] = useState<BudgetProgress | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<BudgetProgress | null>(null);
 
   const refreshBudgets = useCallback(async () => {
     if (mode !== "budgets") return;
@@ -160,6 +161,15 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
     }, "No se pudo guardar el presupuesto.");
   }
 
+  async function confirmDeleteBudget() {
+    if (!deleteTarget) return;
+    await run(async () => {
+      await deleteBudget(session, deleteTarget.id);
+      setDeleteTarget(null);
+      await refreshBudgets();
+    }, "No se pudo eliminar el presupuesto.");
+  }
+
   if (mode === "categories") {
     return <section>
       <div className="section-heading">
@@ -191,9 +201,10 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
     {error && <p className="inline-error" role="alert">{error}</p>}
     {loading ? <div className="skeleton-grid"><i /><i /><i /></div> : <>
       <div className="metrics-grid budget-metrics"><article className="metric-card"><p>Presupuestado</p><strong>{money(overview?.total_budget ?? 0, currency)}</strong><span className="metric-detail">{overview?.items.length ?? 0} categorías</span></article><article className="metric-card"><p>Gastado con presupuesto</p><strong>{money(overview?.budgeted_spent ?? 0, currency)}</strong><span className={comparison <= 0 ? "metric-detail metric-detail--positive" : "metric-detail"}>{comparison === 0 ? "Sin cambio mensual" : `${comparison > 0 ? "+" : ""}${money(comparison, currency)} frente al mes anterior`}</span></article><article className="metric-card"><p>Fuera de presupuesto</p><strong>{money(overview?.outside_budget_spent ?? 0, currency)}</strong><span className="metric-detail">Sin categoría o sin límite asignado</span></article></div>
-      {overview?.items.length ? <div className="budget-list">{overview.items.map((item) => <article className={`budget-card budget-card--${item.status}`} key={item.id}><div className="budget-card__top"><span className="category-swatch" style={{ background: item.color }} /><div><h2>{item.category_name}</h2><small>{money(item.spent, currency)} de {money(item.amount, currency)}</small></div>{item.status !== "ok" && <AlertTriangle aria-label={item.status === "exceeded" ? "Presupuesto superado" : "Umbral alcanzado"} />}</div><div className="budget-progress" aria-label={`${Math.round(item.usage_pct)} por ciento utilizado`}><span style={{ width: `${Math.min(Math.max(item.usage_pct, 0), 100)}%` }} /></div><div className="budget-card__footer"><span>{item.remaining >= 0 ? `${money(item.remaining, currency)} disponibles` : `${money(Math.abs(item.remaining), currency)} excedidos`}</span><div><button aria-label={`Editar presupuesto de ${item.category_name}`} onClick={() => { setEditingBudget(item); setDialog("budget"); }}><Pencil size={15} /></button><button aria-label={`Eliminar presupuesto de ${item.category_name}`} onClick={() => { if (window.confirm(`¿Eliminar el presupuesto de ${item.category_name}? Los movimientos no se borrarán.`)) void run(async () => { await deleteBudget(session, item.id); await refreshBudgets(); }, "No se pudo eliminar el presupuesto."); }}><Trash2 size={15} /></button></div></div></article>)}</div> : <div className="empty-state"><CircleDollarSign size={30} /><h2>Aún no hay presupuestos en {monthLabel(period)}</h2><p>Los movimientos seguirán visibles como gasto fuera de presupuesto.</p>{availableBudgetCategories.length > 0 && <button className="secondary-button" onClick={() => setDialog("budget")}>Crear el primero</button>}</div>}
+      {overview?.items.length ? <div className="budget-list">{overview.items.map((item) => <article className={`budget-card budget-card--${item.status}`} key={item.id}><div className="budget-card__top"><span className="category-swatch" style={{ background: item.color }} /><div><h2>{item.category_name}</h2><small>{money(item.spent, currency)} de {money(item.amount, currency)}</small></div>{item.status !== "ok" && <AlertTriangle aria-label={item.status === "exceeded" ? "Presupuesto superado" : "Umbral alcanzado"} />}</div><div className="budget-progress" aria-label={`${Math.round(item.usage_pct)} por ciento utilizado`}><span style={{ width: `${Math.min(Math.max(item.usage_pct, 0), 100)}%` }} /></div><div className="budget-card__footer"><span>{item.remaining >= 0 ? `${money(item.remaining, currency)} disponibles` : `${money(Math.abs(item.remaining), currency)} excedidos`}</span><div><button aria-label={`Editar presupuesto de ${item.category_name}`} onClick={() => { setEditingBudget(item); setDialog("budget"); }}><Pencil size={15} /></button><button aria-label={`Eliminar presupuesto de ${item.category_name}`} onClick={() => setDeleteTarget(item)}><Trash2 size={15} /></button></div></div></article>)}</div> : <div className="empty-state"><CircleDollarSign size={30} /><h2>Aún no hay presupuestos en {monthLabel(period)}</h2><p>Los movimientos seguirán visibles como gasto fuera de presupuesto.</p>{availableBudgetCategories.length > 0 ? <button className="secondary-button" onClick={() => setDialog("budget")}>Crear el primero</button> : <p>Crea o activa una categoría de gasto para poder asignarle un límite.</p>}</div>}
     </>}
     {dialog === "budget" && <Dialog title={editingBudget ? "Editar presupuesto" : "Nuevo presupuesto"} onClose={() => setDialog(null)}><BudgetForm categories={availableBudgetCategories} budget={editingBudget} currency={currency} busy={busy} onSubmit={submitBudget} onCancel={() => setDialog(null)} /></Dialog>}
+    {deleteTarget && <ModalFrame title="Eliminar presupuesto" onClose={() => setDeleteTarget(null)} labelledBy="delete-budget-dialog-title"><div className="confirm-copy"><p>Vas a eliminar el presupuesto de <strong>{deleteTarget.category_name}</strong>.</p><p>Los movimientos no se borrarán; solo dejarán de contar contra este límite mensual.</p></div><div className="dialog-actions"><button type="button" className="text-button" onClick={() => setDeleteTarget(null)}>Cancelar</button><button type="button" className="primary-button danger-button" disabled={busy} onClick={() => void confirmDeleteBudget()}>{busy ? "Eliminando…" : "Eliminar"}</button></div></ModalFrame>}
   </section>;
 }
 

@@ -61,3 +61,17 @@ Si una acción requiere pasos complejos, debe preferirse un flujo guiado dentro 
 ## Simplificación UX prioritaria
 
 Cuando el usuario no pueda completar una acción por falta de datos previos, la interfaz debe ofrecer el siguiente paso útil en vez de desactivar el botón sin salida. Ejemplo aplicado: si no hay cuentas activas, el botón global muestra `Crear cuenta primero`.
+
+## Aplicación del patrón en Fase UX
+
+Se ha extendido el marco común de modales a preferencias, cuentas/movimientos, presupuestos/categorías, objetivos, patrimonio e inversiones. Las valoraciones rápidas de patrimonio se mantienen como edición inline para evitar abrir otro modal encima de la ficha.
+
+Se han añadido ayudas contextuales en los flujos donde faltan datos previos:
+
+- Movimientos guía a crear la primera cuenta.
+- Recurrentes explica que necesita una cuenta activa.
+- Importaciones bloquea la subida si no hay cuenta destino y explica que las reglas requieren categorías.
+- Inversiones guía el orden cartera → instrumento → operación.
+- Presupuestos explica que necesita categorías disponibles cuando no se puede crear un límite nuevo.
+
+Las confirmaciones destructivas deben usar el mismo marco visual; la eliminación de presupuestos ya no usa `window.confirm`.

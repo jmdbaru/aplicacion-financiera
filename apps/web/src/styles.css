@@ -106,6 +106,13 @@ button:focus-visible, a:focus-visible { outline: 3px solid #b7f180; outline-offs
 .finance-dialog{position:relative}
 .dialog-close{position:absolute;top:.85rem;right:.85rem;border:1px solid rgba(114,214,223,.18);background:rgba(114,214,223,.08)}
 .finance-dialog .preferences-panel{width:100%;padding:0;border:0;background:transparent;box-shadow:none}
+.ux-hint{margin:-.8rem 0 1rem;padding:.85rem 1rem;border:1px solid rgba(114,214,223,.22);border-radius:.8rem;color:#b9dfe2;background:linear-gradient(135deg,rgba(114,214,223,.09),rgba(183,241,128,.05));font-size:.86rem;line-height:1.5}
+.empty-state p{max-width:34rem;margin:0;color:#8fa39a;line-height:1.55}
+.import-empty{margin-top:1rem}
+.confirm-copy{display:grid;gap:.55rem;color:#b6c9bf;line-height:1.55}
+.confirm-copy p{margin:0}
+.danger-button{color:#2b120e;background:#ffb2a1}
+.danger-button:hover{background:#ffc6ba}
 body:has(.dialog-backdrop){overflow:hidden}
 @media(max-width:760px){
   .app-shell,.app-shell.sidebar-is-collapsed{display:block}
