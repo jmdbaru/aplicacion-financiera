@@ -9,6 +9,7 @@ import {
   Goal,
   Home,
   Import,
+  HandCoins,
   Landmark,
   LineChart,
   Menu,
@@ -32,6 +33,7 @@ import { UserMenu } from "./UserMenu";
 import { ModalFrame } from "./ModalFrame";
 import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
+import { SplitWorkspace } from "./SplitWorkspace";
 import { CommandPalette, type CommandItem } from "./CommandPalette";
 import { type Profile } from "./supabase";
 import { loadCategories, type Category } from "./budgets";
@@ -48,7 +50,7 @@ import {
   type TransactionType,
 } from "./finance";
 
-type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments";
+type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments" | "split";
 type NavigationGroup = {
   id: "principal" | "dinero" | "planificacion" | "analisis" | "sistema";
   label: string;
@@ -71,6 +73,7 @@ const navigationGroups: NavigationGroup[] = [
     { view: "reports", label: "Informes", helper: "Tendencias", icon: PieChart },
     { view: "wealth", label: "Patrimonio", helper: "Activos y pasivos", icon: Landmark },
     { view: "investments", label: "Inversiones", helper: "Carteras", icon: LineChart },
+    { view: "split", label: "Repartos", helper: "Viajes y eventos", icon: HandCoins },
   ] },
   { id: "sistema", label: "Sistema", items: [{ view: "categories", label: "Categorías", helper: "Taxonomía", icon: FolderTree }] },
 ];
@@ -269,6 +272,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
         {view === "reports" && <ReportsWorkspace currency={defaultCurrency} />}
         {view === "imports" && <ImportsWorkspace session={session} accounts={accounts} categories={categories} currency={defaultCurrency} onImported={refresh} />}
         {view === "investments" && <InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
+        {view === "split" && <SplitWorkspace currency={defaultCurrency} />}
       </>}
     </main>
     {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"} onClose={() => setDialog(null)} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</ModalFrame>}
