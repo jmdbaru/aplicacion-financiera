@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 
 import { App } from "./App";
 import "./styles.css";
+import { ToastProvider } from "./ToastNotifications";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,8 +18,7 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <ToastProvider><App /></ToastProvider>
     </QueryClientProvider>
   </StrictMode>,
 );
-
