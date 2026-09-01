@@ -17,6 +17,7 @@ import {
   PieChart,
   Plus,
   RotateCcw,
+  Trash2,
   Wallet,
   WalletCards,
   X,
@@ -42,6 +43,7 @@ import { type Profile } from "./supabase";
 import { loadCategories, type Category } from "./budgets";
 import {
   createAccount,
+  deleteAccount,
   createTransaction,
   loadAccounts,
   loadTransactions,
@@ -114,6 +116,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [accountNotice, setAccountNotice] = useState("");
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
@@ -274,7 +277,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
       {error && <p className="inline-error" role="alert">{error}</p>}
       {loading ? <LoadingState /> : <>
         {view === "summary" && <><DashboardCurrencyToggle currency={dashboardCurrency} currencies={dashboardCurrencies} onChange={setDashboardCurrency} /><DashboardWorkspace currency={dashboardCurrency} onCreateAccount={() => setDialog("account")} /></>}
-        {view === "accounts" && <><div className="quick-filters"><span>Ordenar por:</span><select value={accountOrder} onChange={(event) => setAccountOrder(event.target.value as "name" | "balance" | "type")}><option value="name">Nombre</option><option value="balance">Saldo</option><option value="type">Tipo</option></select></div><AccountsView accounts={orderedAccounts} busy={busy} onCreate={() => setDialog("account")} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} /></>}
+        {view === "accounts" && <><div className="quick-filters"><span>Ordenar por:</span><select value={accountOrder} onChange={(event) => setAccountOrder(event.target.value as "name" | "balance" | "type")}><option value="name">Nombre</option><option value="balance">Saldo</option><option value="type">Tipo</option></select></div>{accountNotice && <p className="account-toast" role="status">{accountNotice}</p>}<AccountsView accounts={orderedAccounts} busy={busy} onCreate={() => setDialog("account")} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} onDelete={(account) => void (async () => { try { await deleteAccount(session, account.id); await refresh(); } catch { setAccountNotice("No podemos borrar esta cuenta porque conserva operaciones o configuraciones vinculadas. Puedes archivarla para mantener tu historial."); window.setTimeout(() => setAccountNotice(""), 1000); } })()} /></>}
         {view === "transactions" && <><QuickTransactionFilters categories={activeCategories} type={transactionTypeFilter} category={transactionCategoryFilter} onType={setTransactionTypeFilter} onCategory={setTransactionCategoryFilter} /><TransactionsView movements={filteredMovements} transactions={transactions} count={count} page={page} search={search} dateFrom={dateFrom} dateTo={dateTo} categoryNames={categoryNames} canCreate={Boolean(activeAccounts.length)} onCreate={() => setDialog(activeAccounts.length ? "transaction" : "account")} onSearch={(value) => { setSearch(value); setPage(0); }} onDateFrom={(value) => { setDateFrom(value); setPage(0); }} onDateTo={(value) => { setDateTo(value); setPage(0); }} onPage={setPage} onReverse={(id) => void runAction(async () => { await reverseTransaction(id); await refresh(); }, "No se pudo revertir el movimiento.")} /></>}
         {(view === "categories" || view === "budgets") && <BudgetWorkspace session={session} currency={defaultCurrency} categories={categories} mode={view} onCategoriesChanged={refreshCategories} />}
         {view === "recurring" && <RecurringWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
@@ -304,8 +307,8 @@ function DashboardCurrencyToggle({ currency, currencies, onChange }: { currency:
   return <div className="dashboard-currency-toggle" aria-label="Moneda del resumen">{currencies.length <= 2 ? currencies.map((item) => <button key={item} type="button" className={item === currency ? "is-active" : ""} onClick={() => onChange(item)}>{label(item)}</button>) : <select value={currency} onChange={(event) => onChange(event.target.value)} aria-label="Seleccionar moneda">{currencies.map((item) => <option key={item} value={item}>{label(item)}</option>)}</select>}</div>;
 }
 
-function AccountsView({ accounts, busy, onCreate, onToggle }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onToggle: (account: FinancialAccount) => void }) {
-  return <section><div className="section-heading"><div><p className="eyebrow">CUENTAS</p><h1>Tus cuentas</h1></div><button className="primary-button" onClick={onCreate}><Plus size={18} /> Nueva cuenta</button></div>{accounts.length ? <div className="account-grid">{accounts.map((account) => <article className={`account-card ${account.is_active ? "" : "is-archived"}`} key={account.id}><div><span>{accountLabels[account.account_type]}</span><h2>{account.name}</h2></div><strong>{money(account.balance, account.currency_code)}</strong><button className="text-button" disabled={busy} onClick={() => onToggle(account)}>{account.is_active ? <><Archive size={15} /> Archivar</> : "Restaurar"}</button></article>)}</div> : <EmptyState title="Aún no hay cuentas" action="Crear la primera" onClick={onCreate} />}</section>;
+function AccountsView({ accounts, busy, onCreate, onToggle, onDelete }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onToggle: (account: FinancialAccount) => void; onDelete: (account: FinancialAccount) => void }) {
+  return <section><div className="section-heading"><div><p className="eyebrow">CUENTAS</p><h1>Tus cuentas</h1></div><button className="primary-button" onClick={onCreate}><Plus size={18} /> Nueva cuenta</button></div>{accounts.length ? <div className="account-grid">{accounts.map((account) => <article className={`account-card ${account.is_active ? "" : "is-archived"}`} key={account.id}><div><span>{accountLabels[account.account_type]}</span><h2>{account.name}</h2></div><strong>{money(account.balance, account.currency_code)}</strong><div className="account-card-actions"><button className="text-button" disabled={busy} onClick={() => onToggle(account)}>{account.is_active ? <><Archive size={15} /> Archivar</> : "Restaurar"}</button><button className="icon-action account-delete" type="button" disabled={busy} aria-label={`Borrar ${account.name}`} title="Borrar cuenta" onClick={() => onDelete(account)}><Trash2 size={15} /></button></div></article>)}</div> : <EmptyState title="Aún no hay cuentas" action="Crear la primera" onClick={onCreate} />}</section>;
 }
 
 type Movement = LedgerTransaction & { displayAmount: number; currency: string };

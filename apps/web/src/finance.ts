@@ -65,6 +65,11 @@ export async function setAccountActive(session: Session, accountId: string, acti
   if (error) throw error;
 }
 
+export async function deleteAccount(session: Session, accountId: string) {
+  const { error } = await client().from("financial_accounts").delete().eq("id", accountId).eq("user_id", session.user.id);
+  if (error) throw error;
+}
+
 export async function loadTransactions(session: Session, page: number, search: string, dateFrom: string, dateTo: string) {
   const pageSize = 10;
   let query = client()
