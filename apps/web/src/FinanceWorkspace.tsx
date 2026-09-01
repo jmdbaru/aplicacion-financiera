@@ -80,8 +80,7 @@ const navigationGroups: NavigationGroup[] = [
   ] },
   { id: "analisis", label: "Análisis", items: [
     { view: "reports", label: "Informes", helper: "Tendencias", icon: PieChart },
-    { view: "wealth", label: "Patrimonio", helper: "Activos y pasivos", icon: Landmark },
-    { view: "investments", label: "Inversiones", helper: "Carteras", icon: LineChart },
+    // Patrimonio e Inversiones se mantienen preparados, pero permanecen ocultos hasta su siguiente fase.
     { view: "split", label: "Repartos", helper: "Viajes y eventos", icon: HandCoins },
   ] },
   { id: "sistema", label: "Sistema", items: [{ view: "categories", label: "Categorías", helper: "Taxonomía", icon: FolderTree }] },
