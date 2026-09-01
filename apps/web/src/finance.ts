@@ -10,8 +10,11 @@ export type FinancialAccount = {
   account_type: AccountType;
   currency_code: string;
   is_active: boolean;
+  card_color: AccountColor;
   balance: number;
 };
+
+export type AccountColor = "emerald" | "blue" | "violet" | "rose";
 
 export type LedgerEntry = {
   account_id: string | null;
@@ -38,7 +41,7 @@ function client() {
 export async function loadAccounts(session: Session, includeArchived = false): Promise<FinancialAccount[]> {
   let accountsQuery = client()
     .from("financial_accounts")
-    .select("id,name,account_type,currency_code,is_active")
+    .select("id,name,account_type,currency_code,is_active,card_color")
     .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
   if (!includeArchived) accountsQuery = accountsQuery.eq("is_active", true);
@@ -55,9 +58,30 @@ export async function loadAccounts(session: Session, includeArchived = false): P
   return (accounts ?? []).map((account) => ({ ...account, balance: balances.get(account.id) ?? 0 })) as FinancialAccount[];
 }
 
-export async function createAccount(session: Session, input: { name: string; account_type: AccountType; currency_code: string }) {
+export async function createAccount(session: Session, input: { name: string; account_type: AccountType; currency_code: string; card_color: AccountColor }) {
   const { error } = await client().from("financial_accounts").insert({ ...input, name: input.name.trim(), user_id: session.user.id });
   if (error) throw error;
+}
+
+export async function setAccountColor(session: Session, accountId: string, cardColor: AccountColor) {
+  const { error } = await client().from("financial_accounts").update({ card_color: cardColor }).eq("id", accountId).eq("user_id", session.user.id);
+  if (error) throw error;
+}
+
+export async function loadAccountTransactions(session: Session, accountId: string): Promise<LedgerTransaction[]> {
+  const { data, error } = await client()
+    .from("ledger_entries")
+    .select("ledger_transactions!inner(id,effective_date,description,transaction_type,category_id,reversed_transaction_id,ledger_entries(account_id,entry_kind,currency_code,amount))")
+    .eq("user_id", session.user.id)
+    .eq("entry_kind", "account")
+    .eq("account_id", accountId)
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) throw error;
+  return (data ?? []).flatMap((row) => {
+    const transaction = row.ledger_transactions;
+    return Array.isArray(transaction) ? transaction : transaction ? [transaction] : [];
+  }) as LedgerTransaction[];
 }
 
 export async function setAccountActive(session: Session, accountId: string, active: boolean) {

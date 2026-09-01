@@ -48,7 +48,7 @@ async def list_accounts(
 ) -> list[FinancialAccountResponse]:
     base, headers = _connection(user)
     params = {
-        "select": "id,name,account_type,currency_code,is_active",
+        "select": "id,name,account_type,currency_code,is_active,card_color",
         "user_id": f"eq.{user.user_id}",
         "order": "created_at.desc",
     }

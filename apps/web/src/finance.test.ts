@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { buildLedgerEntries, type FinancialAccount } from "./finance";
 
-const checking: FinancialAccount = { id: "checking", name: "Principal", account_type: "bank", currency_code: "EUR", is_active: true, balance: 0 };
-const savings: FinancialAccount = { id: "savings", name: "Ahorro", account_type: "bank", currency_code: "EUR", is_active: true, balance: 0 };
+const checking: FinancialAccount = { id: "checking", name: "Principal", account_type: "bank", currency_code: "EUR", card_color: "emerald", is_active: true, balance: 0 };
+const savings: FinancialAccount = { id: "savings", name: "Ahorro", account_type: "bank", currency_code: "EUR", card_color: "emerald", is_active: true, balance: 0 };
 
 describe("buildLedgerEntries", () => {
   it("crea un gasto equilibrado con contrapartida externa", () => {

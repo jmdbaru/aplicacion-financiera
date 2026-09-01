@@ -7,6 +7,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, model_validator
 
 AccountType = Literal["cash", "bank", "credit_card", "loan", "investment", "other"]
+AccountColor = Literal["emerald", "blue", "violet", "rose"]
 TransactionType = Literal["income", "expense", "transfer", "adjustment"]
 
 
@@ -14,11 +15,13 @@ class FinancialAccountCreate(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     account_type: AccountType
     currency_code: str = Field(pattern=r"^[A-Z]{3}$")
+    card_color: AccountColor = "emerald"
 
 
 class FinancialAccountUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=100)
     is_active: bool | None = None
+    card_color: AccountColor | None = None
 
     @model_validator(mode="after")
     def reject_empty_update(self) -> "FinancialAccountUpdate":
@@ -33,6 +36,7 @@ class FinancialAccountResponse(BaseModel):
     account_type: AccountType
     currency_code: str
     is_active: bool
+    card_color: AccountColor = "emerald"
     balance: Decimal = Decimal("0")
 
 
