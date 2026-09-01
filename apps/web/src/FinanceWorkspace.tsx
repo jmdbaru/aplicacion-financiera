@@ -267,7 +267,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
       <div className="topbar-title"><h1>{currentView.label}</h1></div>
       <div className="topbar-actions"><span className="command-palette-hint" title="Atajo de teclado para buscar"><kbd>Ctrl</kbd><kbd>K</kbd><span>Buscar rápido</span></span><UserMenu session={session} profile={profile} onProfileSaved={onProfileSaved} onSignOut={onSignOut} /></div>
     </header>
-    <main id="main-content" className="main-content"><button className="floating-create" type="button" aria-label={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} title={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={25} /></button>
+    <main id="main-content" className="main-content">{(view === "summary" || view === "calendar") && <button className="floating-create" type="button" aria-label={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} title={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={25} /></button>}
       {error && <p className="inline-error" role="alert">{error}</p>}
       {loading ? <section className="skeleton-grid" aria-label="Cargando"><i /><i /><i /></section> : <>
         {view === "summary" && <DashboardWorkspace currency={defaultCurrency} onCreateAccount={() => setDialog("account")} />}
