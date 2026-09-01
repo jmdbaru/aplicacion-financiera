@@ -122,6 +122,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   const [transactionCategoryFilter, setTransactionCategoryFilter] = useState("");
   const [accountOrder, setAccountOrder] = useState<"name" | "balance" | "type">("name");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.localStorage.getItem("financiera.sidebar") === "collapsed");
+  const [dashboardCurrency, setDashboardCurrency] = useState(defaultCurrency);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<NavigationGroup["id"], boolean>>({
@@ -176,6 +177,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   }, []);
 
   const activeAccounts = accounts.filter((account) => account.is_active);
+  const dashboardCurrencies = useMemo(() => [...new Set([defaultCurrency, ...activeAccounts.map((account) => account.currency_code)])], [activeAccounts, defaultCurrency]);
   const activeCategories = categories.filter((category) => category.is_active);
   const categoryNames = useMemo(
     () => new Map(categories.map((category) => [category.id, category.name])),
@@ -270,7 +272,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     <main id="main-content" className="main-content">{(view === "summary" || view === "calendar") && <button className="floating-create" type="button" aria-label={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} title={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={25} /></button>}
       {error && <p className="inline-error" role="alert">{error}</p>}
       {loading ? <section className="skeleton-grid" aria-label="Cargando"><i /><i /><i /></section> : <>
-        {view === "summary" && <DashboardWorkspace currency={defaultCurrency} onCreateAccount={() => setDialog("account")} />}
+        {view === "summary" && <><DashboardCurrencyToggle currency={dashboardCurrency} currencies={dashboardCurrencies} onChange={setDashboardCurrency} /><DashboardWorkspace currency={dashboardCurrency} onCreateAccount={() => setDialog("account")} /></>}
         {view === "accounts" && <><div className="quick-filters"><span>Ordenar por:</span><select value={accountOrder} onChange={(event) => setAccountOrder(event.target.value as "name" | "balance" | "type")}><option value="name">Nombre</option><option value="balance">Saldo</option><option value="type">Tipo</option></select></div><AccountsView accounts={orderedAccounts} busy={busy} onCreate={() => setDialog("account")} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} /></>}
         {view === "transactions" && <><QuickTransactionFilters categories={activeCategories} type={transactionTypeFilter} category={transactionCategoryFilter} onType={setTransactionTypeFilter} onCategory={setTransactionCategoryFilter} /><TransactionsView movements={filteredMovements} transactions={transactions} count={count} page={page} search={search} dateFrom={dateFrom} dateTo={dateTo} categoryNames={categoryNames} canCreate={Boolean(activeAccounts.length)} onCreate={() => setDialog(activeAccounts.length ? "transaction" : "account")} onSearch={(value) => { setSearch(value); setPage(0); }} onDateFrom={(value) => { setDateFrom(value); setPage(0); }} onDateTo={(value) => { setDateTo(value); setPage(0); }} onPage={setPage} onReverse={(id) => void runAction(async () => { await reverseTransaction(id); await refresh(); }, "No se pudo revertir el movimiento.")} /></>}
         {(view === "categories" || view === "budgets") && <BudgetWorkspace session={session} currency={defaultCurrency} categories={categories} mode={view} onCategoriesChanged={refreshCategories} />}
@@ -293,6 +295,10 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
 function NavItem({ item, active, onClick }: { item: NavigationGroup["items"][number]; active: boolean; onClick: () => void }) {
   const Icon = item.icon;
   return <button className={`nav-link nav-link--stacked ${active ? "is-active" : ""}`} type="button" aria-current={active ? "page" : undefined} title={`${item.label}: ${item.helper}`} onClick={onClick}><Icon aria-hidden="true" size={19} /><span><strong>{item.label}</strong><small>{item.helper}</small></span></button>;
+}
+
+function DashboardCurrencyToggle({ currency, currencies, onChange }: { currency: string; currencies: string[]; onChange: (value: string) => void }) {
+  return <div className="dashboard-currency-toggle" aria-label="Moneda del resumen">{currencies.map((item) => <button key={item} type="button" className={item === currency ? "is-active" : ""} onClick={() => onChange(item)}>{item}</button>)}</div>;
 }
 
 function AccountsView({ accounts, busy, onCreate, onToggle }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onToggle: (account: FinancialAccount) => void }) {
