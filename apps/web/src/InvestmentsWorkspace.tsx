@@ -85,6 +85,7 @@ export function InvestmentsWorkspace({ session, accounts, currency }: { session:
 
   return <section>
     <div className="section-heading"><div><p className="eyebrow">INVERSIONES</p><h1>Carteras</h1></div><div className="recurring-actions"><button className="secondary-button" onClick={() => setDialog("portfolio")}><Plus size={18} />Cartera</button><button className="secondary-button" onClick={() => setDialog("instrument")}><Plus size={18} />Instrumento</button><button className="primary-button" disabled={!canOperate} onClick={() => setDialog("operation")}><Plus size={18} />Operación</button></div></div>
+    <p className="future-module-note">Módulo en evolución: próximamente tendrá cotizaciones automáticas, alertas y análisis de cartera.</p>
     {error && <p className="inline-error" role="alert">{error}</p>}
     {nextStep && <p className="ux-hint">{nextStep}</p>}
     <div className="metrics-grid dashboard-metrics"><Metric label="Valor mercado" value={money(total.total_market_value, currency)} detail={`${total.positions.length} posiciones`} /><Metric label="Coste neto" value={money(total.total_cost_basis, currency)} detail="Compras, ventas, comisiones y dividendos" /><Metric label="Resultado" value={money(total.total_result, currency)} detail="Rentabilidad simple documentada" positive={total.total_result >= 0} /></div>

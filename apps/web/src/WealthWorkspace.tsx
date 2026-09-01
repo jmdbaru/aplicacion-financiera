@@ -75,6 +75,7 @@ export function WealthWorkspace({ session, currency }: { session: Session; curre
 
   return <section>
     <div className="section-heading"><div><p className="eyebrow">PATRIMONIO</p><h1>Activos y pasivos</h1></div><button className="primary-button" onClick={() => setDialog("item")}><Plus size={18} />Nueva posición</button></div>
+    <p className="future-module-note">Módulo en evolución: próximamente incluirá proyecciones, documentos y alertas de valoración.</p>
     {error && <p className="inline-error">{error}</p>}
     <div className="wealth-summary"><article><span>Patrimonio neto</span><strong>{money(totals.net, currency)}</strong><small className={totals.change >= 0 ? "positive" : "negative"}>{totals.change >= 0 ? "+" : ""}{money(totals.change, currency)} vs valoración previa</small></article><article><span>Activos</span><strong>{money(totals.assets, currency)}</strong></article><article><span>Pasivos</span><strong>{money(totals.liabilities, currency)}</strong></article></div>
     {items.length ? <div className="wealth-grid">{items.map((item) => {
