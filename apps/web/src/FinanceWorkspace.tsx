@@ -308,7 +308,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
         {view === "reports" && <ReportsWorkspace currency={defaultCurrency} />}
         {view === "imports" && <ImportsWorkspace session={session} accounts={accounts} categories={categories} currency={defaultCurrency} onImported={refresh} />}
         {view === "investments" && <InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
-        {view === "split" && <SplitWorkspace currency={defaultCurrency} />}
+        {view === "split" && <SplitWorkspace session={session} currency={defaultCurrency} />}
         {view === "calendar" && <CalendarWorkspace session={session} currency={defaultCurrency} accounts={accounts} />}
       </>}
     </main>
