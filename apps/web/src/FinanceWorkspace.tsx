@@ -298,7 +298,9 @@ function NavItem({ item, active, onClick }: { item: NavigationGroup["items"][num
 }
 
 function DashboardCurrencyToggle({ currency, currencies, onChange }: { currency: string; currencies: string[]; onChange: (value: string) => void }) {
-  return <div className="dashboard-currency-toggle" aria-label="Moneda del resumen">{currencies.map((item) => <button key={item} type="button" className={item === currency ? "is-active" : ""} onClick={() => onChange(item)}>{item}</button>)}</div>;
+  const flag: Record<string, string> = { EUR: "🇪🇺", CZK: "🇨🇿", USD: "🇺🇸", GBP: "🇬🇧", CHF: "🇨🇭", PLN: "🇵🇱", JPY: "🇯🇵", CAD: "🇨🇦", MXN: "🇲🇽" };
+  const label = (item: string) => `${flag[item] ?? "🌐"} ${item}`;
+  return <div className="dashboard-currency-toggle" aria-label="Moneda del resumen">{currencies.length <= 2 ? currencies.map((item) => <button key={item} type="button" className={item === currency ? "is-active" : ""} onClick={() => onChange(item)}>{label(item)}</button>) : <select value={currency} onChange={(event) => onChange(event.target.value)} aria-label="Seleccionar moneda">{currencies.map((item) => <option key={item} value={item}>{label(item)}</option>)}</select>}</div>;
 }
 
 function AccountsView({ accounts, busy, onCreate, onToggle }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onToggle: (account: FinancialAccount) => void }) {
