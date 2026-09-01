@@ -1,5 +1,12 @@
 # Acciones del usuario
 
+## UX — Paleta de comandos `Ctrl+K`
+
+- Estado: `COMPLETADA`
+- Motivo: mejora de productividad implementada en la aplicación.
+- Resultado: búsqueda rápida de secciones y acciones, navegación con flechas/Enter, cierre con Escape o clic exterior y acceso desde el botón `Ctrl K` del encabezado.
+- Verificación: TypeScript, ESLint y build web correctos.
+
 ## UX futura — Completar mejoras de navegación y personalización
 
 - Estado: `PENDIENTE`

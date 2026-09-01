@@ -35,6 +35,7 @@ import { PreferencesPanel } from "./PreferencesPanel";
 import { ModalFrame } from "./ModalFrame";
 import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
+import { CommandPalette, type CommandItem } from "./CommandPalette";
 import { getInitials, type Profile } from "./supabase";
 import { loadCategories, type Category } from "./budgets";
 import {
@@ -116,6 +117,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   const [dateTo, setDateTo] = useState("");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.localStorage.getItem("financiera.sidebar") === "collapsed");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<NavigationGroup["id"], boolean>>({
     principal: true,
     dinero: true,
@@ -154,6 +156,17 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   useEffect(() => {
     window.localStorage.setItem("financiera.sidebar", sidebarCollapsed ? "collapsed" : "expanded");
   }, [sidebarCollapsed]);
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setDialog(null);
+        setCommandPaletteOpen(true);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const activeAccounts = accounts.filter((account) => account.is_active);
   const activeCategories = categories.filter((category) => category.is_active);
@@ -223,6 +236,11 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
 
   const currentView = viewMeta[view];
   const name = profile?.display_name || session.user.email?.split("@")[0] || "Tu espacio";
+  const commandItems = useMemo<CommandItem[]>(() => [
+    ...navigationGroups.flatMap((group) => group.items.map((item) => ({ id: item.view, label: item.label, helper: item.helper, group: group.label, onSelect: () => { setView(item.view); setMobileSidebarOpen(false); } }))),
+    { id: "new-account", label: "Crear cuenta", helper: "Añadir una cuenta financiera", group: "Acciones", onSelect: () => setDialog("account") },
+    { id: "new-transaction", label: "Añadir movimiento", helper: activeAccounts.length ? "Registrar ingreso, gasto o transferencia" : "Necesita una cuenta activa", group: "Acciones", onSelect: () => setDialog(activeAccounts.length ? "transaction" : "account") },
+  ], [activeAccounts.length]);
 
   return <div className={`app-shell ${sidebarCollapsed ? "sidebar-is-collapsed" : ""}`}>
     <a className="skip-link" href="#main-content">Ir al contenido principal</a>
@@ -241,7 +259,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     <header className="topbar workspace-topbar">
       <button className="icon-action mobile-menu" type="button" aria-label="Abrir navegación" onClick={() => setMobileSidebarOpen(true)}><Menu size={19} /></button>
       <div className="topbar-title"><p className="eyebrow">{currentView.group}</p><h1>{currentView.label}</h1><span>{currentView.helper}</span></div>
-      <div className="topbar-actions"><button className="secondary-button command-palette-preview" type="button" disabled title="Pendiente: paleta de comandos Ctrl+K">Ctrl K</button><button className="primary-button" type="button" onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={18} /> {activeAccounts.length ? "Añadir movimiento" : "Crear cuenta primero"}</button></div>
+      <div className="topbar-actions"><button className="secondary-button command-palette-preview" type="button" onClick={() => { setDialog(null); setCommandPaletteOpen(true); }} aria-label="Abrir paleta de comandos">Ctrl K</button><button className="primary-button" type="button" onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={18} /> {activeAccounts.length ? "Añadir movimiento" : "Crear cuenta primero"}</button></div>
     </header>
     <main id="main-content" className="main-content">
       {error && <p className="inline-error" role="alert">{error}</p>}
@@ -259,6 +277,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
       </>}
     </main>
     {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"} onClose={() => setDialog(null)} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</ModalFrame>}
+    {commandPaletteOpen && <CommandPalette items={commandItems} onClose={() => setCommandPaletteOpen(false)} />}
     </div>
   </div>;
 }
