@@ -281,7 +281,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
         {view === "imports" && <ImportsWorkspace session={session} accounts={accounts} categories={categories} currency={defaultCurrency} onImported={refresh} />}
         {view === "investments" && <InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
         {view === "split" && <SplitWorkspace currency={defaultCurrency} />}
-        {view === "calendar" && <CalendarWorkspace transactions={transactions} currency={defaultCurrency} />}
+        {view === "calendar" && <CalendarWorkspace session={session} currency={defaultCurrency} />}
       </>}
     </main>
     {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"} onClose={() => setDialog(null)} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</ModalFrame>}

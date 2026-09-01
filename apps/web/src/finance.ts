@@ -82,6 +82,12 @@ export async function loadTransactions(session: Session, page: number, search: s
   return { rows: (data ?? []) as LedgerTransaction[], count: count ?? 0, pageSize };
 }
 
+export async function loadCalendarTransactions(session: Session, dateFrom: string, dateTo: string): Promise<LedgerTransaction[]> {
+  const { data, error } = await client().from("ledger_transactions").select("id,effective_date,description,transaction_type,category_id,reversed_transaction_id,ledger_entries(account_id,entry_kind,currency_code,amount)").eq("user_id", session.user.id).gte("effective_date", dateFrom).lte("effective_date", dateTo).order("effective_date", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as LedgerTransaction[];
+}
+
 export type TransactionInput = {
   effectiveDate: string;
   description: string;

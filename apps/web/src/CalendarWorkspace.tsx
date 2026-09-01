@@ -1,13 +1,16 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
-import type { LedgerTransaction } from "./finance";
+import type { Session } from "@supabase/supabase-js";
+import { loadCalendarTransactions, type LedgerTransaction } from "./finance";
 
 const dateKey = (date: Date) => date.toISOString().slice(0, 10);
 const money = (value: number, currency: string) => new Intl.NumberFormat("es-ES", { style: "currency", currency }).format(value);
 
-export function CalendarWorkspace({ transactions, currency }: { transactions: LedgerTransaction[]; currency: string }) {
+export function CalendarWorkspace({ session, currency }: { session: Session; currency: string }) {
   const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const [selected, setSelected] = useState(dateKey(new Date()));
+  const [transactions, setTransactions] = useState<LedgerTransaction[]>([]);
+  useEffect(() => { const from = new Date(month.getFullYear(), month.getMonth(), 1).toISOString().slice(0, 10); const to = new Date(month.getFullYear(), month.getMonth() + 1, 0).toISOString().slice(0, 10); void loadCalendarTransactions(session, from, to).then(setTransactions).catch(() => setTransactions([])); }, [month, session]);
   const days = useMemo(() => { const start = new Date(month); start.setDate(1 - ((start.getDay() + 6) % 7)); return Array.from({ length: 42 }, (_, index) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + index)); }, [month]);
   const selectedItems = transactions.filter((item) => item.effective_date === selected);
   const title = month.toLocaleDateString("es-ES", { month: "long", year: "numeric" });
