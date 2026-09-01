@@ -13,7 +13,6 @@ import {
   Import,
   Landmark,
   LineChart,
-  LogOut,
   Menu,
   PieChart,
   Plus,
@@ -31,7 +30,7 @@ import { RecurringWorkspace } from "./RecurringWorkspace";
 import { GoalsWorkspace } from "./GoalsWorkspace";
 import { WealthWorkspace } from "./WealthWorkspace";
 import { ReportsWorkspace } from "./ReportsWorkspace";
-import { PreferencesPanel } from "./PreferencesPanel";
+import { UserMenu } from "./UserMenu";
 import { ModalFrame } from "./ModalFrame";
 import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
@@ -156,6 +155,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   useEffect(() => {
     window.localStorage.setItem("financiera.sidebar", sidebarCollapsed ? "collapsed" : "expanded");
   }, [sidebarCollapsed]);
+  useEffect(() => { document.documentElement.dataset.theme = window.localStorage.getItem("financiera.theme") || "green"; }, []);
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
@@ -253,13 +253,13 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
           {openGroups[group.id] && <div className="nav-group-items">{group.items.map((item) => <NavItem key={item.view} item={item} active={view === item.view} onClick={() => { setView(item.view); setMobileSidebarOpen(false); }} />)}</div>}
         </section>)}
       </nav>
-      <div className="sidebar-footer"><PreferencesPanel profile={profile} session={session} onSaved={onProfileSaved} /><div className="profile"><span className="profile-avatar">{getInitials(session, profile)}</span><span className="profile-copy"><strong>{name}</strong><small>{profile?.currency_code || "EUR"} · sesión activa</small></span></div><button className="nav-link sign-out" type="button" onClick={onSignOut}><LogOut aria-hidden="true" size={19} /><span>Cerrar sesión</span></button></div>
+      <div className="sidebar-footer"><div className="sidebar-status"><span className="profile-avatar">{getInitials(session, profile)}</span><span className="profile-copy"><strong>{name}</strong><small>{profile?.currency_code || "EUR"} · sesión activa</small></span></div></div>
     </aside>
     <div className="content-shell">
     <header className="topbar workspace-topbar">
       <button className="icon-action mobile-menu" type="button" aria-label="Abrir navegación" onClick={() => setMobileSidebarOpen(true)}><Menu size={19} /></button>
-      <div className="topbar-title"><p className="eyebrow">{currentView.group}</p><h1>{currentView.label}</h1><span>{currentView.helper}</span></div>
-      <div className="topbar-actions"><button className="secondary-button command-palette-preview" type="button" onClick={() => { setDialog(null); setCommandPaletteOpen(true); }} aria-label="Abrir paleta de comandos">Ctrl K</button><button className="primary-button" type="button" onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={18} /> {activeAccounts.length ? "Añadir movimiento" : "Crear cuenta primero"}</button></div>
+      <div className="topbar-title"><h1>{currentView.label}</h1></div>
+      <div className="topbar-actions"><span className="command-palette-hint" title="Atajo de teclado para buscar"><kbd>Ctrl</kbd><kbd>K</kbd><span>Buscar rápido</span></span><button className="primary-button" type="button" onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={18} /> {activeAccounts.length ? "Añadir movimiento" : "Crear cuenta primero"}</button><UserMenu session={session} profile={profile} onProfileSaved={onProfileSaved} onSignOut={onSignOut} /></div>
     </header>
     <main id="main-content" className="main-content">
       {error && <p className="inline-error" role="alert">{error}</p>}
