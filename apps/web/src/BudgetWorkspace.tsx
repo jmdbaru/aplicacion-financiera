@@ -177,11 +177,11 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
         <button className="primary-button" onClick={() => { setEditingCategory(null); setDialog("category"); }}><Plus size={18} /> Nueva categoría</button>
       </div>
       {error && <p className="inline-error" role="alert">{error}</p>}
-      <div className="category-grid">
+      <div className="category-list">
         {roots.map((root) => {
           const children = categories.filter((category) => category.parent_id === root.id);
-          return <article className={`category-card ${root.is_active ? "" : "is-archived"}`} key={root.id}>
-            <div className="category-card__heading"><span className="category-swatch" style={{ background: root.color }} /><div><h2>{root.name}</h2><small>{typeLabels[root.type]} · {root.is_default ? "Catálogo" : "Personal"}</small></div></div>
+          return <article className={`category-list-item ${root.is_active ? "" : "is-archived"}`} key={root.id}>
+            <div className="category-list-main"><span className="category-swatch" style={{ background: root.color }} /><div><h2>{root.name}</h2><small>{typeLabels[root.type]} · {root.is_default ? "Catálogo" : "Personal"}</small></div></div>
             {children.length > 0 && <details className="category-children"><summary>{children.length} subcategorías</summary><ul>{children.map((child) => <li key={child.id}><span>{child.name}</span>{!child.is_default && <div><button aria-label={`Editar ${child.name}`} onClick={() => { setEditingCategory(child); setDialog("category"); }}><Pencil size={14} /></button><button aria-label={`Borrar ${child.name}`} onClick={() => void run(async () => { await deleteCategory(session, child.id); await onCategoriesChanged(); }, "No se puede borrar una categoría que ya tiene movimientos. Puedes desactivarla.")}><Trash2 size={14} /></button></div>}</li>)}</ul></details>}
             {!root.is_default && <div className="card-actions"><button className="text-button" onClick={() => { setEditingCategory(root); setDialog("category"); }}><Pencil size={14} /> Editar</button><button className="text-button" disabled={busy} onClick={() => void run(async () => { await setCategoryActive(root.id, !root.is_active); await onCategoriesChanged(); }, "No se pudo cambiar el estado.")}>{root.is_active ? <><Archive size={14} /> Desactivar</> : <><RotateCcw size={14} /> Restaurar</>}</button><button className="text-button account-delete" disabled={busy} onClick={() => void run(async () => { await deleteCategory(session, root.id); await onCategoriesChanged(); }, "No se puede borrar una categoría que ya tiene movimientos o subcategorías. Puedes desactivarla.")}><Trash2 size={14} /> Borrar</button></div>}
           </article>;

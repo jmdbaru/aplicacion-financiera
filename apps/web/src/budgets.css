@@ -41,3 +41,13 @@
   .month-controls { width: 100%; justify-content: space-between; }
   .budget-card__footer { align-items: flex-start; }
 }
+
+.category-list { display: grid; gap: .45rem; border: 1px solid #29453a; border-radius: .8rem; overflow: hidden; background: rgba(15, 28, 23, .55); }
+.category-list-item { display: grid; gap: .55rem; padding: .7rem .85rem; border-bottom: 1px solid #253d33; background: transparent; }
+.category-list-item:last-child { border-bottom: 0; }
+.category-list-item:hover { background: rgba(36, 62, 51, .42); }
+.category-list-main { display: flex; align-items: center; gap: .7rem; min-width: 0; }
+.category-list-main h2 { margin: 0 0 .15rem; font-size: .92rem; }
+.category-list-main small { color: #8da097; font-size: .72rem; }
+.category-list-item .category-children { margin-left: 1.8rem; }
+.category-list-item .card-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-left: 1.8rem; }
