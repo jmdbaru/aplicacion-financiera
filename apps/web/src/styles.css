@@ -160,3 +160,4 @@ body:has(.command-backdrop){overflow:hidden}
   .workspace-topbar .primary-button,.section-heading .primary-button,.empty-state .secondary-button,.dialog-actions .primary-button{font-size:.86rem}
   .command-palette-preview{display:none}
 }
+.split-people{display:grid;grid-template-columns:1fr;gap:.4rem}.split-people span{width:100%;border-radius:.55rem}
