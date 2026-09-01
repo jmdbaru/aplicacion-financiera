@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   ChevronDown,
   CircleDollarSign,
+  CalendarDays,
   FolderTree,
   Goal,
   Home,
@@ -34,6 +35,7 @@ import { ModalFrame } from "./ModalFrame";
 import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
 import { SplitWorkspace } from "./SplitWorkspace";
+import { CalendarWorkspace } from "./CalendarWorkspace";
 import { CommandPalette, type CommandItem } from "./CommandPalette";
 import { type Profile } from "./supabase";
 import { loadCategories, type Category } from "./budgets";
@@ -50,7 +52,7 @@ import {
   type TransactionType,
 } from "./finance";
 
-type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments" | "split";
+type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments" | "split" | "calendar";
 type NavigationGroup = {
   id: "principal" | "dinero" | "planificacion" | "analisis" | "sistema";
   label: string;
@@ -68,6 +70,7 @@ const navigationGroups: NavigationGroup[] = [
     { view: "budgets", label: "Presupuestos", helper: "Límites mensuales", icon: CircleDollarSign },
     { view: "goals", label: "Objetivos", helper: "Metas y aportes", icon: Goal },
     { view: "recurring", label: "Recurrentes", helper: "Automatización", icon: RotateCcw },
+    { view: "calendar", label: "Calendario", helper: "Operaciones diarias", icon: CalendarDays },
   ] },
   { id: "analisis", label: "Análisis", items: [
     { view: "reports", label: "Informes", helper: "Tendencias", icon: PieChart },
@@ -81,12 +84,12 @@ const navigationGroups: NavigationGroup[] = [
 const viewMeta = Object.fromEntries(navigationGroups.flatMap((group) => group.items.map((item) => [item.view, { ...item, group: group.label }])) ) as Record<View, NavigationGroup["items"][number] & { group: string }>;
 
 const accountLabels: Record<AccountType, string> = {
-  cash: "Efectivo",
-  bank: "Banco",
-  credit_card: "Tarjeta",
-  loan: "Préstamo",
-  investment: "Inversión",
-  other: "Otra",
+  cash: "💵 Efectivo",
+  bank: "🏦 Banco",
+  credit_card: "💳 Tarjeta",
+  loan: "📉 Préstamo",
+  investment: "📈 Inversión",
+  other: "🗂️ Otra",
 };
 
 const transactionLabels: Record<TransactionType, string> = {
@@ -278,6 +281,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
         {view === "imports" && <ImportsWorkspace session={session} accounts={accounts} categories={categories} currency={defaultCurrency} onImported={refresh} />}
         {view === "investments" && <InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
         {view === "split" && <SplitWorkspace currency={defaultCurrency} />}
+        {view === "calendar" && <CalendarWorkspace transactions={transactions} currency={defaultCurrency} />}
       </>}
     </main>
     {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"} onClose={() => setDialog(null)} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</ModalFrame>}
