@@ -11,7 +11,6 @@ import {
   FolderTree,
   Goal,
   Home,
-  Import,
   HandCoins,
   Landmark,
   LineChart,
@@ -71,7 +70,7 @@ const navigationGroups: NavigationGroup[] = [
   { id: "dinero", label: "Dinero", items: [
     { view: "transactions", label: "Movimientos", helper: "Ledger y búsqueda", icon: WalletCards },
     { view: "accounts", label: "Cuentas", helper: "Saldos y archivo", icon: Wallet },
-    { view: "imports", label: "Importar", helper: "CSV y reglas", icon: Import },
+    // Importación temporalmente desactivada hasta completar su revisión funcional.
   ] },
   { id: "planificacion", label: "Planificación", items: [
     { view: "budgets", label: "Presupuestos", helper: "Límites mensuales", icon: CircleDollarSign },
@@ -311,7 +310,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
         {view === "imports" && <ImportsWorkspace session={session} accounts={accounts} categories={categories} currency={defaultCurrency} onImported={refresh} />}
         {view === "investments" && <InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
         {view === "split" && <SplitWorkspace currency={defaultCurrency} />}
-        {view === "calendar" && <CalendarWorkspace session={session} currency={defaultCurrency} />}
+        {view === "calendar" && <CalendarWorkspace session={session} currency={defaultCurrency} accounts={accounts} />}
       </>}
     </main>
     {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"} onClose={() => setDialog(null)} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</ModalFrame>}

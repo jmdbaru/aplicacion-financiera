@@ -101,6 +101,11 @@ export async function setCategoryActive(categoryId: string, active: boolean) {
   if (error) throw error;
 }
 
+export async function deleteCategory(session: Session, categoryId: string) {
+  const { error } = await client().from("categories").delete().eq("id", categoryId).eq("user_id", session.user.id).eq("is_default", false);
+  if (error) throw error;
+}
+
 function parseOverview(value: unknown): BudgetOverview {
   const payload = value as BudgetOverview;
   return {

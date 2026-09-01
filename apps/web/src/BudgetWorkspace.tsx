@@ -16,6 +16,7 @@ import "./budgets.css";
 import {
   createBudget,
   createCategory,
+  deleteCategory,
   deleteBudget,
   loadBudgetOverview,
   monthStart,
@@ -49,9 +50,8 @@ function money(value: number, currency: string) {
 }
 
 function monthLabel(period: string) {
-  return new Intl.DateTimeFormat("es-ES", { month: "long", year: "numeric" }).format(
-    new Date(`${period}T00:00:00`),
-  );
+  const date = new Date(`${period}T00:00:00`);
+  return `${new Intl.DateTimeFormat("es-ES", { month: "long" }).format(date)} ${date.getFullYear()}`;
 }
 
 export function BudgetWorkspace({ session, currency, categories, mode, onCategoriesChanged }: Props) {
@@ -182,8 +182,8 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
           const children = categories.filter((category) => category.parent_id === root.id);
           return <article className={`category-card ${root.is_active ? "" : "is-archived"}`} key={root.id}>
             <div className="category-card__heading"><span className="category-swatch" style={{ background: root.color }} /><div><h2>{root.name}</h2><small>{typeLabels[root.type]} · {root.is_default ? "Catálogo" : "Personal"}</small></div></div>
-            {children.length > 0 && <ul>{children.map((child) => <li key={child.id}><span>{child.name}</span>{!child.is_default && <button aria-label={`Editar ${child.name}`} onClick={() => { setEditingCategory(child); setDialog("category"); }}><Pencil size={14} /></button>}</li>)}</ul>}
-            {!root.is_default && <div className="card-actions"><button className="text-button" onClick={() => { setEditingCategory(root); setDialog("category"); }}><Pencil size={14} /> Editar</button><button className="text-button" disabled={busy} onClick={() => void run(async () => { await setCategoryActive(root.id, !root.is_active); await onCategoriesChanged(); }, "No se pudo cambiar el estado.")}>{root.is_active ? <><Archive size={14} /> Archivar</> : <><RotateCcw size={14} /> Restaurar</>}</button></div>}
+            {children.length > 0 && <details className="category-children"><summary>{children.length} subcategorías</summary><ul>{children.map((child) => <li key={child.id}><span>{child.name}</span>{!child.is_default && <div><button aria-label={`Editar ${child.name}`} onClick={() => { setEditingCategory(child); setDialog("category"); }}><Pencil size={14} /></button><button aria-label={`Borrar ${child.name}`} onClick={() => void run(async () => { await deleteCategory(session, child.id); await onCategoriesChanged(); }, "No se puede borrar una categoría que ya tiene movimientos. Puedes desactivarla.")}><Trash2 size={14} /></button></div>}</li>)}</ul></details>}
+            {!root.is_default && <div className="card-actions"><button className="text-button" onClick={() => { setEditingCategory(root); setDialog("category"); }}><Pencil size={14} /> Editar</button><button className="text-button" disabled={busy} onClick={() => void run(async () => { await setCategoryActive(root.id, !root.is_active); await onCategoriesChanged(); }, "No se pudo cambiar el estado.")}>{root.is_active ? <><Archive size={14} /> Desactivar</> : <><RotateCcw size={14} /> Restaurar</>}</button><button className="text-button account-delete" disabled={busy} onClick={() => void run(async () => { await deleteCategory(session, root.id); await onCategoriesChanged(); }, "No se puede borrar una categoría que ya tiene movimientos o subcategorías. Puedes desactivarla.")}><Trash2 size={14} /> Borrar</button></div>}
           </article>;
         })}
       </div>
@@ -197,7 +197,7 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
       <div><p className="eyebrow">PLAN MENSUAL</p><h1>Presupuestos</h1><p className="section-copy">Controla límites por categoría sin mezclar monedas.</p></div>
       <button className="primary-button" disabled={!availableBudgetCategories.length} onClick={() => { setEditingBudget(null); setDialog("budget"); }}><Plus size={18} /> Nuevo presupuesto</button>
     </div>
-    <div className="month-controls" aria-label="Periodo del presupuesto"><button aria-label="Mes anterior" onClick={() => setPeriod(shiftMonth(period, -1))}><ChevronLeft /></button><strong>{monthLabel(period)}</strong><button aria-label="Mes siguiente" onClick={() => setPeriod(shiftMonth(period, 1))}><ChevronRight /></button></div>
+    <div className="month-controls" aria-label="Periodo del presupuesto"><button aria-label="Mes anterior" onClick={() => setPeriod(shiftMonth(period, -1))}><ChevronLeft /></button><label><span className="sr-only">Mes y año</span><input type="month" value={period.slice(0, 7)} onChange={(event) => setPeriod(`${event.target.value}-01`)} /></label><strong>{monthLabel(period)}</strong><button aria-label="Mes siguiente" onClick={() => setPeriod(shiftMonth(period, 1))}><ChevronRight /></button></div>
     {error && <p className="inline-error" role="alert">{error}</p>}
     {loading ? <div className="skeleton-grid"><i /><i /><i /></div> : <>
       <div className="metrics-grid budget-metrics"><article className="metric-card"><p>Presupuestado</p><strong>{money(overview?.total_budget ?? 0, currency)}</strong><span className="metric-detail">{overview?.items.length ?? 0} categorías</span></article><article className="metric-card"><p>Gastado con presupuesto</p><strong>{money(overview?.budgeted_spent ?? 0, currency)}</strong><span className={comparison <= 0 ? "metric-detail metric-detail--positive" : "metric-detail"}>{comparison === 0 ? "Sin cambio mensual" : `${comparison > 0 ? "+" : ""}${money(comparison, currency)} frente al mes anterior`}</span></article><article className="metric-card"><p>Fuera de presupuesto</p><strong>{money(overview?.outside_budget_spent ?? 0, currency)}</strong><span className="metric-detail">Sin categoría o sin límite asignado</span></article></div>
