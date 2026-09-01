@@ -17,6 +17,14 @@ class FinancialAccountCreate(BaseModel):
     currency_code: str = Field(pattern=r"^[A-Z]{3}$")
     card_color: AccountColor = "emerald"
 
+    @model_validator(mode="after")
+    def restrict_color_to_visual_accounts(self) -> "FinancialAccountCreate":
+        if self.account_type not in ("bank", "credit_card") and self.card_color != "emerald":
+            raise ValueError(
+                "Solo las cuentas bancarias y tarjetas admiten un color personalizado."
+            )
+        return self
+
 
 class FinancialAccountUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=100)

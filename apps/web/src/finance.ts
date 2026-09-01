@@ -63,11 +63,6 @@ export async function createAccount(session: Session, input: { name: string; acc
   if (error) throw error;
 }
 
-export async function setAccountColor(session: Session, accountId: string, cardColor: AccountColor) {
-  const { error } = await client().from("financial_accounts").update({ card_color: cardColor }).eq("id", accountId).eq("user_id", session.user.id);
-  if (error) throw error;
-}
-
 export async function loadAccountTransactions(session: Session, accountId: string): Promise<LedgerTransaction[]> {
   const { data, error } = await client()
     .from("ledger_entries")

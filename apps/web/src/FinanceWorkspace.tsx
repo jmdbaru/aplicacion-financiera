@@ -52,7 +52,6 @@ import {
   loadTransactions,
   reverseTransaction,
   setAccountActive,
-  setAccountColor,
   type AccountColor,
   type AccountType,
   type FinancialAccount,
@@ -60,7 +59,7 @@ import {
   type TransactionType,
 } from "./finance";
 
-type View = "summary" | "accounts" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments" | "split" | "calendar";
+type View = "summary" | "accounts" | "account-detail" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments" | "split" | "calendar";
 type NavigationGroup = {
   id: "principal" | "dinero" | "planificacion" | "analisis" | "sistema";
   label: string;
@@ -117,7 +116,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   const [transactions, setTransactions] = useState<LedgerTransaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [view, setView] = useState<View>("summary");
-  const [dialog, setDialog] = useState<"account" | "transaction" | "account-detail" | null>(null);
+  const [dialog, setDialog] = useState<"account" | "transaction" | null>(null);
   const [selectedAccount, setSelectedAccount] = useState<FinancialAccount | null>(null);
   const [selectedAccountTransactions, setSelectedAccountTransactions] = useState<LedgerTransaction[]>([]);
   const [accountDetailLoading, setAccountDetailLoading] = useState(false);
@@ -229,7 +228,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
         name: String(form.get("name")),
         account_type: String(form.get("type")) as AccountType,
         currency_code: String(form.get("currency")).toUpperCase(),
-        card_color: String(form.get("color")) as AccountColor,
+        card_color: String(form.get("color") || "emerald") as AccountColor,
       });
       setDialog(null);
       await refresh();
@@ -240,7 +239,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     setSelectedAccount(account);
     setSelectedAccountTransactions([]);
     setAccountDetailLoading(true);
-    setDialog("account-detail");
+    setView("account-detail");
     void loadAccountTransactions(session, account.id)
       .then(setSelectedAccountTransactions)
       .catch(() => setError("No se pudo cargar el historial de esta cuenta."))
@@ -272,7 +271,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     }, "No se pudo registrar el movimiento.");
   }
 
-  const currentView = viewMeta[view];
+  const currentView = view === "account-detail" ? { label: "Cuenta" } : viewMeta[view];
   const commandItems = useMemo<CommandItem[]>(() => [
     ...navigationGroups.flatMap((group) => group.items.map((item) => ({ id: item.view, label: item.label, helper: item.helper, group: group.label, onSelect: () => { setView(item.view); setMobileSidebarOpen(false); } }))),
     { id: "new-account", label: "Crear cuenta", helper: "Añadir una cuenta financiera", group: "Acciones", onSelect: () => setDialog("account") },
@@ -300,7 +299,8 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
       {error && <p className="inline-error" role="alert">{error}</p>}
       {loading ? <LoadingState /> : <>
         {view === "summary" && <><DashboardCurrencyToggle currency={dashboardCurrency} currencies={dashboardCurrencies} onChange={setDashboardCurrency} /><DashboardWorkspace currency={dashboardCurrency} onCreateAccount={() => setDialog("account")} /></>}
-        {view === "accounts" && <><div className="quick-filters"><span>Ordenar por:</span><select value={accountOrder} onChange={(event) => setAccountOrder(event.target.value as "name" | "balance" | "type")}><option value="name">Nombre</option><option value="balance">Saldo</option><option value="type">Tipo</option></select></div>{accountNotice && <p className="account-toast" role="status">{accountNotice}</p>}<AccountsView accounts={orderedAccounts} busy={busy} onCreate={() => setDialog("account")} onOpen={openAccountDetail} onColor={(account, color) => void runAction(async () => { await setAccountColor(session, account.id, color); await refresh(); }, "No se pudo guardar el color de la cuenta.")} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} onDelete={(account) => void (async () => { try { await deleteAccount(session, account.id); await refresh(); } catch { setAccountNotice("No podemos borrar esta cuenta porque conserva operaciones o configuraciones vinculadas. Puedes archivarla para mantener tu historial."); window.setTimeout(() => setAccountNotice(""), 1000); } })()} /></>}
+        {view === "accounts" && <><div className="quick-filters"><span>Ordenar por:</span><select value={accountOrder} onChange={(event) => setAccountOrder(event.target.value as "name" | "balance" | "type")}><option value="name">Nombre</option><option value="balance">Saldo</option><option value="type">Tipo</option></select></div>{accountNotice && <p className="account-toast" role="status">{accountNotice}</p>}<AccountsView accounts={orderedAccounts} busy={busy} onCreate={() => setDialog("account")} onOpen={openAccountDetail} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} onDelete={(account) => void (async () => { try { await deleteAccount(session, account.id); await refresh(); } catch { setAccountNotice("No podemos borrar esta cuenta porque conserva operaciones o configuraciones vinculadas. Puedes archivarla para mantener tu historial."); window.setTimeout(() => setAccountNotice(""), 1000); } })()} /></>}
+        {view === "account-detail" && selectedAccount && <AccountDetail account={selectedAccount} movements={selectedAccountTransactions} loading={accountDetailLoading} onClose={() => setView("accounts")} />}
         {view === "transactions" && <><QuickTransactionFilters categories={activeCategories} accounts={activeAccounts} type={transactionTypeFilter} category={transactionCategoryFilter} subcategory={transactionSubcategoryFilter} currency={transactionCurrencyFilter} account={transactionAccountFilter} onType={setTransactionTypeFilter} onCategory={(value) => { setTransactionCategoryFilter(value); setTransactionSubcategoryFilter(""); }} onSubcategory={setTransactionSubcategoryFilter} onCurrency={setTransactionCurrencyFilter} onAccount={setTransactionAccountFilter} /><TransactionsView movements={filteredMovements} transactions={transactions} count={count} page={page} search={search} dateFrom={dateFrom} dateTo={dateTo} categoryNames={categoryNames} accountNames={new Map(accounts.map((account) => [account.id, account.name]))} canCreate={Boolean(activeAccounts.length)} onCreate={() => setDialog(activeAccounts.length ? "transaction" : "account")} onSearch={(value) => { setSearch(value); setPage(0); }} onDateFrom={(value) => { setDateFrom(value); setPage(0); }} onDateTo={(value) => { setDateTo(value); setPage(0); }} onPage={setPage} onReverse={(id) => void runAction(async () => { await reverseTransaction(id); await refresh(); }, "No se pudo revertir el movimiento.")} /></>}
         {(view === "categories" || view === "budgets") && <BudgetWorkspace session={session} currency={defaultCurrency} categories={categories} mode={view} onCategoriesChanged={refreshCategories} />}
         {view === "recurring" && <RecurringWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
@@ -313,7 +313,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
         {view === "calendar" && <CalendarWorkspace session={session} currency={defaultCurrency} />}
       </>}
     </main>
-    {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : dialog === "transaction" ? "Nuevo movimiento" : selectedAccount?.name ?? "Detalle de cuenta"} onClose={() => setDialog(null)} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : dialog === "transaction" ? <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} /> : selectedAccount && <AccountDetail account={selectedAccount} movements={selectedAccountTransactions} loading={accountDetailLoading} onClose={() => setDialog(null)} />}</ModalFrame>}
+    {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : "Nuevo movimiento"} onClose={() => setDialog(null)} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : <TransactionForm accounts={activeAccounts} categories={activeCategories} busy={busy} onSubmit={submitTransaction} onCancel={() => setDialog(null)} />}</ModalFrame>}
     {commandPaletteOpen && <CommandPalette items={commandItems} onClose={() => setCommandPaletteOpen(false)} />}
     </div>
   </div>;
@@ -330,9 +330,9 @@ function DashboardCurrencyToggle({ currency, currencies, onChange }: { currency:
   return <div className="dashboard-currency-toggle" aria-label="Moneda del resumen">{currencies.length <= 2 ? currencies.map((item) => <button key={item} type="button" className={item === currency ? "is-active" : ""} onClick={() => onChange(item)}>{label(item)}</button>) : <select value={currency} onChange={(event) => onChange(event.target.value)} aria-label="Seleccionar moneda">{currencies.map((item) => <option key={item} value={item}>{label(item)}</option>)}</select>}</div>;
 }
 
-function AccountsView({ accounts, busy, onCreate, onOpen, onColor, onToggle, onDelete }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onOpen: (account: FinancialAccount) => void; onColor: (account: FinancialAccount, color: AccountColor) => void; onToggle: (account: FinancialAccount) => void; onDelete: (account: FinancialAccount) => void }) {
+function AccountsView({ accounts, busy, onCreate, onOpen, onToggle, onDelete }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onOpen: (account: FinancialAccount) => void; onToggle: (account: FinancialAccount) => void; onDelete: (account: FinancialAccount) => void }) {
   const groups = (["cash", "bank", "credit_card", "investment", "loan", "other"] as AccountType[]).map((type) => ({ type, accounts: accounts.filter((account) => account.account_type === type) })).filter((group) => group.accounts.length);
-  return <section><div className="section-heading"><div><p className="eyebrow">CUENTAS</p><h1>Tus cuentas</h1></div><button className="primary-button" onClick={onCreate}><Plus size={18} /> Nueva cuenta</button></div>{groups.length ? <div className="account-groups">{groups.map((group) => <section className="account-group" key={group.type}><div className="account-group-heading"><AccountVisual type={group.type} /><h2>{accountLabels[group.type]}</h2><span>{group.accounts.length}</span></div><div className={`account-grid account-grid--${group.type}`}>{group.accounts.map((account) => <article className={`account-card account-card--${account.account_type} account-card--${account.card_color} ${account.is_active ? "" : "is-archived"}`} key={account.id}><AccountVisual type={account.account_type} /><div><span>{accountLabels[account.account_type]}</span><h3>{account.name}</h3></div><strong>{money(account.balance, account.currency_code)}</strong><div className="account-card-bottom"><div className="account-colors" aria-label={`Color de ${account.name}`}>{(["emerald", "blue", "violet", "rose"] as AccountColor[]).map((color) => <button key={color} type="button" className={`account-color-dot account-color-dot--${color} ${account.card_color === color ? "is-selected" : ""}`} aria-label={`Usar color ${color}`} title={`Color ${color}`} disabled={busy} onClick={() => onColor(account, color)} />)}</div><div className="account-card-actions"><button className="text-button" type="button" onClick={() => onOpen(account)}>Ver detalle</button><button className="text-button" disabled={busy} onClick={() => onToggle(account)}>{account.is_active ? <Archive size={15} /> : "Restaurar"}</button><button className="icon-action account-delete" type="button" disabled={busy} aria-label={`Borrar ${account.name}`} title="Borrar cuenta" onClick={() => onDelete(account)}><Trash2 size={15} /></button></div></div></article>)}</div></section>)}</div> : <EmptyState title="Aún no hay cuentas" action="Crear la primera" onClick={onCreate} />}</section>;
+  return <section><div className="section-heading"><div><p className="eyebrow">CUENTAS</p><h1>Tus cuentas</h1></div><button className="primary-button" onClick={onCreate}><Plus size={18} /> Nueva cuenta</button></div>{groups.length ? <div className="account-groups">{groups.map((group) => <section className="account-group" key={group.type}><div className="account-group-heading"><AccountVisual type={group.type} /><h2>{accountLabels[group.type]}</h2><span>{group.accounts.length}</span></div><div className={`account-grid account-grid--${group.type}`}>{group.accounts.map((account) => <article className={`account-card account-card--${account.account_type} account-card--${account.card_color} ${account.is_active ? "" : "is-archived"}`} key={account.id}><AccountVisual type={account.account_type} /><div><span>{accountLabels[account.account_type]}</span><h3>{account.name}</h3></div><strong>{money(account.balance, account.currency_code)}</strong><div className="account-card-bottom"><div className="account-card-actions"><button className="text-button" type="button" onClick={() => onOpen(account)}>Ver detalle</button><button className="text-button" disabled={busy} onClick={() => onToggle(account)}>{account.is_active ? <Archive size={15} /> : "Restaurar"}</button><button className="icon-action account-delete" type="button" disabled={busy} aria-label={`Borrar ${account.name}`} title="Borrar cuenta" onClick={() => onDelete(account)}><Trash2 size={15} /></button></div></div></article>)}</div></section>)}</div> : <EmptyState title="Aún no hay cuentas" action="Crear la primera" onClick={onCreate} />}</section>;
 }
 
 function AccountVisual({ type }: { type: FinancialAccount["account_type"] }) {
@@ -341,7 +341,7 @@ function AccountVisual({ type }: { type: FinancialAccount["account_type"] }) {
 }
 
 function AccountDetail({ account, movements, loading, onClose }: { account: FinancialAccount; movements: LedgerTransaction[]; loading: boolean; onClose: () => void }) {
-  return <div className="account-detail"><div className={`account-detail-summary account-card--${account.account_type} account-card--${account.card_color}`}><AccountVisual type={account.account_type} /><div><span>{accountLabels[account.account_type]} · {account.currency_code}</span><strong>{money(account.balance, account.currency_code)}</strong></div></div><div className="account-detail-heading"><div><p className="eyebrow">HISTORIAL</p><h3>Movimientos de esta cuenta</h3></div><span>{loading ? "Cargando…" : `${movements.length} últimos movimientos`}</span></div>{loading ? <LoadingState /> : movements.length ? <div className="account-detail-list">{movements.map((movement) => { const entry = movement.ledger_entries.find((item) => item.account_id === account.id); return <div key={movement.id}><div><strong>{movement.description}</strong><small>{new Date(`${movement.effective_date}T00:00:00`).toLocaleDateString("es-ES")} · {transactionLabels[movement.transaction_type]}</small></div><b className={Number(entry?.amount ?? 0) >= 0 ? "positive" : "negative"}>{money(Number(entry?.amount ?? 0), entry?.currency_code ?? account.currency_code)}</b></div>; })}</div> : <p className="ux-hint">Esta cuenta todavía no tiene movimientos.</p>}<div className="dialog-actions"><button type="button" className="primary-button" onClick={onClose}>Cerrar</button></div></div>;
+  return <section className="account-detail"><div className="section-heading"><div><p className="eyebrow">CUENTAS · DETALLE</p><h1>{account.name}</h1></div><button type="button" className="text-button" onClick={onClose}><ArrowDownLeft size={16} /> Volver a cuentas</button></div><div className={`account-detail-summary account-card--${account.account_type} account-card--${account.card_color}`}><AccountVisual type={account.account_type} /><div><span>{accountLabels[account.account_type]} · {account.currency_code}</span><strong>{money(account.balance, account.currency_code)}</strong></div></div><div className="account-detail-heading"><div><p className="eyebrow">HISTORIAL</p><h3>Movimientos de esta cuenta</h3></div><span>{loading ? "Cargando…" : `${movements.length} últimos movimientos`}</span></div>{loading ? <LoadingState /> : movements.length ? <div className="account-detail-list">{movements.map((movement) => { const entry = movement.ledger_entries.find((item) => item.account_id === account.id); return <div key={movement.id}><div><strong>{movement.description}</strong><small>{new Date(`${movement.effective_date}T00:00:00`).toLocaleDateString("es-ES")} · {transactionLabels[movement.transaction_type]}</small></div><b className={Number(entry?.amount ?? 0) >= 0 ? "positive" : "negative"}>{money(Number(entry?.amount ?? 0), entry?.currency_code ?? account.currency_code)}</b></div>; })}</div> : <p className="ux-hint">Esta cuenta todavía no tiene movimientos.</p>}</section>;
 }
 
 type Movement = LedgerTransaction & { displayAmount: number; currency: string };
@@ -365,7 +365,9 @@ function EmptyState({ title, action, onClick }: { title: string; action: string;
 }
 
 function AccountForm({ currency, busy, onSubmit, onCancel }: { currency: string; busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => void; onCancel: () => void }) {
-  return <form className="finance-form" onSubmit={onSubmit}><label>Nombre<input name="name" maxLength={100} required autoFocus placeholder="Cuenta principal" /></label><label>Tipo<select name="type" defaultValue="bank">{Object.entries(accountLabels).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label><label>Moneda<input name="currency" defaultValue={currency} pattern="[A-Z]{3}" maxLength={3} required /></label><label>Color<select name="color" defaultValue="emerald"><option value="emerald">Verde</option><option value="blue">Azul</option><option value="violet">Violeta</option><option value="rose">Rosa</option></select></label><div className="dialog-actions"><button type="button" className="text-button" onClick={onCancel}>Cancelar</button><button className="primary-button" disabled={busy}>{busy ? "Guardando…" : "Crear cuenta"}</button></div></form>;
+  const [type, setType] = useState<AccountType>("bank");
+  const canChooseColor = type === "bank" || type === "credit_card";
+  return <form className="finance-form" onSubmit={onSubmit}><label>Nombre<input name="name" maxLength={100} required autoFocus placeholder="Cuenta principal" /></label><label>Tipo<select name="type" value={type} onChange={(event) => setType(event.target.value as AccountType)}>{Object.entries(accountLabels).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label><label>Moneda<input name="currency" defaultValue={currency} pattern="[A-Z]{3}" maxLength={3} required /></label>{canChooseColor && <label>Color de {type === "bank" ? "la cuenta" : "la tarjeta"}<select name="color" defaultValue="emerald"><option value="emerald">Verde</option><option value="blue">Azul</option><option value="violet">Violeta</option><option value="rose">Rosa</option></select></label>}<div className="dialog-actions"><button type="button" className="text-button" onClick={onCancel}>Cancelar</button><button className="primary-button" disabled={busy}>{busy ? "Guardando…" : "Crear cuenta"}</button></div></form>;
 }
 
 function TransactionForm({ accounts, categories, busy, onSubmit, onCancel }: { accounts: FinancialAccount[]; categories: Category[]; busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => void; onCancel: () => void }) {
