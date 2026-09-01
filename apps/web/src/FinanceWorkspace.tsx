@@ -262,9 +262,9 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     <header className="topbar workspace-topbar">
       <button className="icon-action mobile-menu" type="button" aria-label={sidebarCollapsed ? "Abrir navegación" : "Cerrar navegación"} onClick={() => { if (window.innerWidth <= 760) setMobileSidebarOpen((value) => !value); else setSidebarCollapsed((value) => !value); }}><Menu size={19} /></button>
       <div className="topbar-title"><h1>{currentView.label}</h1></div>
-      <div className="topbar-actions"><span className="command-palette-hint" title="Atajo de teclado para buscar"><kbd>Ctrl</kbd><kbd>K</kbd><span>Buscar rápido</span></span><button className="primary-button" type="button" onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={18} /> {activeAccounts.length ? "Añadir movimiento" : "Crear cuenta primero"}</button><UserMenu session={session} profile={profile} onProfileSaved={onProfileSaved} onSignOut={onSignOut} /></div>
+      <div className="topbar-actions"><span className="command-palette-hint" title="Atajo de teclado para buscar"><kbd>Ctrl</kbd><kbd>K</kbd><span>Buscar rápido</span></span><UserMenu session={session} profile={profile} onProfileSaved={onProfileSaved} onSignOut={onSignOut} /></div>
     </header>
-    <main id="main-content" className="main-content">
+    <main id="main-content" className="main-content"><button className="floating-create" type="button" aria-label={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} title={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={25} /></button>
       {error && <p className="inline-error" role="alert">{error}</p>}
       {loading ? <section className="skeleton-grid" aria-label="Cargando"><i /><i /><i /></section> : <>
         {view === "summary" && <DashboardWorkspace currency={defaultCurrency} onCreateAccount={() => setDialog("account")} />}
