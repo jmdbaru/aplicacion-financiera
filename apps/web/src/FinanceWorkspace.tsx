@@ -74,6 +74,7 @@ const navigationGroups: NavigationGroup[] = [
   ] },
   { id: "planificacion", label: "Planificación", items: [
     { view: "budgets", label: "Presupuestos", helper: "Límites mensuales", icon: CircleDollarSign },
+    { view: "categories", label: "Categorías", helper: "Taxonomía", icon: FolderTree },
     { view: "goals", label: "Objetivos", helper: "Metas y aportes", icon: Goal },
     { view: "recurring", label: "Recurrentes", helper: "Automatización", icon: RotateCcw },
     { view: "calendar", label: "Calendario", helper: "Operaciones diarias", icon: CalendarDays },
@@ -83,7 +84,6 @@ const navigationGroups: NavigationGroup[] = [
     // Patrimonio e Inversiones se mantienen preparados, pero permanecen ocultos hasta su siguiente fase.
     { view: "split", label: "Repartos", helper: "Viajes y eventos", icon: HandCoins },
   ] },
-  { id: "sistema", label: "Sistema", items: [{ view: "categories", label: "Categorías", helper: "Taxonomía", icon: FolderTree }] },
 ];
 
 const viewMeta = Object.fromEntries(navigationGroups.flatMap((group) => group.items.map((item) => [item.view, { ...item, group: group.label }])) ) as Record<View, NavigationGroup["items"][number] & { group: string }>;
