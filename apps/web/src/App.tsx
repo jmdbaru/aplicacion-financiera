@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { AuthPanel } from "./AuthPanel";
 import { FinanceWorkspace } from "./FinanceWorkspace";
+import { LoadingState } from "./LoadingState";
 import { type Profile, supabase } from "./supabase";
 
 async function loadProfile(session: Session): Promise<Profile | null> {
@@ -25,7 +26,7 @@ export function App() {
   }, []);
   useEffect(() => { if (!session) { setProfile(null); return; } void loadProfile(session).then(setProfile).catch(() => setProfile(null)); }, [session]);
   if (!supabase) return <AuthPanel recoveryActive={false} />;
-  if (loading) return <main className="loading-screen"><span className="brand-mark">F</span><p>Preparando tu espacio…</p></main>;
+  if (loading) return <LoadingState label="Preparando tu espacio…" fullScreen />;
   if (!session) return <AuthPanel recoveryActive={recoveryActive} />;
   return <FinanceWorkspace session={session} defaultCurrency={profile?.currency_code || "EUR"} profile={profile} onProfileSaved={setProfile} onSignOut={() => { if (supabase) void supabase.auth.signOut(); }} />;
 }

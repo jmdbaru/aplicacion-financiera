@@ -36,6 +36,7 @@ import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
 import { SplitWorkspace } from "./SplitWorkspace";
 import { CalendarWorkspace } from "./CalendarWorkspace";
+import { LoadingState } from "./LoadingState";
 import { CommandPalette, type CommandItem } from "./CommandPalette";
 import { type Profile } from "./supabase";
 import { loadCategories, type Category } from "./budgets";
@@ -84,12 +85,12 @@ const navigationGroups: NavigationGroup[] = [
 const viewMeta = Object.fromEntries(navigationGroups.flatMap((group) => group.items.map((item) => [item.view, { ...item, group: group.label }])) ) as Record<View, NavigationGroup["items"][number] & { group: string }>;
 
 const accountLabels: Record<AccountType, string> = {
-  cash: "💵 Efectivo",
-  bank: "🏦 Banco",
-  credit_card: "💳 Tarjeta",
-  loan: "📉 Préstamo",
-  investment: "📈 Inversión",
-  other: "🗂️ Otra",
+  cash: "Efectivo",
+  bank: "Banco",
+  credit_card: "Tarjeta",
+  loan: "Préstamo",
+  investment: "Inversión",
+  other: "Otra",
 };
 
 const transactionLabels: Record<TransactionType, string> = {
@@ -271,7 +272,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     </header>
     <main id="main-content" className="main-content">{(view === "summary" || view === "calendar") && <button className="floating-create" type="button" aria-label={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} title={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={25} /></button>}
       {error && <p className="inline-error" role="alert">{error}</p>}
-      {loading ? <section className="skeleton-grid" aria-label="Cargando"><i /><i /><i /></section> : <>
+      {loading ? <LoadingState /> : <>
         {view === "summary" && <><DashboardCurrencyToggle currency={dashboardCurrency} currencies={dashboardCurrencies} onChange={setDashboardCurrency} /><DashboardWorkspace currency={dashboardCurrency} onCreateAccount={() => setDialog("account")} /></>}
         {view === "accounts" && <><div className="quick-filters"><span>Ordenar por:</span><select value={accountOrder} onChange={(event) => setAccountOrder(event.target.value as "name" | "balance" | "type")}><option value="name">Nombre</option><option value="balance">Saldo</option><option value="type">Tipo</option></select></div><AccountsView accounts={orderedAccounts} busy={busy} onCreate={() => setDialog("account")} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} /></>}
         {view === "transactions" && <><QuickTransactionFilters categories={activeCategories} type={transactionTypeFilter} category={transactionCategoryFilter} onType={setTransactionTypeFilter} onCategory={setTransactionCategoryFilter} /><TransactionsView movements={filteredMovements} transactions={transactions} count={count} page={page} search={search} dateFrom={dateFrom} dateTo={dateTo} categoryNames={categoryNames} canCreate={Boolean(activeAccounts.length)} onCreate={() => setDialog(activeAccounts.length ? "transaction" : "account")} onSearch={(value) => { setSearch(value); setPage(0); }} onDateFrom={(value) => { setDateFrom(value); setPage(0); }} onDateTo={(value) => { setDateTo(value); setPage(0); }} onPage={setPage} onReverse={(id) => void runAction(async () => { await reverseTransaction(id); await refresh(); }, "No se pudo revertir el movimiento.")} /></>}
