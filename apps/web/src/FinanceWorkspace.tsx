@@ -4,8 +4,6 @@ import {
   ArrowLeftRight,
   ArrowUpRight,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   CircleDollarSign,
   FolderTree,
   Goal,
@@ -35,7 +33,7 @@ import { ModalFrame } from "./ModalFrame";
 import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
 import { CommandPalette, type CommandItem } from "./CommandPalette";
-import { getInitials, type Profile } from "./supabase";
+import { type Profile } from "./supabase";
 import { loadCategories, type Category } from "./budgets";
 import {
   createAccount,
@@ -235,7 +233,6 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   }
 
   const currentView = viewMeta[view];
-  const name = profile?.display_name || session.user.email?.split("@")[0] || "Tu espacio";
   const commandItems = useMemo<CommandItem[]>(() => [
     ...navigationGroups.flatMap((group) => group.items.map((item) => ({ id: item.view, label: item.label, helper: item.helper, group: group.label, onSelect: () => { setView(item.view); setMobileSidebarOpen(false); } }))),
     { id: "new-account", label: "Crear cuenta", helper: "Añadir una cuenta financiera", group: "Acciones", onSelect: () => setDialog("account") },
@@ -245,19 +242,17 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   return <div className={`app-shell ${sidebarCollapsed ? "sidebar-is-collapsed" : ""}`}>
     <a className="skip-link" href="#main-content">Ir al contenido principal</a>
     <aside className={`sidebar ${sidebarCollapsed ? "sidebar--collapsed" : ""} ${mobileSidebarOpen ? "sidebar--open" : ""}`} aria-label="Navegación principal">
-      <div className="brand-row"><div className="brand"><span className="brand-mark">F</span><span>Financiera</span></div><button className="icon-action sidebar-collapse" type="button" aria-label={sidebarCollapsed ? "Expandir menú" : "Contraer menú"} onClick={() => setSidebarCollapsed((value) => !value)}>{sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}</button><button className="icon-action sidebar-close" type="button" aria-label="Cerrar menú" onClick={() => setMobileSidebarOpen(false)}><X size={16} /></button></div>
-      <div className="sidebar-note"><span>Ledger protegido</span><p>Tus saldos se calculan desde movimientos trazables.</p></div>
+      <div className="brand-row"><div className="brand"><span className="brand-mark">F</span><span>Financiera</span></div><button className="icon-action sidebar-close" type="button" aria-label="Cerrar menú" onClick={() => setMobileSidebarOpen(false)}><X size={16} /></button></div>
       <nav className="sidebar-nav">
         {navigationGroups.map((group) => <section className="sidebar-nav-group" key={group.id}>
           <button className="nav-group-title" type="button" aria-expanded={openGroups[group.id]} onClick={() => setOpenGroups((current) => ({ ...current, [group.id]: !current[group.id] }))}><span>{group.label}</span><ChevronDown size={14} /></button>
           {openGroups[group.id] && <div className="nav-group-items">{group.items.map((item) => <NavItem key={item.view} item={item} active={view === item.view} onClick={() => { setView(item.view); setMobileSidebarOpen(false); }} />)}</div>}
         </section>)}
       </nav>
-      <div className="sidebar-footer"><div className="sidebar-status"><span className="profile-avatar">{getInitials(session, profile)}</span><span className="profile-copy"><strong>{name}</strong><small>{profile?.currency_code || "EUR"} · sesión activa</small></span></div></div>
     </aside>
     <div className="content-shell">
     <header className="topbar workspace-topbar">
-      <button className="icon-action mobile-menu" type="button" aria-label="Abrir navegación" onClick={() => setMobileSidebarOpen(true)}><Menu size={19} /></button>
+      <button className="icon-action mobile-menu" type="button" aria-label={sidebarCollapsed ? "Abrir navegación" : "Cerrar navegación"} onClick={() => { if (window.innerWidth <= 760) setMobileSidebarOpen((value) => !value); else setSidebarCollapsed((value) => !value); }}><Menu size={19} /></button>
       <div className="topbar-title"><h1>{currentView.label}</h1></div>
       <div className="topbar-actions"><span className="command-palette-hint" title="Atajo de teclado para buscar"><kbd>Ctrl</kbd><kbd>K</kbd><span>Buscar rápido</span></span><button className="primary-button" type="button" onClick={() => setDialog(activeAccounts.length ? "transaction" : "account")}><Plus size={18} /> {activeAccounts.length ? "Añadir movimiento" : "Crear cuenta primero"}</button><UserMenu session={session} profile={profile} onProfileSaved={onProfileSaved} onSignOut={onSignOut} /></div>
     </header>
