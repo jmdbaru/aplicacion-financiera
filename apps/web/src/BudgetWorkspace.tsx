@@ -172,10 +172,11 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
   }
 
   if (mode === "categories") {
-    return <section>
+    return <section className="managed-workspace">
+      <div className="workspace-actionbar"><button className="primary-button" onClick={() => { setEditingCategory(null); setDialog("category"); }}><Plus size={18} /> Nueva categoría</button></div>
+      <div className="managed-workspace-content">
       <div className="section-heading">
         <div><p className="eyebrow">ORGANIZACIÓN</p><h1>Categorías</h1><p className="section-copy">Combina el catálogo inicial con categorías propias y subcategorías.</p></div>
-        <button className="primary-button" onClick={() => { setEditingCategory(null); setDialog("category"); }}><Plus size={18} /> Nueva categoría</button>
       </div>
       {error && <p className="inline-error" role="alert">{error}</p>}
       <div className="category-list">
@@ -187,6 +188,7 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
             {!root.is_default && <div className="card-actions"><button className="text-button" onClick={() => { setEditingCategory(root); setDialog("category"); }}><Pencil size={14} /> Editar</button><button className="text-button" disabled={busy} onClick={() => void run(async () => { await setCategoryActive(root.id, !root.is_active); await onCategoriesChanged(); }, "No se pudo cambiar el estado.")}>{root.is_active ? <><Archive size={14} /> Desactivar</> : <><RotateCcw size={14} /> Restaurar</>}</button><button className="text-button account-delete" disabled={busy} onClick={() => void run(async () => { await deleteCategory(session, root.id); await onCategoriesChanged(); }, "No se puede borrar una categoría que ya tiene movimientos o subcategorías. Puedes desactivarla.")}><Trash2 size={14} /> Borrar</button></div>}
           </article>;
         })}
+      </div>
       </div>
       {dialog === "category" && <Dialog title={editingCategory ? "Editar categoría" : "Nueva categoría"} onClose={() => setDialog(null)}><CategoryForm categories={categories} category={editingCategory} busy={busy} onSubmit={submitCategory} onCancel={() => setDialog(null)} /></Dialog>}
     </section>;

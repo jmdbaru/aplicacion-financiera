@@ -28,6 +28,9 @@ Conservar la estructura ERP y la identidad visual, pero reducir la carga cogniti
 - Inicio muestra cuatro métricas y un carrusel de evolución, presupuesto y actividad; la moneda solo se ofrece cuando existe saldo en cuentas activas de esa divisa.
 - Movimientos integra la biblioteca dentro del propio formulario para elegir una plantilla y modificar su importe.
 - Calendario evita repetir el mes y usa el fondo de la fila para diferenciar ingresos y gastos.
+- Movimientos permite seleccionar una semana concreta y presenta cada día y operación con mayor jerarquía visual.
+- Cuentas y Categorías mantienen sus acciones principales fuera de los paneles desplazables.
+- Objetivos separa activos y completados; Calendario muestra el balance diario desglosado por moneda.
 - Recurrentes procesa automáticamente los vencimientos al abrir la sección; la RPC existente evita duplicar ocurrencias.
 - Repartos presenta el historial como pantalla interna y no como ventana modal.
 

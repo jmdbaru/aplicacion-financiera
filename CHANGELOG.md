@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.078] - 2026-09-02
+
+### Added
+
+- Selector semanal en Movimientos, con navegación anterior/siguiente y selección directa de cualquier semana.
+- Pestañas de objetivos activos y completados, ambas con su recuento.
+- Balance diario por moneda bajo el detalle de operaciones del Calendario.
+
+### Changed
+
+- Las acciones de Cuentas y Categorías quedan fuera del panel desplazable para permanecer siempre accesibles.
+- Los separadores diarios y las filas de Movimientos ganan jerarquía visual sin aumentar la densidad.
+- Las operaciones del Calendario tienen más separación y distinguen ingresos, gastos y otras operaciones por su fondo.
+
 ## [v1.077] - 2026-09-02
 
 ### Added

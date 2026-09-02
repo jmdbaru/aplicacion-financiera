@@ -19,7 +19,7 @@ React 19/TypeScript 5.9/Vite 7/Tailwind 4; FastAPI/Pydantic/Uvicorn; Supabase Po
 
 Auditoría; arquitectura; modelo e invariantes; estrategia RLS; pruebas/mantenimiento/entornos/despliegue; documentación viva y ADR.
 
-Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles, cuentas, ledger, categorías y presupuestos están protegidos por RLS. La consolidación prioriza el alta rápida de movimientos, reduce la densidad mediante vistas progresivas y mantiene el documento fijo en escritorio: los listados administran su propio scroll. Inicio usa carrusel, el alta admite plantillas, Calendario concentra periodo y operaciones, y Repartos navega al historial sin modal. Última validación local: Ruff correcto, 31 pruebas API, lint y TypeScript correctos, 17 pruebas web y build de producción correcto.
+Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles, cuentas, ledger, categorías y presupuestos están protegidos por RLS. La consolidación prioriza el alta rápida de movimientos, reduce la densidad mediante vistas progresivas y mantiene el documento fijo en escritorio: los listados administran su propio scroll. Inicio usa carrusel, Movimientos incorpora navegación semanal, el alta admite plantillas, Objetivos separa activos y completados, Calendario resume el balance diario y Repartos navega al historial sin modal. Última validación local: Ruff correcto, 31 pruebas API, lint y TypeScript correctos, 17 pruebas web y build de producción correcto.
 
 ## Bloqueos y acciones
 

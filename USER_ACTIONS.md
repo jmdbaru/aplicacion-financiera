@@ -3,7 +3,7 @@
 ## Fase 12 — Validar la experiencia simplificada
 
 - Estado: `PENDIENTE`
-- Pasos: revisa que Inicio, Movimientos y Calendario caben en tu resolución habitual; recorre el carrusel de Inicio; registra un movimiento escogiendo una plantilla; comprueba el scroll interno de la tabla; abre las subcategorías y entra en el historial interno de Repartos.
+- Pasos: revisa que Inicio, Movimientos y Calendario caben en tu resolución habitual; recorre el carrusel de Inicio; cambia de semana en Movimientos y registra una operación escogiendo una plantilla; comprueba el scroll interno de la tabla y sus separadores diarios; alterna objetivos activos/completados; revisa el balance de un día en Calendario; abre las subcategorías y entra en el historial interno de Repartos.
 - Dato a devolver: indica qué pantalla todavía te parece recargada o cualquier acción que no encuentres con facilidad.
 - Verificación: la página no se desplaza en escritorio, el movimiento frecuente se registra con pocos pasos y solo los listados extensos tienen desplazamiento propio.
 
