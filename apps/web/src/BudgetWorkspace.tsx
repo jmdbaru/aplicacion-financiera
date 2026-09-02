@@ -30,6 +30,7 @@ import {
   type CategoryType,
 } from "./budgets";
 import { ModalFrame } from "./ModalFrame";
+import { IconSelector } from "./CatalogSelectors";
 
 type Props = {
   session: Session;
@@ -215,7 +216,7 @@ function Dialog({ title, onClose, children }: { title: string; onClose: () => vo
 function CategoryForm({ categories, category, busy, onSubmit, onCancel }: { categories: Category[]; category: Category | null; busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => void; onCancel: () => void }) {
   const [type, setType] = useState<CategoryType>(category?.type ?? "expense");
   const parents = categories.filter((item) => !item.parent_id && item.is_active && (item.type === type || item.type === "both") && item.id !== category?.id);
-  return <form className="finance-form" onSubmit={onSubmit}><label>Nombre<input name="name" defaultValue={category?.name} maxLength={80} required autoFocus placeholder="Ej. Mascotas" /></label><label>Tipo<select name="type" value={type} disabled={Boolean(category)} onChange={(event) => setType(event.target.value as CategoryType)}><option value="expense">Gasto</option><option value="income">Ingreso</option><option value="both">Ingreso y gasto</option></select></label><label>Subcategoría de<select name="parent" defaultValue={category?.parent_id ?? ""}><option value="">Ninguna · categoría principal</option>{parents.map((parent) => <option value={parent.id} key={parent.id}>{parent.name}</option>)}</select></label><label>Color<input name="color" type="color" defaultValue={category?.color ?? "#6B7280"} required /></label><label>Icono<input name="icon" defaultValue={category?.icon ?? "tag"} maxLength={50} required /></label><div className="dialog-actions"><button type="button" className="text-button" onClick={onCancel}>Cancelar</button><button className="primary-button" disabled={busy}>{busy ? "Guardando…" : "Guardar"}</button></div></form>;
+  return <form className="finance-form" onSubmit={onSubmit}><label>Nombre<input name="name" defaultValue={category?.name} maxLength={80} required autoFocus placeholder="Ej. Mascotas" /></label><label>Tipo<select name="type" value={type} disabled={Boolean(category)} onChange={(event) => setType(event.target.value as CategoryType)}><option value="expense">Gasto</option><option value="income">Ingreso</option><option value="both">Ingreso y gasto</option></select></label><label>Subcategoría de<select name="parent" defaultValue={category?.parent_id ?? ""}><option value="">Ninguna · categoría principal</option>{parents.map((parent) => <option value={parent.id} key={parent.id}>{parent.name}</option>)}</select></label><label>Color<input name="color" type="color" defaultValue={category?.color ?? "#6B7280"} required /></label><label>Icono<IconSelector value={category?.icon ?? "tag"} /></label><div className="dialog-actions"><button type="button" className="text-button" onClick={onCancel}>Cancelar</button><button className="primary-button" disabled={busy}>{busy ? "Guardando…" : "Guardar"}</button></div></form>;
 }
 
 function BudgetForm({ categories, budget, currency, busy, onSubmit, onCancel }: { categories: Category[]; budget: BudgetProgress | null; currency: string; busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => void; onCancel: () => void }) {

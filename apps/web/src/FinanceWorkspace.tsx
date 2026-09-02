@@ -37,6 +37,8 @@ import { ModalFrame } from "./ModalFrame";
 import { ImportsWorkspace } from "./ImportsWorkspace";
 import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
 import { SplitWorkspace } from "./SplitWorkspace";
+import { CurrencySelector } from "./CatalogSelectors";
+import { useCurrencyCatalog } from "./catalogs";
 import { CalendarWorkspace } from "./CalendarWorkspace";
 import { LoadingState } from "./LoadingState";
 import { CommandPalette, type CommandItem } from "./CommandPalette";
@@ -324,8 +326,8 @@ function NavItem({ item, active, onClick }: { item: NavigationGroup["items"][num
 }
 
 function DashboardCurrencyToggle({ currency, currencies, onChange }: { currency: string; currencies: string[]; onChange: (value: string) => void }) {
-  const flag: Record<string, string> = { EUR: "🇪🇺", CZK: "🇨🇿", USD: "🇺🇸", GBP: "🇬🇧", CHF: "🇨🇭", PLN: "🇵🇱", JPY: "🇯🇵", CAD: "🇨🇦", MXN: "🇲🇽" };
-  const label = (item: string) => `${flag[item] ?? "🌐"} ${item}`;
+  const { data: catalog = [] } = useCurrencyCatalog();
+  const label = (item: string) => { const data = catalog.find((entry) => entry.code === item); return data ? `${data.symbol} · ${data.code}` : item; };
   return <div className="dashboard-currency-toggle" aria-label="Moneda del resumen">{currencies.length <= 2 ? currencies.map((item) => <button key={item} type="button" className={item === currency ? "is-active" : ""} onClick={() => onChange(item)}>{label(item)}</button>) : <select value={currency} onChange={(event) => onChange(event.target.value)} aria-label="Seleccionar moneda">{currencies.map((item) => <option key={item} value={item}>{label(item)}</option>)}</select>}</div>;
 }
 
@@ -366,7 +368,7 @@ function EmptyState({ title, action, onClick }: { title: string; action: string;
 function AccountForm({ currency, busy, onSubmit, onCancel }: { currency: string; busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => void; onCancel: () => void }) {
   const [type, setType] = useState<AccountType>("bank");
   const canChooseColor = type === "bank" || type === "credit_card";
-  return <form className="finance-form" onSubmit={onSubmit}><label>Nombre<input name="name" maxLength={100} required autoFocus placeholder="Cuenta principal" /></label><label>Tipo<select name="type" value={type} onChange={(event) => setType(event.target.value as AccountType)}>{Object.entries(accountLabels).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label><label>Moneda<input name="currency" defaultValue={currency} pattern="[A-Z]{3}" maxLength={3} required /></label>{canChooseColor && <label>Color de {type === "bank" ? "la cuenta" : "la tarjeta"}<select name="color" defaultValue="emerald"><option value="emerald">Verde</option><option value="blue">Azul</option><option value="violet">Violeta</option><option value="rose">Rosa</option></select></label>}<div className="dialog-actions"><button type="button" className="text-button" onClick={onCancel}>Cancelar</button><button className="primary-button" disabled={busy}>{busy ? "Guardando…" : "Crear cuenta"}</button></div></form>;
+  return <form className="finance-form" onSubmit={onSubmit}><label>Nombre<input name="name" maxLength={100} required autoFocus placeholder="Cuenta principal" /></label><label>Tipo<select name="type" value={type} onChange={(event) => setType(event.target.value as AccountType)}>{Object.entries(accountLabels).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label><label>Moneda<CurrencySelector value={currency} /></label>{canChooseColor && <label>Color de {type === "bank" ? "la cuenta" : "la tarjeta"}<select name="color" defaultValue="emerald"><option value="emerald">Verde</option><option value="blue">Azul</option><option value="violet">Violeta</option><option value="rose">Rosa</option></select></label>}<div className="dialog-actions"><button type="button" className="text-button" onClick={onCancel}>Cancelar</button><button className="primary-button" disabled={busy}>{busy ? "Guardando…" : "Crear cuenta"}</button></div></form>;
 }
 
 function TransactionForm({ accounts, categories, busy, onSubmit, onCancel }: { accounts: FinancialAccount[]; categories: Category[]; busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => void; onCancel: () => void }) {
