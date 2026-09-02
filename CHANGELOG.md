@@ -1,5 +1,21 @@
 # Changelog
 
+## [v1.077] - 2026-09-02
+
+### Added
+
+- Carrusel compacto de informes en Inicio para mantener las métricas y una visualización dentro del alto disponible.
+- Selector de plantillas dentro del alta de movimiento, con regreso al formulario y edición del importe antes de registrar.
+- Procesamiento automático de recurrencias vencidas al entrar en su pantalla.
+
+### Changed
+
+- El shell de escritorio ocupa exactamente el viewport y acerca `workspace-stage` al encabezado; los desbordamientos quedan contenidos en listas y paneles.
+- La acción flotante de movimiento se limita a Movimientos y Calendario.
+- El selector de moneda de Inicio solo ofrece monedas de cuentas activas y comparte una barra compacta con el periodo.
+- Calendario utiliza un único selector mensual y colorea el fondo completo de cada operación diaria.
+- El historial de Repartos pasa de modal a vista interna y las subcategorías heredan un punto del color de su categoría principal.
+
 ## [v1.076] - 2026-09-02
 
 ### Added

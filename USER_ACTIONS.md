@@ -3,9 +3,9 @@
 ## Fase 12 — Validar la experiencia simplificada
 
 - Estado: `PENDIENTE`
-- Pasos: registra un movimiento con el botón flotante o la tecla `N`; revisa los filtros plegables de **Movimientos** y **Cuentas**; abre el detalle de una cuenta y de un objetivo; entra en un reparto y alterna entre **Gastos** y **Pagos pendientes**.
+- Pasos: revisa que Inicio, Movimientos y Calendario caben en tu resolución habitual; recorre el carrusel de Inicio; registra un movimiento escogiendo una plantilla; comprueba el scroll interno de la tabla; abre las subcategorías y entra en el historial interno de Repartos.
 - Dato a devolver: indica qué pantalla todavía te parece recargada o cualquier acción que no encuentres con facilidad.
-- Verificación: el movimiento frecuente se registra con pocos pasos y el detalle avanzado no compite con la tarea principal.
+- Verificación: la página no se desplaza en escritorio, el movimiento frecuente se registra con pocos pasos y solo los listados extensos tienen desplazamiento propio.
 
 ## Rendimiento futuro — Dividir el paquete web
 

@@ -1,4 +1,4 @@
-import { Archive, CalendarDays, Plus, RefreshCw, RotateCcw, Trash2 } from "lucide-react";
+import { Archive, CalendarDays, Plus, RotateCcw, Trash2 } from "lucide-react";
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import type { FinancialAccount } from "./finance";
@@ -28,22 +28,12 @@ export function RecurringWorkspace({ session, accounts, categories, currency }: 
   }, [session]);
 
   useEffect(() => {
-    void refresh();
+    let active = true;
+    void generateRecurring(new Date().toISOString().slice(0, 10))
+      .catch(() => { if (active) setError("Hay una operación recurrente pendiente que necesita revisar su cuenta."); })
+      .finally(() => { if (active) void refresh(); });
+    return () => { active = false; };
   }, [refresh]);
-
-  async function generate() {
-    setBusy(true);
-    setError("");
-    try {
-      const created = await generateRecurring(new Date().toISOString().slice(0, 10));
-      await refresh();
-      if (!created) setError("No había ejecuciones pendientes para hoy.");
-    } catch {
-      setError("No se pudieron generar las operaciones pendientes.");
-    } finally {
-      setBusy(false);
-    }
-  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,7 +68,7 @@ export function RecurringWorkspace({ session, accounts, categories, currency }: 
   }
 
   return <section>
-    <div className="section-heading"><div><p className="eyebrow">CALENDARIO</p><h1>Movimientos recurrentes</h1></div><div className="recurring-actions"><button className="secondary-button" disabled={busy} onClick={() => void generate()}><RefreshCw size={17} /> Generar hoy</button><button className="primary-button" disabled={!activeAccounts.length} onClick={() => setOpen(true)}><Plus size={18} /> Nueva regla</button></div></div>
+    <div className="section-heading"><div><p className="eyebrow">AUTOMATIZACIÓN</p><h1>Movimientos recurrentes</h1><p className="section-copy">Los vencimientos se registran automáticamente en la cuenta y fecha indicadas al abrir la aplicación.</p></div><button className="primary-button" disabled={!activeAccounts.length} onClick={() => setOpen(true)}><Plus size={18} /> Nueva regla</button></div>
     {error && <p className="inline-error">{error}</p>}
     {!activeAccounts.length && <p className="ux-hint">Crea primero una cuenta activa en {currency}. Las reglas recurrentes necesitan saber dónde registrar cada movimiento.</p>}
     {loading ? <section className="skeleton-grid"><i /><i /><i /></section> : rules.length ? <div className="recurring-list">{rules.map((rule) => <article className={!rule.is_active ? "is-archived" : ""} key={rule.id}><span>{rule.frequency === "monthly" ? "MENSUAL" : rule.frequency === "weekly" ? "SEMANAL" : "DIARIA"}</span><div><strong>{rule.name}</strong><small>{rule.transaction_type === "income" ? "Ingreso" : "Gasto"} · {accounts.find((account) => account.id === rule.account_id)?.name ?? "Cuenta archivada"} · {categories.find((category) => category.id === rule.category_id)?.name ?? "Sin categoría"} · Próxima: {new Date(`${rule.next_run_on}T00:00:00`).toLocaleDateString("es-ES")}</small></div><b className={rule.transaction_type === "income" ? "positive" : "negative"}>{money(rule.amount, rule.currency_code)}</b><div className="recurring-rule-actions"><button className="icon-action" title={rule.is_active ? "Desactivar" : "Activar"} onClick={() => void (async () => { setBusy(true); await setRecurringActive(session, rule.id, !rule.is_active); await refresh(); setBusy(false); })()}>{rule.is_active ? <Archive size={15} /> : <RotateCcw size={15} />}</button><button className="icon-action account-delete" title="Borrar regla" onClick={() => void (async () => { setBusy(true); try { await deleteRecurringRule(session, rule.id); await refresh(); } catch { setError("No se puede borrar una regla que ya tiene operaciones generadas. Puedes desactivarla."); } finally { setBusy(false); } })()}><Trash2 size={15} /></button></div></article>)}</div> : <div className="empty-state"><CalendarDays size={28} /><h2>No hay reglas recurrentes</h2><p>Automatiza ingresos o gastos que se repiten cada mes, semana o día.</p>{activeAccounts.length > 0 && <button className="secondary-button" onClick={() => setOpen(true)}>Crear la primera</button>}</div>}

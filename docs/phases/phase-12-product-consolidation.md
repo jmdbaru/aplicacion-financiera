@@ -21,6 +21,16 @@ Conservar la estructura ERP y la identidad visual, pero reducir la carga cogniti
 - Repartos separados en gastos y liquidaciones, manteniendo historial de eventos y pagos realizados.
 - Transiciones breves entre espacios y revelado de controles; se desactivan cuando el sistema solicita reducir movimiento.
 
+### Segunda pasada: viewport fijo
+
+- En escritorio, header, sidebar y área de trabajo ocupan el viewport sin scroll del documento. Cada listado extenso conserva desplazamiento interno.
+- `workspace-stage` comienza inmediatamente después del header, con un margen visual mínimo.
+- Inicio muestra cuatro métricas y un carrusel de evolución, presupuesto y actividad; la moneda solo se ofrece cuando existe saldo en cuentas activas de esa divisa.
+- Movimientos integra la biblioteca dentro del propio formulario para elegir una plantilla y modificar su importe.
+- Calendario evita repetir el mes y usa el fondo de la fila para diferenciar ingresos y gastos.
+- Recurrentes procesa automáticamente los vencimientos al abrir la sección; la RPC existente evita duplicar ocurrencias.
+- Repartos presenta el historial como pantalla interna y no como ventana modal.
+
 ## Base de datos
 
 - `202609020002_database_hardening.sql`: índices de claves foráneas y políticas RLS coherentes para repartos.
@@ -34,7 +44,7 @@ Conservar la estructura ERP y la identidad visual, pero reducir la carga cogniti
 - Vitest: 10 archivos y 17 pruebas correctas.
 - Build Vite de producción: correcto; queda pendiente dividir el paquete principal, actualmente superior a 500 kB minificado.
 - Ruff y Pytest: correctos, 31 pruebas API.
-- Navegador local: cuentas ocultan filtros inicialmente, la acción rápida permanece visible y repartos carga sin errores visibles.
+- Navegador local: documento sin scroll a 987 × 912, separación de 8 px entre header y área de trabajo, scroll interno en Movimientos, selector mensual único en Calendario, subcategorías coloreadas e historial de Repartos sin modal.
 
 ## Pendientes conscientes
 
