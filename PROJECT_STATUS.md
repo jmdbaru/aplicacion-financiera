@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-- Fase actual: Fase 11 — Inversiones, finalizada técnicamente y en revisión funcional.
+- Fase actual: Fase 12 — Consolidación de producto, finalizada técnicamente y en revisión funcional.
 - Última fase aprobada: Fase 6 — Recurrentes y calendario.
-- Estado: la Fase 11 está pendiente de validación funcional en la vista previa.
-- Actualización: 2026-08-31.
+- Estado: experiencia principal simplificada, base de datos endurecida y validación automática correcta.
+- Actualización: 2026-09-02.
 
 ## Stack objetivo
 
@@ -19,15 +19,15 @@ React 19/TypeScript 5.9/Vite 7/Tailwind 4; FastAPI/Pydantic/Uvicorn; Supabase Po
 
 Auditoría; arquitectura; modelo e invariantes; estrategia RLS; pruebas/mantenimiento/entornos/despliegue; documentación viva y ADR.
 
-Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles, cuentas, ledger, categorías y presupuestos están protegidos por RLS. La Fase 4 añade catálogo global conservado, categorías personales/subcategorías, presupuestos mensuales, alertas, comparación mensual y categorización opcional de ingresos y gastos. Última validación: Ruff correcto, 17 pruebas API correctas, lint y TypeScript correctos, 6 pruebas web correctas, build correcto, y GitHub Actions/Pages correctos en `v1.027`.
+Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles, cuentas, ledger, categorías y presupuestos están protegidos por RLS. La consolidación prioriza el alta rápida de movimientos, reduce la densidad de cuentas, objetivos y repartos mediante vistas progresivas, y mueve los filtros de movimientos a una consulta paginada en servidor. Última validación local: Ruff correcto, 31 pruebas API, lint y TypeScript correctos, 17 pruebas web y build de producción correcto.
 
 ## Bloqueos y acciones
 
-Supabase contiene las migraciones de perfiles, cuentas, ledger, categorías, presupuestos, dashboard, objetivos, patrimonio, informes, importación e inversiones aplicadas. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios fueron comprobados en fases previas. Los pendientes previos a producción de Auth, GraphQL, Excel `.xlsx` e historial remoto de migraciones siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
+Supabase contiene todas las migraciones funcionales y las dos migraciones de consolidación aplicadas. Se añadieron índices de respaldo para claves foráneas, validación de pertenencia al mismo evento en repartos y búsqueda paginada de movimientos con `SECURITY INVOKER`. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios siguen vigentes. Los pendientes previos a producción de Auth, GraphQL y Excel `.xlsx` siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
 
 ## Fase en curso
 
-Fase 11: inversiones. La siguiente fase no se iniciará hasta que esta quede validada y autorizada.
+Fase 12: consolidación de producto. Queda pendiente la validación funcional del usuario antes de ampliar nuevos dominios.
 
 ## Referencias
 
@@ -42,3 +42,4 @@ Fase 11: inversiones. La siguiente fase no se iniciará hasta que esta quede val
 - `docs/phases/phase-09-reports.md`
 - `docs/phases/phase-10-imports-and-rules.md`
 - `docs/phases/phase-11-investments.md`
+- `docs/phases/phase-12-product-consolidation.md`

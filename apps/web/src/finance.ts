@@ -89,21 +89,25 @@ export async function deleteAccount(session: Session, accountId: string) {
   if (error) throw error;
 }
 
-export async function loadTransactions(session: Session, page: number, search: string, dateFrom: string, dateTo: string) {
+export type TransactionFilters = { search:string; dateFrom:string; dateTo:string; type:TransactionType|""; categoryId:string; subcategoryId:string; currencyCode:string; accountId:string };
+
+export async function loadTransactions(_session: Session, page: number, filters: TransactionFilters) {
   const pageSize = 10;
-  let query = client()
-    .from("ledger_transactions")
-    .select("id,effective_date,description,transaction_type,category_id,reversed_transaction_id,ledger_entries(account_id,entry_kind,currency_code,amount)", { count: "exact" })
-    .eq("user_id", session.user.id)
-    .order("effective_date", { ascending: false })
-    .order("id", { ascending: false })
-    .range(page * pageSize, page * pageSize + pageSize - 1);
-  if (search.trim()) query = query.ilike("description", `%${search.trim().replaceAll("%", "\\%").replaceAll("_", "\\_")}%`);
-  if (dateFrom) query = query.gte("effective_date", dateFrom);
-  if (dateTo) query = query.lte("effective_date", dateTo);
-  const { data, error, count } = await query;
+  const { data, error } = await client().rpc("search_ledger_transactions", {
+    p_page: page,
+    p_page_size: pageSize,
+    p_search: filters.search.trim() || null,
+    p_date_from: filters.dateFrom || null,
+    p_date_to: filters.dateTo || null,
+    p_transaction_type: filters.type || null,
+    p_category_id: filters.categoryId || null,
+    p_subcategory_id: filters.subcategoryId || null,
+    p_currency_code: filters.currencyCode || null,
+    p_account_id: filters.accountId || null,
+  });
   if (error) throw error;
-  return { rows: (data ?? []) as LedgerTransaction[], count: count ?? 0, pageSize };
+  const rows=(data??[]) as Array<{row_data:LedgerTransaction;total_count:number|string}>;
+  return { rows: rows.map((item)=>item.row_data), count: Number(rows[0]?.total_count ?? 0), pageSize };
 }
 
 export async function loadCalendarTransactions(session: Session, dateFrom: string, dateTo: string): Promise<LedgerTransaction[]> {

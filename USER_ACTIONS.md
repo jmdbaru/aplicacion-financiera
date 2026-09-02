@@ -1,5 +1,19 @@
 # Acciones del usuario
 
+## Fase 12 — Validar la experiencia simplificada
+
+- Estado: `PENDIENTE`
+- Pasos: registra un movimiento con el botón flotante o la tecla `N`; revisa los filtros plegables de **Movimientos** y **Cuentas**; abre el detalle de una cuenta y de un objetivo; entra en un reparto y alterna entre **Gastos** y **Pagos pendientes**.
+- Dato a devolver: indica qué pantalla todavía te parece recargada o cualquier acción que no encuentres con facilidad.
+- Verificación: el movimiento frecuente se registra con pocos pasos y el detalle avanzado no compite con la tarea principal.
+
+## Rendimiento futuro — Dividir el paquete web
+
+- Estado: `PENDIENTE`
+- Motivo: el build es correcto, pero el paquete principal minificado supera 500 kB porque todos los módulos se cargan al inicio.
+- Pasos: cargar bajo demanda informes, importaciones, inversiones y espacios secundarios; medir tamaño y navegación antes y después.
+- Verificación: el paquete inicial queda por debajo del umbral sin introducir pantallas en blanco ni retrasos al cambiar de sección.
+
 ## UX — Paleta de comandos `Ctrl+K`
 
 - Estado: `COMPLETADA`

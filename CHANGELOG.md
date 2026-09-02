@@ -1,5 +1,25 @@
 # Changelog
 
+## [v1.076] - 2026-09-02
+
+### Added
+
+- Búsqueda y filtrado paginado de movimientos en Supabase, incluyendo cuenta, moneda, categoría y subcategoría.
+- Índices para las claves foráneas del dominio y pruebas unitarias del cálculo de liquidaciones de repartos.
+- Atajo `N`, recuerdo de la última cuenta y selector directo del tipo para registrar movimientos con menos pasos.
+
+### Changed
+
+- Cuentas, objetivos y repartos usan divulgación progresiva para mostrar detalle, filtros o liquidaciones solo bajo demanda.
+- La acción rápida de movimiento queda siempre accesible y las transiciones de pantalla son ligeras y respetan `prefers-reduced-motion`.
+- Las políticas RLS de repartos validan que evento, pagador, participantes y destinatarios pertenezcan al mismo ámbito.
+- Los movimientos indican de forma explícita la cuenta de pago, ingreso o ambas cuentas en transferencias.
+
+### Fixed
+
+- Corregida la paginación incorrecta que filtraba únicamente los diez movimientos ya descargados.
+- Eliminado un ciclo de variables CSS que podía volver invisibles botones temáticos y la acción flotante.
+
 ## [Unreleased]
 
 ### Added

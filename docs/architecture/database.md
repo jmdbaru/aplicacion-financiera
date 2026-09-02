@@ -63,6 +63,14 @@ Se confirmarán con consultas y `EXPLAIN`, evitando índices decorativos.
 
 En la Fase 3 se añadieron índices por usuario/fecha, cuenta/fecha y claves foráneas de transacción y reverso. El asesor remoto ya no informa claves foráneas sin índice. El índice por cuenta/fecha aparece todavía como no usado porque no existe carga representativa; se medirá antes de decidir retirarlo.
 
+## Consolidación de septiembre de 2026
+
+La migración `202609020002_database_hardening.sql` completa los índices de respaldo de claves foráneas y endurece las políticas de repartos. Una persona pagadora, participante o destinataria debe pertenecer al mismo evento y usuario que la operación; la comprobación se realiza también en actualización, no solo en lectura.
+
+La migración `202609020003_server_side_transaction_search.sql` añade `search_ledger_transactions`. La función es `SECURITY INVOKER`, compara siempre con `auth.uid()` y aplica búsqueda, fechas, tipo, jerarquía de categoría, moneda y cuenta antes de `OFFSET/LIMIT`. Esto mantiene el total y las páginas correctos sin ampliar permisos directos de escritura del ledger.
+
+El asesor de rendimiento ya no detecta claves foráneas sin índice. Los avisos restantes son índices todavía no utilizados en una base con poca carga; no se eliminarán hasta medir consultas representativas.
+
 ## Migraciones y recuperación
 
 Migraciones ordenadas en `supabase/migrations/`, cambios compatibles y estrategia expand/contract con datos reales. Cada fase documentará rollback; cambios destructivos exigirán copia y restauración ensayada. Seeds solo ficticios.

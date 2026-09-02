@@ -1,5 +1,5 @@
-import { Archive, CheckCircle2, History, Plus, Target } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { Archive, ArrowLeft, CheckCircle2, ChevronRight, History, Plus, Target } from "lucide-react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { ModalFrame } from "./ModalFrame";
 import { contribute, createGoal, loadContributions, loadGoals, updateGoalStatus, type Goal, type GoalContribution } from "./goals";
@@ -9,60 +9,20 @@ const money = (value: number, currency: string) => new Intl.NumberFormat("es-ES"
 export function GoalsWorkspace({ session, currency }: { session: Session; currency: string }) {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [history, setHistory] = useState<GoalContribution[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
+  const selected = goals.find((item) => item.id === selectedId) ?? null;
+  const totals = useMemo(() => goals.filter((item) => item.status === "active").reduce((result, item) => ({ target: result.target + item.target_amount, saved: result.saved + item.contributed }), { target: 0, saved: 0 }), [goals]);
 
-  const refresh = async () => {
-    try {
-      const next = await loadGoals();
-      setGoals(next);
-      setHistory(await loadContributions(next.map((goal) => goal.id)));
-    } catch {
-      setError("No se pudieron cargar los objetivos.");
-    }
-  };
+  const refresh = async () => { try { const next = await loadGoals(); setGoals(next); setHistory(await loadContributions(next.map((goal) => goal.id))); } catch { setError("No se pudieron cargar los objetivos."); } };
+  useEffect(() => { void refresh(); }, []);
 
-  useEffect(() => {
-    void refresh();
-  }, []);
+  async function goal(event: FormEvent<HTMLFormElement>) { event.preventDefault(); const form = new FormData(event.currentTarget); try { await createGoal(session, String(form.get("name")), Number(form.get("amount")), currency, String(form.get("date"))); setOpen(false); await refresh(); } catch { setError("No se pudo crear el objetivo."); } }
+  async function add(event: FormEvent<HTMLFormElement>, id: string) { event.preventDefault(); const form = new FormData(event.currentTarget); try { await contribute(session, id, Number(form.get("amount")), String(form.get("note"))); event.currentTarget.reset(); await refresh(); } catch { setError("No se pudo registrar la aportación."); } }
+  async function status(id: string, next: "completed" | "archived") { try { await updateGoalStatus(session, id, next); await refresh(); if(next === "archived")setSelectedId(null); } catch { setError("No se pudo actualizar el estado."); } }
 
-  async function goal(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    try {
-      await createGoal(session, String(form.get("name")), Number(form.get("amount")), currency, String(form.get("date")));
-      setOpen(false);
-      await refresh();
-    } catch {
-      setError("No se pudo crear el objetivo.");
-    }
-  }
+  if (selected) return <section className="workspace-detail"><div className="section-heading section-heading--compact"><button className="text-button" type="button" onClick={() => setSelectedId(null)}><ArrowLeft size={16}/> Objetivos</button><div className="detail-actions">{selected.status === "active"&&<button className="secondary-button" onClick={()=>void status(selected.id,"completed")}><CheckCircle2 size={15}/> Completar</button>}<button className="text-button" onClick={()=>void status(selected.id,"archived")}><Archive size={15}/> Archivar</button></div></div>{error&&<p className="inline-error">{error}</p>}<article className="goal-detail surface"><div><p className="eyebrow">{selected.status}</p><h1>{selected.name}</h1><strong>{money(selected.contributed,selected.currency_code)}</strong><p className="budget-copy">de {money(selected.target_amount,selected.currency_code)} · faltan {money(selected.remaining,selected.currency_code)}</p><div className="budget-track"><i style={{width:`${selected.progress_pct}%`}}/></div></div>{selected.status === "active"&&<form className="goal-contribution-form" onSubmit={(event)=>void add(event,selected.id)}><h2>Nueva aportación</h2><label>Importe<input name="amount" type="number" min="0.01" step="0.01" required autoFocus/></label><label>Nota<input name="note" maxLength={240} placeholder="Opcional"/></label><button className="primary-button">Añadir aportación</button></form>}</article><article className="surface goal-history-panel"><div className="surface-heading"><h2>Historial</h2><History size={18}/></div>{history.filter((item)=>item.goal_id===selected.id).length?<div className="detail-list">{history.filter((item)=>item.goal_id===selected.id).map((item)=><div key={item.id}><span><strong>{item.note||"Aportación"}</strong><small>{new Date(item.contributed_on).toLocaleDateString("es-ES")}</small></span><b>{money(item.amount,selected.currency_code)}</b></div>)}</div>:<p className="ux-hint">Aún no hay aportaciones.</p>}</article></section>;
 
-  async function add(event: FormEvent<HTMLFormElement>, id: string) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    try {
-      await contribute(session, id, Number(form.get("amount")), String(form.get("note")));
-      event.currentTarget.reset();
-      await refresh();
-    } catch {
-      setError("No se pudo registrar la aportación.");
-    }
-  }
-
-  async function status(id: string, next: "completed" | "archived") {
-    try {
-      await updateGoalStatus(session, id, next);
-      await refresh();
-    } catch {
-      setError("No se pudo actualizar el estado.");
-    }
-  }
-
-  return <section>
-    <div className="section-heading"><div><p className="eyebrow">AHORRO</p><h1>Objetivos</h1></div><button className="primary-button" onClick={() => setOpen(true)}><Plus size={18} />Nuevo objetivo</button></div>
-    {error && <p className="inline-error">{error}</p>}
-    {goals.length ? <div className="goal-grid">{goals.map((goalItem) => <article className="surface" key={goalItem.id}><p className="eyebrow">{goalItem.status}</p><h2>{goalItem.name}</h2><strong>{money(goalItem.contributed, goalItem.currency_code)}</strong><p className="budget-copy">de {money(goalItem.target_amount, goalItem.currency_code)} · faltan {money(goalItem.remaining, goalItem.currency_code)}</p><div className="budget-track"><i style={{ width: `${goalItem.progress_pct}%` }} /></div>{goalItem.status === "active" && <form className="goal-add" onSubmit={(event) => void add(event, goalItem.id)}><input name="amount" type="number" min="0.01" step="0.01" placeholder="Aportación" required /><input name="note" maxLength={240} placeholder="Nota opcional" /><button className="secondary-button">Añadir</button></form>}<div className="goal-history"><History size={15} />{history.filter((item) => item.goal_id === goalItem.id).slice(0, 3).map((item) => <span key={item.id}>{new Date(item.contributed_on).toLocaleDateString("es-ES")} · {money(item.amount, goalItem.currency_code)}{item.note ? ` · ${item.note}` : ""}</span>)}</div>{goalItem.status === "active" && <button className="text-button" onClick={() => void status(goalItem.id, "completed")}><CheckCircle2 size={15} />Cerrar objetivo</button>}{goalItem.status !== "archived" && <button className="text-button" onClick={() => void status(goalItem.id, "archived")}><Archive size={15} />Archivar</button>}</article>)}</div> : <div className="empty-state"><Target size={28} /><h2>Aún no hay objetivos</h2><p>Empieza por una meta concreta: fondo de emergencia, viaje, entrada de vivienda o cualquier ahorro separado.</p><button className="secondary-button" onClick={() => setOpen(true)}>Crear el primero</button></div>}
-    {open && <ModalFrame title="Nuevo objetivo" onClose={() => setOpen(false)} labelledBy="goal-dialog-title"><form className="finance-form" onSubmit={goal}><label>Nombre<input name="name" required maxLength={120} autoFocus placeholder="Ej. Fondo de emergencia" /></label><label>Meta<input name="amount" type="number" min="0.01" step="0.01" required /></label><label>Fecha objetivo<input name="date" type="date" /></label><div className="dialog-actions"><button type="button" className="text-button" onClick={() => setOpen(false)}>Cancelar</button><button className="primary-button">Guardar</button></div></form></ModalFrame>}
-  </section>;
+  return <section><div className="section-heading"><div><p className="eyebrow">AHORRO</p><h1>Objetivos</h1><p className="section-copy">Tus metas a largo plazo, sin mezclar su detalle con la vista general.</p></div><button className="primary-button" onClick={()=>setOpen(true)}><Plus size={18}/> Nuevo objetivo</button></div>{error&&<p className="inline-error">{error}</p>}{goals.length?<><div className="goal-summary"><div><span>Ahorrado</span><strong>{money(totals.saved,currency)}</strong></div><div><span>Meta activa</span><strong>{money(totals.target,currency)}</strong></div><div><span>Objetivos activos</span><strong>{goals.filter((item)=>item.status==="active").length}</strong></div></div><div className="goal-list">{goals.map((item)=><button type="button" key={item.id} onClick={()=>setSelectedId(item.id)}><div><span className="category-swatch"/><p><strong>{item.name}</strong><small>{money(item.contributed,item.currency_code)} de {money(item.target_amount,item.currency_code)}</small></p></div><span className="goal-list-progress"><i style={{width:`${item.progress_pct}%`}}/></span><span>{Math.round(item.progress_pct)}%</span><ChevronRight size={17}/></button>)}</div></>:<div className="empty-state"><Target size={28}/><h2>Aún no hay objetivos</h2><p>Empieza por una meta concreta y entra en ella cuando quieras aportar.</p><button className="secondary-button" onClick={()=>setOpen(true)}>Crear el primero</button></div>}{open&&<ModalFrame title="Nuevo objetivo" onClose={()=>setOpen(false)} labelledBy="goal-dialog-title"><form className="finance-form" onSubmit={goal}><label>Nombre<input name="name" required maxLength={120} autoFocus placeholder="Ej. Fondo de emergencia"/></label><label>Meta<input name="amount" type="number" min="0.01" step="0.01" required/></label><label>Fecha objetivo<input name="date" type="date"/></label><div className="dialog-actions"><button type="button" className="text-button" onClick={()=>setOpen(false)}>Cancelar</button><button className="primary-button">Guardar</button></div></form></ModalFrame>}</section>;
 }
