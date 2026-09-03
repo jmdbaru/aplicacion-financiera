@@ -4,6 +4,57 @@
 >
 > Actualizado: 2026-09-03
 
+## Nueva auditoría de producto — decisiones UX pendientes
+
+Estas son las preferencias expresadas en la última revisión y la recomendación adoptada para la siguiente iteración.
+
+### Estado de implementación — 2026-09-03
+
+- **Completado:** acciones de alta contextuales en Cuentas, Categorías, Presupuestos, Objetivos, Repartos y Recurrentes; el `+` flotante se reserva para el movimiento rápido.
+- **Completado:** altas de cuentas, movimientos, categorías, presupuestos, objetivos y recurrencias con divulgación progresiva; categoría y subcategoría se seleccionan de forma dependiente.
+- **Completado:** los formularios y preferencias que aún requieren foco se presentan como panel lateral contextual, no como diálogo centrado.
+- **Pendiente:** llevar el patrón categoría → subcategoría a cualquier formulario adicional que se incorpore y realizar una revisión visual manual con datos reales anonimizados.
+
+### Dirección visual recomendada
+
+- Mantener la identidad verde y el shell ERP, pero reducir el aspecto de “botón genérico”: una sola acción primaria por pantalla, acciones secundarias en texto/contorno y el botón flotante `+` únicamente para alta rápida de movimientos.
+- En Cuentas, Categorías, Objetivos y Repartos, preferir una barra de acciones contextual con icono + etiqueta; no usar varios botones circulares grandes.
+- Sustituir la sensación de pantallas recargadas por el patrón **lista + detalle**: la lista permite localizar; el detalle se abre dentro del workspace, con pestañas o secciones, sin modal.
+- Mantener animaciones breves y funcionales, con respeto a `prefers-reduced-motion`.
+
+### Formularios y relaciones
+
+- Usar formularios por pasos suaves: primero datos imprescindibles, después campos dependientes y por último “Más opciones”. No convertir cada alta en un wizard rígido.
+- Los selectores dependientes deben aparecer bloqueados con una explicación breve y activarse al elegir el campo padre. Ejemplo: categoría → subcategoría; cuenta → moneda disponible; evento → participantes y gastos.
+- Añadir relaciones útiles al dominio: cuenta y contracuenta en transferencias, categoría/subcategoría, regla recurrente, etiquetas/notas, fecha/hora, adjuntos futuros y vínculo a evento en repartos.
+- Validar cada campo junto al propio control, reservar el resumen superior para errores generales y conservar el formulario si falla el guardado.
+
+### Pop-ups y feedback
+
+- Evitar modales para navegación, historiales y detalle. Usarlos solo para tareas breves que requieren foco: confirmar borrado irreversible, crear una operación rápida o editar una preferencia aislada.
+- Preferir detalle inline, panel lateral contextual o pantalla de objeto para acciones complejas.
+- Confirmaciones y errores normales deben ser avisos discretos abajo a la derecha durante 2–3 segundos; errores de campo permanecen inline hasta corregirse.
+
+### Patrón de aplicación recomendado
+
+La estructura más útil para este producto es:
+
+1. **Dashboard:** saldo, balance, una gráfica/insight y dos acciones rápidas.
+2. **List report:** filtros, búsqueda, ordenación y lista compacta (Movimientos, Cuentas, Categorías).
+3. **Object view:** detalle del elemento seleccionado dentro del workspace, con historial y acciones en el encabezado.
+4. **Progressive disclosure:** mostrar lo esencial primero y ampliar filtros, relaciones y opciones avanzadas solo cuando el usuario las solicita.
+
+Este patrón coincide con las recomendaciones de SAP Fiori para separar listados de páginas de objeto, usar cabeceras con acciones y revelar contenido progresivamente. Para altas complejas o no lineales, Fiori recomienda un flujo guiado tipo wizard; aquí se aplicará solo cuando la dependencia de campos lo justifique.
+
+### Backlog priorizado de esta auditoría
+
+- **Alta:** rediseñar acciones de alta fuera de Movimientos para que sean barras contextuales compactas y coherentes.
+- **Alta:** convertir formularios de cuentas, categorías, objetivos y repartos al modelo datos básicos → campos dependientes → opciones avanzadas.
+- **Alta:** revisar todos los modales y migrar historiales/detalles a vistas internas o paneles laterales.
+- **Media:** crear un sistema único de estados (éxito, error, aviso, guardando, vacío) con copy no técnico.
+- **Media:** revisión visual pantalla por pantalla con una escala de densidad consistente y tamaños de control menores.
+- **Baja:** permitir reorganizar widgets del Dashboard después de estabilizar el flujo principal.
+
 ## Diagnóstico ejecutivo
 
 La aplicación tiene implementadas las fases técnicas 0 a 12: arquitectura, API FastAPI, frontend React/Vite, Supabase Auth/RLS, perfiles, cuentas, ledger, categorías, presupuestos, dashboard, recurrentes, calendario, objetivos, patrimonio, informes, importación, inversiones, repartos y consolidación UX.

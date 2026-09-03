@@ -1,5 +1,18 @@
 # Changelog
 
+## [v1.081] - 2026-09-03
+
+### Added
+
+- Formularios progresivos para altas de cuentas, movimientos, categorías, presupuestos, objetivos y reglas recurrentes.
+- Selección dependiente de categoría y subcategoría en movimientos y recurrencias, con una explicación cuando no existen subcategorías.
+
+### Changed
+
+- Las acciones de alta principales fuera de Movimientos usan una acción contextual compacta y coherente.
+- Los cuadros de creación y preferencias pasan a abrirse como paneles laterales contextuales.
+- El inventario de pendientes refleja esta iteración de UX y conserva las mejoras que deben validarse después.
+
 ## [v1.080] - 2026-09-03
 
 ### Added
