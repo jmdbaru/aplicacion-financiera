@@ -10,6 +10,8 @@ import {
   ChevronRight,
   CircleDollarSign,
   CalendarDays,
+  Eye,
+  EyeOff,
   FolderTree,
   Goal,
   Home,
@@ -67,29 +69,31 @@ import {
 
 type View = "summary" | "accounts" | "account-detail" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments" | "split" | "calendar";
 type NavigationGroup = {
-  id: "principal" | "dinero" | "planificacion" | "analisis" | "sistema";
+  id: "principal" | "dinero" | "planificacion" | "funciones";
   label: string;
   items: Array<{ view: View; label: string; helper: string; icon: typeof Home }>;
 };
 
 const navigationGroups: NavigationGroup[] = [
-  { id: "principal", label: "Principal", items: [{ view: "summary", label: "Inicio", helper: "Situación actual", icon: Home }] },
+  { id: "principal", label: "Principal", items: [
+    { view: "summary", label: "Resumen", helper: "Situación actual", icon: Home },
+    { view: "calendar", label: "Calendario", helper: "Operaciones diarias", icon: CalendarDays },
+  ] },
   { id: "dinero", label: "Dinero", items: [
-    { view: "transactions", label: "Movimientos", helper: "Ledger y búsqueda", icon: WalletCards },
     { view: "accounts", label: "Cuentas", helper: "Saldos y archivo", icon: Wallet },
+    { view: "transactions", label: "Movimientos", helper: "Ledger y búsqueda", icon: WalletCards },
+    { view: "recurring", label: "Recurrentes", helper: "Automatización", icon: RotateCcw },
+    { view: "categories", label: "Categorías", helper: "Taxonomía", icon: FolderTree },
     // Importación temporalmente desactivada hasta completar su revisión funcional.
   ] },
   { id: "planificacion", label: "Planificación", items: [
     { view: "budgets", label: "Presupuestos", helper: "Límites mensuales", icon: CircleDollarSign },
-    { view: "categories", label: "Categorías", helper: "Taxonomía", icon: FolderTree },
     { view: "goals", label: "Objetivos", helper: "Metas y aportes", icon: Goal },
-    { view: "recurring", label: "Recurrentes", helper: "Automatización", icon: RotateCcw },
-    { view: "calendar", label: "Calendario", helper: "Operaciones diarias", icon: CalendarDays },
   ] },
-  { id: "analisis", label: "Análisis", items: [
-    { view: "reports", label: "Informes", helper: "Tendencias", icon: PieChart },
+  { id: "funciones", label: "Funciones", items: [
     // Patrimonio e Inversiones se mantienen preparados, pero permanecen ocultos hasta su siguiente fase.
     { view: "split", label: "Repartos", helper: "Viajes y eventos", icon: HandCoins },
+    { view: "reports", label: "Informes", helper: "Tendencias", icon: PieChart },
   ] },
 ];
 
@@ -115,6 +119,10 @@ const transactionLabels: Record<TransactionType, string> = {
 
 function money(value: number, currency: string) {
   return new Intl.NumberFormat("es-ES", { style: "currency", currency }).format(value);
+}
+
+function currencySymbol(currency: string) {
+  return new Intl.NumberFormat("es-ES", { style: "currency", currency, currencyDisplay: "narrowSymbol" }).formatToParts(0).find((part) => part.type === "currency")?.value ?? currency;
 }
 
 function localDateKey(date: Date) {
@@ -183,6 +191,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   const [transactionDialogPanel, setTransactionDialogPanel] = useState<"form" | "library">("form");
   const [movementFiltersOpen, setMovementFiltersOpen] = useState(false);
   const [visibleAccountTypes, setVisibleAccountTypes] = useState<AccountType[]>(accountTypes);
+  const [balancesVisible, setBalancesVisible] = useState(() => window.localStorage.getItem("financiera.balances-visible") !== "hidden");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => window.localStorage.getItem("financiera.sidebar") === "collapsed");
   const [dashboardCurrency, setDashboardCurrency] = useState(defaultCurrency);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -191,8 +200,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     principal: true,
     dinero: true,
     planificacion: true,
-    analisis: true,
-    sistema: false,
+    funciones: true,
   });
 
   const refreshCategories = useCallback(async () => {
@@ -231,6 +239,9 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   useEffect(() => {
     window.localStorage.setItem("financiera.sidebar", sidebarCollapsed ? "collapsed" : "expanded");
   }, [sidebarCollapsed]);
+  useEffect(() => {
+    window.localStorage.setItem("financiera.balances-visible", balancesVisible ? "visible" : "hidden");
+  }, [balancesVisible]);
   useEffect(() => {
     document.documentElement.dataset.theme = window.localStorage.getItem("financiera.theme") || "green";
     document.documentElement.dataset.interfaceStyle = window.localStorage.getItem("financiera.interface-style") || "forest";
@@ -373,8 +384,8 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
       {error && <p className="inline-error" role="alert">{error}</p>}
       {loading ? <LoadingState /> : <AnimatePresence mode="wait" initial={false}><motion.div className="workspace-stage" key={view} initial={reduceMotion ? false : { opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? undefined : { opacity: 0, y: -3 }} transition={{ duration: 0.16, ease: "easeOut" }}>
         {view === "summary" && <DashboardWorkspace currency={effectiveDashboardCurrency} currencyControl={dashboardCurrencies.length > 1 ? <DashboardCurrencyToggle currency={effectiveDashboardCurrency} currencies={dashboardCurrencies} onChange={setDashboardCurrency} /> : undefined} onCreateAccount={() => setDialog("account")} />}
-        {view === "accounts" && <section className="managed-workspace"><div className="workspace-actionbar"><div className="account-type-pills" role="group" aria-label="Tipos de cuenta visibles">{accountTypes.map((type) => <button key={type} type="button" className={visibleAccountTypes.includes(type) ? "is-active" : ""} aria-pressed={visibleAccountTypes.includes(type)} onClick={() => setVisibleAccountTypes((current) => current.includes(type) ? current.filter((item) => item !== type) : [...current, type])}>{accountLabels[type]}</button>)}</div><button className="primary-button" onClick={() => setDialog("account")}><Plus size={18} /> Nueva cuenta</button></div>{accountNotice && <p className="account-toast" role="status">{accountNotice}</p>}<AccountsView accounts={orderedAccounts} busy={busy} onCreate={() => setDialog("account")} onOpen={openAccountDetail} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} onDelete={(account) => void (async () => { try { await deleteAccount(session, account.id); await refresh(); } catch { setAccountNotice("No podemos borrar esta cuenta porque conserva operaciones o configuraciones vinculadas. Puedes archivarla para mantener tu historial."); window.setTimeout(() => setAccountNotice(""), 1000); } })()} /></section>}
-        {view === "account-detail" && selectedAccount && <AccountDetail account={selectedAccount} movements={selectedAccountTransactions} loading={accountDetailLoading} onClose={() => setView("accounts")} />}
+        {view === "accounts" && <section className="managed-workspace">{accountNotice && <p className="account-toast" role="status">{accountNotice}</p>}<AccountsView accounts={orderedAccounts} visibleTypes={visibleAccountTypes} onToggleType={(type) => setVisibleAccountTypes((current) => current.includes(type) ? current.filter((item) => item !== type) : [...current, type])} balancesVisible={balancesVisible} onToggleBalances={() => setBalancesVisible((visible) => !visible)} busy={busy} onCreate={() => setDialog("account")} onOpen={openAccountDetail} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} onDelete={(account) => void (async () => { try { await deleteAccount(session, account.id); await refresh(); } catch { setAccountNotice("No podemos borrar esta cuenta porque conserva operaciones o configuraciones vinculadas. Puedes archivarla para mantener tu historial."); window.setTimeout(() => setAccountNotice(""), 1000); } })()} /></section>}
+        {view === "account-detail" && selectedAccount && <AccountDetail account={selectedAccount} movements={selectedAccountTransactions} balancesVisible={balancesVisible} onToggleBalances={() => setBalancesVisible((visible) => !visible)} loading={accountDetailLoading} onClose={() => setView("accounts")} />}
         {view === "transactions" && <section className="transactions-workspace"><div className="workspace-toggle workspace-toggle--view" role="tablist" aria-label="Contenido de movimientos"><button type="button" role="tab" aria-selected={transactionPanel === "movements"} className={transactionPanel === "movements" ? "is-active" : ""} onClick={() => setTransactionPanel("movements")}>Movimientos</button><button type="button" role="tab" aria-selected={transactionPanel === "library"} className={transactionPanel === "library" ? "is-active" : ""} onClick={() => setTransactionPanel("library")}>Biblioteca</button></div>{transactionPanel === "movements" ? <>{movementFiltersOpen&&<div className="filter-reveal"><QuickTransactionFilters categories={activeCategories} accounts={activeAccounts} type={transactionTypeFilter} category={transactionCategoryFilter} subcategory={transactionSubcategoryFilter} currency={transactionCurrencyFilter} account={transactionAccountFilter} onType={(value) => { setTransactionTypeFilter(value); setPage(0); }} onCategory={(value) => { setTransactionCategoryFilter(value); setTransactionSubcategoryFilter(""); setPage(0); }} onSubcategory={(value) => { setTransactionSubcategoryFilter(value); setPage(0); }} onCurrency={(value) => { setTransactionCurrencyFilter(value); setPage(0); }} onAccount={(value) => { setTransactionAccountFilter(value); setPage(0); }} /></div>}<TransactionsView movements={filteredMovements} transactions={transactions} count={count} page={page} search={search} weekStart={dateFrom} filtersOpen={movementFiltersOpen} categoryNames={categoryNames} accountNames={new Map(accounts.map((account) => [account.id, account.name]))} canCreate={Boolean(activeAccounts.length)} onCreate={() => { setTransactionPreset(null); setTransactionDialogPanel("form"); setDialog(activeAccounts.length ? "transaction" : "account"); }} onToggleFilters={() => setMovementFiltersOpen((value)=>!value)} onSearch={(value) => { setSearch(value); setPage(0); }} onWeek={(value) => { const start = startFromIsoWeek(value); setDateFrom(start); setDateTo(shiftDate(start, 6)); setPage(0); }} onShiftWeek={(days) => { setDateFrom((current) => shiftDate(current, days)); setDateTo((current) => shiftDate(current, days)); setPage(0); }} onPage={setPage} onReverse={(id) => void runAction(async () => { await reverseTransaction(id); await refresh(); }, "No se pudo revertir el movimiento.")} /></> : <TransactionLibraryView items={libraryItems} count={libraryCount} page={libraryPage} type={libraryType} categoryNames={categoryNames} onType={(value) => { setLibraryType(value); setLibraryPage(0); }} onPage={setLibraryPage} onUse={(item) => { setTransactionPreset(item); setTransactionDialogPanel("form"); setDialog("transaction"); }} />}</section>}
         {(view === "categories" || view === "budgets") && <BudgetWorkspace session={session} currency={defaultCurrency} categories={categories} mode={view} onCategoriesChanged={refreshCategories} />}
         {view === "recurring" && <RecurringWorkspace session={session} accounts={accounts} categories={activeCategories} currency={defaultCurrency} />}
@@ -395,7 +406,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
 
 function NavItem({ item, active, onClick }: { item: NavigationGroup["items"][number]; active: boolean; onClick: () => void }) {
   const Icon = item.icon;
-  return <button className={`nav-link nav-link--stacked ${active ? "is-active" : ""}`} type="button" aria-current={active ? "page" : undefined} title={`${item.label}: ${item.helper}`} onClick={onClick}><Icon aria-hidden="true" size={19} /><span><strong>{item.label}</strong><small>{item.helper}</small></span></button>;
+  return <button className={`nav-link nav-link--stacked ${active ? "is-active" : ""}`} type="button" aria-current={active ? "page" : undefined} title={`${item.label}: ${item.helper}`} onClick={onClick}><Icon aria-hidden="true" size={19} /><span><strong>{item.label}</strong><small>{item.helper}</small></span><em aria-hidden="true">{item.label.slice(0, 1)}</em></button>;
 }
 
 function DashboardCurrencyToggle({ currency, currencies, onChange }: { currency: string; currencies: string[]; onChange: (value: string) => void }) {
@@ -404,9 +415,9 @@ function DashboardCurrencyToggle({ currency, currencies, onChange }: { currency:
   return <div className="dashboard-currency-toggle" aria-label="Moneda del resumen">{currencies.length <= 2 ? currencies.map((item) => <button key={item} type="button" className={item === currency ? "is-active" : ""} onClick={() => onChange(item)}>{label(item)}</button>) : <select value={currency} onChange={(event) => onChange(event.target.value)} aria-label="Seleccionar moneda">{currencies.map((item) => <option key={item} value={item}>{label(item)}</option>)}</select>}</div>;
 }
 
-function AccountsView({ accounts, busy, onCreate, onOpen, onToggle, onDelete }: { accounts: FinancialAccount[]; busy: boolean; onCreate: () => void; onOpen: (account: FinancialAccount) => void; onToggle: (account: FinancialAccount) => void; onDelete: (account: FinancialAccount) => void }) {
+function AccountsView({ accounts, visibleTypes, onToggleType, balancesVisible, onToggleBalances, busy, onCreate, onOpen, onToggle, onDelete }: { accounts: FinancialAccount[]; visibleTypes: AccountType[]; onToggleType: (type: AccountType) => void; balancesVisible: boolean; onToggleBalances: () => void; busy: boolean; onCreate: () => void; onOpen: (account: FinancialAccount) => void; onToggle: (account: FinancialAccount) => void; onDelete: (account: FinancialAccount) => void }) {
   const groups = (["cash", "bank", "credit_card", "investment", "loan", "other"] as AccountType[]).map((type) => ({ type, accounts: accounts.filter((account) => account.account_type === type) })).filter((group) => group.accounts.length);
-  return <div className="managed-workspace-content"><div className="section-heading"><div><p className="eyebrow">CUENTAS</p><h1>Tus cuentas</h1></div></div>{groups.length ? <div className="account-groups">{groups.map((group) => <section className="account-group" key={group.type}><div className="account-group-heading"><AccountVisual type={group.type} /><h2>{accountLabels[group.type]}</h2><span>{group.accounts.length}</span></div><div className={`account-grid account-grid--${group.type}`}>{group.accounts.map((account) => <article className={`account-card account-card--${account.account_type} account-card--${account.card_color} ${account.is_active ? "" : "is-archived"}`} key={account.id}><AccountVisual type={account.account_type} /><div><span>{accountLabels[account.account_type]}</span><h3>{account.name}</h3></div><strong>{money(account.balance, account.currency_code)}</strong><div className="account-card-bottom"><div className="account-card-actions"><button className="text-button" type="button" onClick={() => onOpen(account)}>Ver detalle</button><button className="text-button" disabled={busy} onClick={() => onToggle(account)}>{account.is_active ? <Archive size={15} /> : "Restaurar"}</button><button className="icon-action account-delete" type="button" disabled={busy} aria-label={`Borrar ${account.name}`} title="Borrar cuenta" onClick={() => onDelete(account)}><Trash2 size={15} /></button></div></div></article>)}</div></section>)}</div> : <EmptyState title="Aún no hay cuentas" action="Crear la primera" onClick={onCreate} />}</div>;
+  return <div className="managed-workspace-content"><div className="section-heading account-section-heading"><div><p className="eyebrow">CUENTAS</p><h1>Tus cuentas</h1></div><div className="account-heading-actions"><div className="account-type-pills" role="group" aria-label="Tipos de cuenta visibles">{accountTypes.map((type) => <button key={type} type="button" className={visibleTypes.includes(type) ? "is-active" : ""} aria-pressed={visibleTypes.includes(type)} onClick={() => onToggleType(type)}>{accountLabels[type]}</button>)}</div><button className="context-action" onClick={onCreate}><Plus size={17} /> Nueva cuenta</button></div></div>{groups.length ? <div className="account-groups">{groups.map((group) => <section className="account-group" key={group.type}><div className="account-group-heading"><AccountVisual type={group.type} /><h2>{accountLabels[group.type]}</h2><span>{group.accounts.length}</span></div><div className={`account-grid account-grid--${group.type}`}>{group.accounts.map((account) => <article className={`account-card account-card--${account.account_type} account-card--${account.card_color} ${account.is_active ? "" : "is-archived"}`} key={account.id}><AccountVisual type={account.account_type} /><div><span>{accountLabels[account.account_type]}</span><h3>{account.name}</h3></div><div className="account-balance"><strong>{balancesVisible ? money(account.balance, account.currency_code) : currencySymbol(account.currency_code)}</strong><button className="icon-action account-balance-toggle" type="button" aria-pressed={balancesVisible} aria-label={balancesVisible ? "Ocultar saldos" : "Mostrar saldos"} title={balancesVisible ? "Ocultar saldos" : "Mostrar saldos"} onClick={onToggleBalances}>{balancesVisible ? <Eye size={16} /> : <EyeOff size={16} />}</button></div><div className="account-card-bottom"><div className="account-card-actions"><button className="text-button" type="button" onClick={() => onOpen(account)}>Ver detalle</button><button className="text-button" disabled={busy} onClick={() => onToggle(account)}>{account.is_active ? <Archive size={15} /> : "Restaurar"}</button><button className="icon-action account-delete" type="button" disabled={busy} aria-label={`Borrar ${account.name}`} title="Borrar cuenta" onClick={() => onDelete(account)}><Trash2 size={15} /></button></div></div></article>)}</div></section>)}</div> : <EmptyState title="Aún no hay cuentas" action="Crear la primera" onClick={onCreate} />}</div>;
 }
 
 function AccountVisual({ type }: { type: FinancialAccount["account_type"] }) {
@@ -414,8 +425,8 @@ function AccountVisual({ type }: { type: FinancialAccount["account_type"] }) {
   return <span className="account-card-visual" aria-hidden="true"><Icon size={22} /></span>;
 }
 
-function AccountDetail({ account, movements, loading, onClose }: { account: FinancialAccount; movements: LedgerTransaction[]; loading: boolean; onClose: () => void }) {
-  return <section className="account-detail"><div className="section-heading"><div><p className="eyebrow">CUENTAS · DETALLE</p><h1>{account.name}</h1></div><button type="button" className="text-button" onClick={onClose}><ArrowDownLeft size={16} /> Volver a cuentas</button></div><div className={`account-detail-summary account-card--${account.account_type} account-card--${account.card_color}`}><AccountVisual type={account.account_type} /><div><span>{accountLabels[account.account_type]} · {account.currency_code}</span><strong>{money(account.balance, account.currency_code)}</strong></div></div><div className="account-detail-heading"><div><p className="eyebrow">HISTORIAL</p><h3>Movimientos de esta cuenta</h3></div><span>{loading ? "Cargando…" : `${movements.length} últimos movimientos`}</span></div>{loading ? <LoadingState /> : movements.length ? <div className="account-detail-list">{movements.map((movement) => { const entry = movement.ledger_entries.find((item) => item.account_id === account.id); return <div key={movement.id}><div><strong>{movement.description}</strong><small>{new Date(`${movement.effective_date}T00:00:00`).toLocaleDateString("es-ES")} · {transactionLabels[movement.transaction_type]}</small></div><b className={Number(entry?.amount ?? 0) >= 0 ? "positive" : "negative"}>{money(Number(entry?.amount ?? 0), entry?.currency_code ?? account.currency_code)}</b></div>; })}</div> : <p className="ux-hint">Esta cuenta todavía no tiene movimientos.</p>}</section>;
+function AccountDetail({ account, movements, balancesVisible, onToggleBalances, loading, onClose }: { account: FinancialAccount; movements: LedgerTransaction[]; balancesVisible: boolean; onToggleBalances: () => void; loading: boolean; onClose: () => void }) {
+  return <section className="account-detail"><div className="section-heading"><div><p className="eyebrow">CUENTAS · DETALLE</p><h1>{account.name}</h1></div><button type="button" className="text-button" onClick={onClose}><ArrowDownLeft size={16} /> Volver a cuentas</button></div><div className={`account-detail-summary account-card--${account.account_type} account-card--${account.card_color}`}><AccountVisual type={account.account_type} /><div><span>{accountLabels[account.account_type]} · {account.currency_code}</span><div className="account-balance"><strong>{balancesVisible ? money(account.balance, account.currency_code) : currencySymbol(account.currency_code)}</strong><button className="icon-action account-balance-toggle" type="button" aria-pressed={balancesVisible} aria-label={balancesVisible ? "Ocultar saldos" : "Mostrar saldos"} onClick={onToggleBalances}>{balancesVisible ? <Eye size={16} /> : <EyeOff size={16} />}</button></div></div></div><div className="account-detail-heading"><div><p className="eyebrow">HISTORIAL</p><h3>Movimientos de esta cuenta</h3></div><span>{loading ? "Cargando…" : `${movements.length} últimos movimientos`}</span></div>{loading ? <LoadingState /> : movements.length ? <div className="account-detail-list">{movements.map((movement) => { const entry = movement.ledger_entries.find((item) => item.account_id === account.id); return <div key={movement.id}><div><strong>{movement.description}</strong><small>{new Date(`${movement.effective_date}T00:00:00`).toLocaleDateString("es-ES")} · {transactionLabels[movement.transaction_type]}</small></div><b className={Number(entry?.amount ?? 0) >= 0 ? "positive" : "negative"}>{balancesVisible ? money(Number(entry?.amount ?? 0), entry?.currency_code ?? account.currency_code) : currencySymbol(entry?.currency_code ?? account.currency_code)}</b></div>; })}</div> : <p className="ux-hint">Esta cuenta todavía no tiene movimientos.</p>}</section>;
 }
 
 type Movement = LedgerTransaction & { displayAmount: number; currency: string };

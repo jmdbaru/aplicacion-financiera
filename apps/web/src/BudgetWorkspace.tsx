@@ -21,7 +21,6 @@ import {
   loadBudgetOverview,
   monthStart,
   setCategoryActive,
-  shiftMonth,
   updateBudget,
   updateCategory,
   type BudgetOverview,
@@ -55,8 +54,14 @@ function monthLabel(period: string) {
   return `${new Intl.DateTimeFormat("es-ES", { month: "long" }).format(date)} ${date.getFullYear()}`;
 }
 
+const budgetPeriods = [{ id: 1, label: "Día" }, { id: 2, label: "Semana" }, { id: 3, label: "Mes" }, { id: 4, label: "Año" }];
+function normalizePeriod(value: string, timePeriodId: number) { const date = new Date(`${value}T00:00:00`); if (timePeriodId === 2) date.setDate(date.getDate() - ((date.getDay() + 6) % 7)); if (timePeriodId === 3) date.setDate(1); if (timePeriodId === 4) { date.setMonth(0); date.setDate(1); } return date.toISOString().slice(0, 10); }
+function shiftBudgetPeriod(period: string, timePeriodId: number, delta: number) { const date = new Date(`${period}T00:00:00`); if (timePeriodId === 1) date.setDate(date.getDate() + delta); if (timePeriodId === 2) date.setDate(date.getDate() + delta * 7); if (timePeriodId === 3) date.setMonth(date.getMonth() + delta); if (timePeriodId === 4) date.setFullYear(date.getFullYear() + delta); return normalizePeriod(date.toISOString().slice(0, 10), timePeriodId); }
+function budgetPeriodLabel(period: string, timePeriodId: number) { const date = new Date(`${period}T00:00:00`); if (timePeriodId === 1) return date.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" }); if (timePeriodId === 2) { const end = new Date(date); end.setDate(end.getDate() + 6); return `${date.toLocaleDateString("es-ES", { day: "numeric", month: "short" })} — ${end.toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })}`; } if (timePeriodId === 4) return String(date.getFullYear()); return monthLabel(period); }
+
 export function BudgetWorkspace({ session, currency, categories, mode, onCategoriesChanged }: Props) {
   const [period, setPeriod] = useState(monthStart());
+  const [timePeriodId, setTimePeriodId] = useState(3);
   const [overview, setOverview] = useState<BudgetOverview | null>(null);
   const [previous, setPrevious] = useState<BudgetOverview | null>(null);
   const [loading, setLoading] = useState(mode === "budgets");
@@ -73,8 +78,8 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
     setError("");
     try {
       const [current, prior] = await Promise.all([
-        loadBudgetOverview(period, currency),
-        loadBudgetOverview(shiftMonth(period, -1), currency),
+        loadBudgetOverview(period, currency, timePeriodId),
+        loadBudgetOverview(shiftBudgetPeriod(period, timePeriodId, -1), currency, timePeriodId),
       ]);
       setOverview(current);
       setPrevious(prior);
@@ -83,7 +88,7 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
     } finally {
       setLoading(false);
     }
-  }, [currency, mode, period]);
+  }, [currency, mode, period, timePeriodId]);
 
   useEffect(() => {
     void refreshBudgets();
@@ -151,6 +156,7 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
         await createBudget(session, {
           category_id: String(form.get("category")),
           period_start: period,
+          time_period_id: timePeriodId,
           currency_code: currency,
           amount,
           alert_threshold_pct: threshold,
@@ -173,10 +179,10 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
 
   if (mode === "categories") {
     return <section className="managed-workspace">
-      <div className="workspace-actionbar"><button className="context-action" onClick={() => { setEditingCategory(null); setDialog("category"); }}><Plus size={17} /> Nueva categoría</button></div>
       <div className="managed-workspace-content">
       <div className="section-heading">
         <div><p className="eyebrow">ORGANIZACIÓN</p><h1>Categorías</h1><p className="section-copy">Combina el catálogo inicial con categorías propias y subcategorías.</p></div>
+        <button className="context-action" onClick={() => { setEditingCategory(null); setDialog("category"); }}><Plus size={17} /> Nueva categoría</button>
       </div>
       {error && <p className="inline-error" role="alert">{error}</p>}
       <div className="category-list">
@@ -200,11 +206,11 @@ export function BudgetWorkspace({ session, currency, categories, mode, onCategor
       <div><p className="eyebrow">PLAN MENSUAL</p><h1>Presupuestos</h1><p className="section-copy">Controla límites por categoría sin mezclar monedas.</p></div>
       <button className="context-action" disabled={!availableBudgetCategories.length} onClick={() => { setEditingBudget(null); setDialog("budget"); }}><Plus size={17} /> Nuevo presupuesto</button>
     </div>
-    <div className="month-controls month-controls--single" aria-label="Periodo del presupuesto"><button aria-label="Mes anterior" onClick={() => setPeriod(shiftMonth(period, -1))}><ChevronLeft /></button><label className="month-picker-label"><span>{monthLabel(period)}</span><input aria-label="Mes y año" type="month" value={period.slice(0, 7)} onChange={(event) => setPeriod(`${event.target.value}-01`)} /></label><button aria-label="Mes siguiente" onClick={() => setPeriod(shiftMonth(period, 1))}><ChevronRight /></button></div>
+    <div className="budget-period-controls" aria-label="Periodo del presupuesto"><div className="workspace-toggle workspace-toggle--inner" role="group" aria-label="Tipo de presupuesto">{budgetPeriods.map((item) => <button type="button" key={item.id} className={timePeriodId === item.id ? "is-active" : ""} onClick={() => { setTimePeriodId(item.id); setPeriod(normalizePeriod(period, item.id)); }}>{item.label}</button>)}</div><div className="month-controls month-controls--single"><button aria-label="Periodo anterior" onClick={() => setPeriod(shiftBudgetPeriod(period, timePeriodId, -1))}><ChevronLeft /></button><label className="month-picker-label"><span>{budgetPeriodLabel(period, timePeriodId)}</span><input aria-label="Elegir fecha del presupuesto" type="date" value={period} onChange={(event) => setPeriod(normalizePeriod(event.target.value, timePeriodId))} /></label><button aria-label="Periodo siguiente" onClick={() => setPeriod(shiftBudgetPeriod(period, timePeriodId, 1))}><ChevronRight /></button></div></div>
     {error && <p className="inline-error" role="alert">{error}</p>}
     {loading ? <div className="skeleton-grid"><i /><i /><i /></div> : <>
-      <div className="metrics-grid budget-metrics"><article className="metric-card"><p>Presupuestado</p><strong>{money(overview?.total_budget ?? 0, currency)}</strong><span className="metric-detail">{overview?.items.length ?? 0} categorías</span></article><article className="metric-card"><p>Gastado con presupuesto</p><strong>{money(overview?.budgeted_spent ?? 0, currency)}</strong><span className={comparison <= 0 ? "metric-detail metric-detail--positive" : "metric-detail"}>{comparison === 0 ? "Sin cambio mensual" : `${comparison > 0 ? "+" : ""}${money(comparison, currency)} frente al mes anterior`}</span></article><article className="metric-card"><p>Fuera de presupuesto</p><strong>{money(overview?.outside_budget_spent ?? 0, currency)}</strong><span className="metric-detail">Sin categoría o sin límite asignado</span></article></div>
-      {overview?.items.length ? <div className="budget-list">{overview.items.map((item) => <article className={`budget-card budget-card--${item.status}`} key={item.id}><div className="budget-card__top"><span className="category-swatch" style={{ background: item.color }} /><div><h2>{item.category_name}</h2><small>{money(item.spent, currency)} de {money(item.amount, currency)}</small></div>{item.status !== "ok" && <AlertTriangle aria-label={item.status === "exceeded" ? "Presupuesto superado" : "Umbral alcanzado"} />}</div><div className="budget-progress" aria-label={`${Math.round(item.usage_pct)} por ciento utilizado`}><span style={{ width: `${Math.min(Math.max(item.usage_pct, 0), 100)}%` }} /></div><div className="budget-card__footer"><span>{item.remaining >= 0 ? `${money(item.remaining, currency)} disponibles` : `${money(Math.abs(item.remaining), currency)} excedidos`}</span><div><button aria-label={`Editar presupuesto de ${item.category_name}`} onClick={() => { setEditingBudget(item); setDialog("budget"); }}><Pencil size={15} /></button><button aria-label={`Eliminar presupuesto de ${item.category_name}`} onClick={() => setDeleteTarget(item)}><Trash2 size={15} /></button></div></div></article>)}</div> : <div className="empty-state"><CircleDollarSign size={30} /><h2>Aún no hay presupuestos en {monthLabel(period)}</h2><p>Los movimientos seguirán visibles como gasto fuera de presupuesto.</p>{availableBudgetCategories.length > 0 ? <button className="secondary-button" onClick={() => setDialog("budget")}>Crear el primero</button> : <p>Crea o activa una categoría de gasto para poder asignarle un límite.</p>}</div>}
+      <div className="metrics-grid budget-metrics"><article className="metric-card"><p>Presupuestado</p><strong>{money(overview?.total_budget ?? 0, currency)}</strong><span className="metric-detail">{overview?.items.length ?? 0} categorías</span></article><article className="metric-card"><p>Gastado con presupuesto</p><strong>{money(overview?.budgeted_spent ?? 0, currency)}</strong><span className={comparison <= 0 ? "metric-detail metric-detail--positive" : "metric-detail"}>{comparison === 0 ? "Sin cambio" : `${comparison > 0 ? "+" : ""}${money(comparison, currency)} frente al periodo anterior`}</span></article><article className="metric-card"><p>Fuera de presupuesto</p><strong>{money(overview?.outside_budget_spent ?? 0, currency)}</strong><span className="metric-detail">Sin categoría o sin límite asignado</span></article></div>
+      {overview?.items.length ? <div className="budget-list">{overview.items.map((item) => <article className={`budget-card budget-card--${item.status}`} key={item.id}><div className="budget-card__top"><span className="category-swatch" style={{ background: item.color }} /><div><h2>{item.category_name}</h2><small>{money(item.spent, currency)} de {money(item.amount, currency)}</small></div>{item.status !== "ok" && <AlertTriangle aria-label={item.status === "exceeded" ? "Presupuesto superado" : "Umbral alcanzado"} />}</div><div className="budget-progress" aria-label={`${Math.round(item.usage_pct)} por ciento utilizado`}><span style={{ width: `${Math.min(Math.max(item.usage_pct, 0), 100)}%` }} /></div><div className="budget-card__footer"><span>{item.remaining >= 0 ? `${money(item.remaining, currency)} disponibles` : `${money(Math.abs(item.remaining), currency)} excedidos`}</span><div><button aria-label={`Editar presupuesto de ${item.category_name}`} onClick={() => { setEditingBudget(item); setDialog("budget"); }}><Pencil size={15} /></button><button aria-label={`Eliminar presupuesto de ${item.category_name}`} onClick={() => setDeleteTarget(item)}><Trash2 size={15} /></button></div></div></article>)}</div> : <div className="empty-state"><CircleDollarSign size={30} /><h2>Aún no hay presupuestos en {budgetPeriodLabel(period, timePeriodId)}</h2><p>Los movimientos seguirán visibles como gasto fuera de presupuesto.</p>{availableBudgetCategories.length > 0 ? <button className="secondary-button" onClick={() => setDialog("budget")}>Crear el primero</button> : <p>Crea o activa una categoría de gasto para poder asignarle un límite.</p>}</div>}
     </>}
     {dialog === "budget" && <Dialog title={editingBudget ? "Editar presupuesto" : "Nuevo presupuesto"} onClose={() => setDialog(null)}><BudgetForm categories={availableBudgetCategories} budget={editingBudget} currency={currency} busy={busy} onSubmit={submitBudget} onCancel={() => setDialog(null)} /></Dialog>}
     {deleteTarget && <ModalFrame title="Eliminar presupuesto" onClose={() => setDeleteTarget(null)} labelledBy="delete-budget-dialog-title"><div className="confirm-copy"><p>Vas a eliminar el presupuesto de <strong>{deleteTarget.category_name}</strong>.</p><p>Los movimientos no se borrarán; solo dejarán de contar contra este límite mensual.</p></div><div className="dialog-actions"><button type="button" className="text-button" onClick={() => setDeleteTarget(null)}>Cancelar</button><button type="button" className="primary-button danger-button" disabled={busy} onClick={() => void confirmDeleteBudget()}>{busy ? "Eliminando…" : "Eliminar"}</button></div></ModalFrame>}
@@ -222,5 +228,5 @@ function CategoryForm({ categories, category, busy, onSubmit, onCancel }: { cate
 }
 
 function BudgetForm({ categories, budget, currency, busy, onSubmit, onCancel }: { categories: Category[]; budget: BudgetProgress | null; currency: string; busy: boolean; onSubmit: (event: FormEvent<HTMLFormElement>) => void; onCancel: () => void }) {
-  return <form className="finance-form progressive-form" onSubmit={onSubmit}><div className="form-section"><p className="form-section-title">Límite mensual</p>{budget ? <p className="form-context"><span className="category-swatch" style={{ background: budget.color }} />{budget.category_name}</p> : <label>Categoría<select name="category" required>{categories.map((category) => <option value={category.id} key={category.id}>{category.name}</option>)}</select></label>}<label>Límite · {currency}<input name="amount" type="number" min="0.0001" step="0.0001" defaultValue={budget?.amount} required autoFocus /></label></div><details className="form-advanced"><summary>Aviso de seguimiento</summary><div><label>Alertar al %<input name="threshold" type="number" min="1" max="100" defaultValue={budget?.alert_threshold_pct ?? 80} required /></label><p>Te avisará al alcanzar este porcentaje del límite.</p></div></details><div className="dialog-actions"><button type="button" className="text-button" onClick={onCancel}>Cancelar</button><button className="primary-button" disabled={busy || (!budget && !categories.length)}>{busy ? "Guardando…" : "Guardar presupuesto"}</button></div></form>;
+  return <form className="finance-form progressive-form" onSubmit={onSubmit}><div className="form-section"><p className="form-section-title">Límite del periodo</p>{budget ? <p className="form-context"><span className="category-swatch" style={{ background: budget.color }} />{budget.category_name}</p> : <label>Categoría<select name="category" required>{categories.map((category) => <option value={category.id} key={category.id}>{category.name}</option>)}</select></label>}<label>Límite · {currency}<input name="amount" type="number" min="0.0001" step="0.0001" defaultValue={budget?.amount} required autoFocus /></label></div><details className="form-advanced"><summary>Aviso de seguimiento</summary><div><label>Alertar al %<input name="threshold" type="number" min="1" max="100" defaultValue={budget?.alert_threshold_pct ?? 80} required /></label><p>Te avisará al alcanzar este porcentaje del límite.</p></div></details><div className="dialog-actions"><button type="button" className="text-button" onClick={onCancel}>Cancelar</button><button className="primary-button" disabled={busy || (!budget && !categories.length)}>{busy ? "Guardando…" : "Guardar presupuesto"}</button></div></form>;
 }

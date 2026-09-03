@@ -1,5 +1,18 @@
 # Changelog
 
+## [v1.082] - 2026-09-03
+
+### Added
+
+- Presupuestos por día, semana, mes o año mediante el catálogo relacional `budget_time_periods` en Supabase.
+- Control de privacidad de saldos en Cuentas, persistido localmente y disponible también en el detalle.
+- Dos estilos de espacio adicionales: Naranja y Rosa.
+
+### Changed
+
+- Navegación reorganizada en Principal, Dinero, Planificación y Funciones; el menú cerrado muestra la inicial de cada sección.
+- Las altas de Cuentas y Categorías se integran en su cabecera, sin una barra visual independiente.
+
 ## [v1.081] - 2026-09-03
 
 ### Added

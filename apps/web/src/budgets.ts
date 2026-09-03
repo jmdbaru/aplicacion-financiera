@@ -23,6 +23,7 @@ export type BudgetProgress = {
   color: string;
   amount: number;
   alert_threshold_pct: number;
+  time_period_id?: number;
   spent: number;
   remaining: number;
   usage_pct: number;
@@ -32,6 +33,7 @@ export type BudgetProgress = {
 export type BudgetOverview = {
   period_start: string;
   currency_code: string;
+  time_period_id?: number;
   total_budget: number;
   budgeted_spent: number;
   outside_budget_spent: number;
@@ -123,10 +125,11 @@ function parseOverview(value: unknown): BudgetOverview {
   };
 }
 
-export async function loadBudgetOverview(periodStart: string, currencyCode: string) {
+export async function loadBudgetOverview(periodStart: string, currencyCode: string, timePeriodId = 3) {
   const { data, error } = await client().rpc("get_budget_overview", {
     p_period_start: periodStart,
     p_currency_code: currencyCode,
+    p_time_period_id: timePeriodId,
   });
   if (error) throw error;
   return parseOverview(data);
@@ -140,6 +143,7 @@ export async function createBudget(
     currency_code: string;
     amount: number;
     alert_threshold_pct: number;
+    time_period_id: number;
   },
 ) {
   const { error } = await client().from("budgets").insert({ ...input, user_id: session.user.id });
@@ -149,7 +153,7 @@ export async function createBudget(
 export async function updateBudget(
   session: Session,
   budgetId: string,
-  input: { amount: number; alert_threshold_pct: number },
+  input: { amount: number; alert_threshold_pct: number; time_period_id?: number; period_start?: string },
 ) {
   const { error } = await client()
     .from("budgets")
