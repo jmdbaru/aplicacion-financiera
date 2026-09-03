@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.080] - 2026-09-03
+
+### Added
+
+- `PENDIENTES_PROYECTO.md` como fuente única de continuidad, validaciones pendientes, endurecimiento de producción y mejoras futuras.
+
+### Changed
+
+- `PROJECT_STATUS.md` enlaza el inventario centralizado y distingue implementación técnica de aprobación funcional.
+
 ## [v1.079] - 2026-09-03
 
 ### Added

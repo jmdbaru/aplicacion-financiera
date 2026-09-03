@@ -3,7 +3,8 @@
 - Fase actual: Fase 12 — Consolidación de producto, finalizada técnicamente y en revisión funcional.
 - Última fase aprobada: Fase 6 — Recurrentes y calendario.
 - Estado: experiencia principal simplificada, layout de escritorio ajustado al viewport, base de datos endurecida y validación automática correcta.
-- Actualización: 2026-09-02.
+- Actualización: 2026-09-03.
+- Pendientes centralizados: `PENDIENTES_PROYECTO.md`.
 
 ## Stack objetivo
 
