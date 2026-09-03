@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.079] - 2026-09-03
+
+### Added
+
+- Píldoras de selección múltiple para mostrar u ocultar tipos concretos de cuenta.
+- Cuatro estilos de espacio: Bosque, Medianoche, Grafito y Ámbar; modifican fondo, barra lateral y superficies sin cambiar el color de acento elegido.
+
+### Changed
+
+- Los scrolls funcionales pasan a ser invisibles para no competir con la interfaz.
+- Movimientos mantiene alturas estables aunque haya pocos registros y protege columnas, importes y textos largos frente a desalineaciones.
+
 ## [v1.078] - 2026-09-02
 
 ### Added
