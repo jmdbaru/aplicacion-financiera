@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap");
+
+:root {
+  --numa-brand: #0f2d28;
+  --numa-brand-mid: #2e7d6b;
+  --numa-mint: #a7e3ce;
+  --numa-bg: #0c1211;
+  --numa-surface: #121a18;
+  --numa-surface-raised: #18221f;
+  --numa-text: #f5f7f6;
+  --numa-text-muted: #aab4b0;
+  --numa-border: #26312e;
+  --numa-border-strong: #36433e;
+  --numa-danger: #ef8474;
+  --numa-warning: #d9a64a;
+  --numa-info: #5ba8de;
+  --finance-primary: var(--numa-brand-mid);
+  --finance-secondary: var(--numa-mint);
+  color: var(--numa-text);
+  background: var(--numa-bg);
+  font-family: Manrope, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+:root[data-color-mode="light"] {
+  --numa-bg: #f8faf9;
+  --numa-surface: #ffffff;
+  --numa-surface-raised: #f2f5f4;
+  --numa-text: #17201e;
+  --numa-text-muted: #66706d;
+  --numa-border: #e4e9e7;
+  --numa-border-strong: #d2dad7;
+}
+
+body, .content-shell { color: var(--numa-text); background: var(--numa-bg); }
+.app-shell { --finance-primary: var(--numa-brand-mid); --finance-secondary: var(--numa-mint); background: var(--numa-bg); }
+:root[data-theme="ocean"] .app-shell { --finance-primary: #287bc1; --finance-secondary: #88c7f2; }
+:root[data-theme="violet"] .app-shell { --finance-primary: #7357c8; --finance-secondary: #c4b4f0; }
+:root[data-theme="coral"] .app-shell { --finance-primary: #e87562; --finance-secondary: #f3b2a5; }
+:root[data-theme="graphite"] .app-shell { --finance-primary: #505755; --finance-secondary: #aeb6b3; }
+
+h1, h2, .auth-intro h1 { font-family: "DM Sans", Manrope, sans-serif; }
+button, input, select, textarea { font-family: inherit; }
+.eyebrow, .surface-badge, .transaction-list b, .calendar-day i, .dashboard-currency-toggle button, .dashboard-currency-toggle select { font-family: Manrope, system-ui, sans-serif; letter-spacing: .08em; }
+
+.numa-brand { display: inline-flex; align-items: center; gap: .55rem; color: var(--numa-mint); line-height: 1; }
+.numa-brand__mark { width: 2.15rem; height: 2.15rem; flex: none; overflow: visible; }
+.numa-brand__ribbon, .numa-brand__dot { fill: currentColor; }
+.numa-brand__cut { fill: var(--numa-bg); }
+.numa-brand__wordmark { color: currentColor; font-family: "DM Sans", Manrope, sans-serif; font-size: 1.1rem; font-weight: 600; letter-spacing: .24em; }
+.numa-brand--compact .numa-brand__mark { width: 2rem; height: 2rem; }
+.sidebar .numa-brand__cut { fill: #0e1815; }
+.auth-intro .numa-brand { color: var(--numa-mint); }
+.auth-intro .numa-brand__cut { fill: #0f211c; }
+
+.sidebar { border-color: var(--numa-border); background: linear-gradient(180deg, #11201c, #0c1211); box-shadow: inset -1px 0 0 rgb(167 227 206 / 6%); }
+.sidebar .brand { padding: .2rem .4rem .8rem; }
+.sidebar--collapsed .numa-brand__wordmark { display: none; }
+.sidebar--collapsed .numa-brand { gap: 0; }
+.topbar { border-color: var(--numa-border); background: color-mix(in srgb, var(--numa-bg), transparent 6%); }
+.nav-link.is-active, .nav-link--active { color: var(--numa-text); background: color-mix(in srgb, var(--finance-primary), transparent 84%); border-color: color-mix(in srgb, var(--finance-primary), transparent 60%); }
+.nav-link.is-active::before { background: var(--finance-primary); }
+.primary-button { color: #fff !important; background: var(--finance-primary) !important; border-radius: .7rem; }
+.primary-button:hover { filter: brightness(1.07); }
+.secondary-button { color: var(--numa-text); background: var(--numa-surface-raised); border: 1px solid var(--numa-border); }
+.secondary-button:hover { background: color-mix(in srgb, var(--finance-primary), var(--numa-surface-raised) 92%); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline-color: var(--finance-primary); }
+
+.surface, .metric-card, .account-card, .wealth-summary article, .transaction-list, .workspace-actionbar, .week-selector, .calendar-day, .calendar-panel, .calendar-detail, .finance-dialog, .preferences-panel, .auth-card-wrap { border-color: var(--numa-border) !important; background: var(--numa-surface); }
+.content-shell { background: radial-gradient(circle at 82% 0, color-mix(in srgb, var(--finance-primary), transparent 91%), transparent 29rem), var(--numa-bg); }
+.metric-card, .account-card, .wealth-summary article { box-shadow: none; }
+.metric-card p, .metric-detail, .section-copy, .body-copy, .transaction-list small, .auth-copy, .auth-intro-copy > p:last-child, .calendar-weekdays, .dashboard-list small { color: var(--numa-text-muted); }
+.transaction-list .transaction-row, .transaction-list .transaction-row:hover { border-color: var(--numa-border) !important; background-color: var(--numa-surface) !important; }
+.transaction-list .transaction-date-divider { border-color: var(--numa-border); color: var(--numa-text); background: var(--numa-surface-raised); box-shadow: none; }
+.positive { color: #79c788; }.negative { color: var(--numa-danger); }
+.movement-icon--income { color: #67b476; background: rgb(103 180 118 / 14%); }
+.movement-icon--expense { color: var(--numa-danger); background: rgb(239 132 116 / 14%); }
+
+.finance-form input, .finance-form select, .filters input, .preferences-panel input, .preferences-panel select, .form-advanced input, .form-advanced select, .split-person-form input, .split-expense-form input, .split-expense-form select { border-color: var(--numa-border-strong); color: var(--numa-text); background: var(--numa-surface-raised); color-scheme: dark; }
+.form-section-title, .finance-form label, .preferences-panel label, .form-advanced label { color: var(--numa-text); }
+.form-section, .form-advanced { border-color: var(--numa-border) !important; background: var(--numa-surface-raised); }
+
+.auth-page { background: var(--numa-bg); }
+.auth-intro { background: radial-gradient(circle at 30% 26%, rgb(46 125 107 / 35%), transparent 28rem), #0f211c; }
+.auth-card-wrap { background: var(--numa-surface); }
+.auth-links button, .auth-trust svg { color: var(--numa-mint); }
+.auth-card input { border-color: var(--numa-border-strong); background: var(--numa-surface-raised); color: var(--numa-text); }
+.auth-card input:focus { outline-color: var(--finance-primary); }
+.interface-preview--dark { background: linear-gradient(135deg, #0c1211, #18221f); }
+.interface-preview--light { background: linear-gradient(135deg, #fff, #f2f5f4); border-color: var(--numa-border); }
+
+:root[data-color-mode="light"] .sidebar { background: #fff; }
+:root[data-color-mode="light"] .sidebar .numa-brand { color: var(--numa-brand); }
+:root[data-color-mode="light"] .sidebar .numa-brand__cut { fill: #fff; }
+:root[data-color-mode="light"] .topbar { background: rgb(248 250 249 / 82%); }
+:root[data-color-mode="light"] .auth-card-wrap { background: var(--numa-surface); }
+:root[data-color-mode="light"] .auth-card input, :root[data-color-mode="light"] .finance-form input, :root[data-color-mode="light"] .finance-form select, :root[data-color-mode="light"] .filters input, :root[data-color-mode="light"] .preferences-panel input, :root[data-color-mode="light"] .preferences-panel select { color-scheme: light; }
+:root[data-color-mode="light"] .numa-brand__cut { fill: var(--numa-bg); }
+
+@media (max-width: 760px) { .sidebar .brand { padding-bottom: .8rem; } }

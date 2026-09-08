@@ -40,6 +40,7 @@ import { LoadingState } from "./LoadingState";
 import { loadTransactionLibrary, saveTransactionLibraryItem, type TransactionLibraryItem } from "./transactionLibrary";
 import { CommandPalette, type CommandItem } from "./CommandPalette";
 import { type Profile } from "./supabase";
+import { Brand } from "./Brand";
 import { loadCategories, type Category } from "./budgets";
 import {
   createAccount,
@@ -245,8 +246,9 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     window.localStorage.setItem("financiera.balances-visible", balancesVisible ? "visible" : "hidden");
   }, [balancesVisible]);
   useEffect(() => {
-    document.documentElement.dataset.theme = window.localStorage.getItem("financiera.theme") || "green";
-    document.documentElement.dataset.interfaceStyle = window.localStorage.getItem("financiera.interface-style") || "forest";
+    document.documentElement.dataset.theme = window.localStorage.getItem("numa.accent") || "serena";
+    document.documentElement.dataset.colorMode = window.localStorage.getItem("numa.color-mode") || "dark";
+    delete document.documentElement.dataset.interfaceStyle;
   }, []);
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -368,7 +370,7 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
   return <div className={`app-shell ${sidebarCollapsed ? "sidebar-is-collapsed" : ""}`}>
     <a className="skip-link" href="#main-content">Ir al contenido principal</a>
     <aside className={`sidebar ${sidebarCollapsed ? "sidebar--collapsed" : ""} ${mobileSidebarOpen ? "sidebar--open" : ""}`} aria-label="Navegación principal">
-      <div className="brand-row"><div className="brand"><span className="brand-mark">F</span><span>Financiera</span></div><button className="icon-action sidebar-close" type="button" aria-label="Cerrar menú" onClick={() => setMobileSidebarOpen(false)}><X size={16} /></button></div>
+      <div className="brand-row"><div className="brand"><Brand compact={sidebarCollapsed} /></div><button className="icon-action sidebar-close" type="button" aria-label="Cerrar menú" onClick={() => setMobileSidebarOpen(false)}><X size={16} /></button></div>
       <nav className="sidebar-nav">
         {navigationGroups.map((group) => <section className="sidebar-nav-group" key={group.id}>
           <button className="nav-group-title" type="button" aria-expanded={openGroups[group.id]} onClick={() => setOpenGroups((current) => ({ ...current, [group.id]: !current[group.id] }))}><span>{group.label}</span><ChevronDown size={14} /></button>
