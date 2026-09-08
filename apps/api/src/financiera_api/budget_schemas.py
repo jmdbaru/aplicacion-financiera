@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field, model_validator
 
 CategoryType = Literal["expense", "income", "both"]
 BudgetStatus = Literal["ok", "warning", "exceeded"]
+BudgetFrequency = Literal[1, 2, 3, 4]
 
 
 class CategoryCreate(BaseModel):
@@ -50,17 +51,21 @@ class BudgetCreate(BaseModel):
     currency_code: str = Field(pattern=r"^[A-Z]{3}$")
     amount: Decimal = Field(gt=0, max_digits=20, decimal_places=4)
     alert_threshold_pct: int = Field(default=80, ge=1, le=100)
+    time_period_id: BudgetFrequency = 3
+    starts_on: date | None = None
+    ends_on: date | None = None
 
     @model_validator(mode="after")
-    def require_first_day(self) -> "BudgetCreate":
-        if self.period_start.day != 1:
-            raise ValueError("El periodo debe comenzar el primer día del mes.")
+    def require_valid_range(self) -> "BudgetCreate":
+        if self.ends_on and (self.starts_on or self.period_start) > self.ends_on:
+            raise ValueError("La fecha de fin debe ser posterior al inicio.")
         return self
 
 
 class BudgetUpdate(BaseModel):
     amount: Decimal | None = Field(default=None, gt=0, max_digits=20, decimal_places=4)
     alert_threshold_pct: int | None = Field(default=None, ge=1, le=100)
+    ends_on: date | None = None
 
     @model_validator(mode="after")
     def reject_empty_update(self) -> "BudgetUpdate":
@@ -76,6 +81,9 @@ class BudgetResponse(BaseModel):
     currency_code: str
     amount: Decimal
     alert_threshold_pct: int
+    time_period_id: int = 3
+    starts_on: date | None = None
+    ends_on: date | None = None
 
 
 class BudgetProgressItem(BaseModel):
@@ -86,6 +94,9 @@ class BudgetProgressItem(BaseModel):
     color: str
     amount: Decimal
     alert_threshold_pct: int
+    time_period_id: int = 3
+    starts_on: date | None = None
+    ends_on: date | None = None
     spent: Decimal
     remaining: Decimal
     usage_pct: Decimal

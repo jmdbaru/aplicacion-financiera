@@ -4,7 +4,7 @@ Las migraciones se aplicarán al proyecto Supabase cuando exista una conexión a
 
 ## Fase 2
 
-La migración `202608270001_profiles_and_preferences.sql` crea el perfil del usuario, preferencias regionales, trigger de alta y RLS.
+La migración `20260827092750_profiles_and_preferences.sql` crea el perfil del usuario, preferencias regionales, trigger de alta y RLS.
 
 Para usar el SQL Editor sin CLI, ejecutar `SETUP_FASE_2.sql`. Es un script autocontenido con el mismo alcance que la migración de esta fase; no sustituye las migraciones versionadas.
 

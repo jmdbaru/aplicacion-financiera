@@ -12,7 +12,7 @@ from financiera_api.goals_schemas import (
     ContributionResponse,
     GoalCreate,
     GoalResponse,
-    GoalStatusUpdate,
+    GoalUpdate,
 )
 
 router = APIRouter(tags=["savings-goals"])
@@ -53,7 +53,7 @@ async def create_goal(goal: GoalCreate, user: CurrentUser) -> GoalResponse:
 
 @router.patch("/goals/{goal_id}", response_model=GoalResponse)
 async def update_goal(
-    goal_id: str, update: GoalStatusUpdate, user: CurrentUser
+    goal_id: str, update: GoalUpdate, user: CurrentUser
 ) -> GoalResponse:
     base, headers = _connection(user)
     response = await _request(
@@ -61,7 +61,7 @@ async def update_goal(
         f"{base}/rest/v1/savings_goals",
         headers={**headers, "Prefer": "return=representation"},
         params={"id": f"eq.{goal_id}", "user_id": f"eq.{user.user_id}"},
-        json=update.model_dump(),
+        json=update.model_dump(exclude_unset=True),
     )
     rows = _ensure(response, (200,))
     if not isinstance(rows, list) or not rows:

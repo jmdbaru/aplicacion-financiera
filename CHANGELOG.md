@@ -1,5 +1,25 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Informes con periodos Día, Semana, Mes y Año, navegación de calendario y rango personalizado.
+- Objetivos con prioridad, frecuencia opcional, edición, pausa y reanudación, manteniendo las aportaciones como fuente de progreso.
+- Presupuestos recurrentes por día, semana, mes o año, con inicio, final opcional y navegación compacta del ciclo consultado.
+- Objetivos con dos fuentes de progreso: aportaciones manuales o saldo real de una cuenta vinculada.
+- Diagramas Mermaid del flujo de aplicación y de la base de datos.
+
+### Changed
+
+- Espacios secundarios y dependencias pesadas se cargan bajo demanda; el bundle de aplicación pasa de 736.77 kB a 64.36 kB minificado, con React y Supabase en chunks cacheables.
+- Se restablece para `authenticated` la ejecución de `normalize_budget_period`, necesaria de forma indirecta por el RPC de presupuestos y el resumen cuando usan `SECURITY INVOKER`.
+- Las migraciones locales usan los identificadores canónicos del historial remoto; se recuperó la migración base de categorías y se conciliaron 31 versiones en ambos lados.
+
+### Pending
+
+- Validar las mutaciones de Informes y Objetivos con datos ficticios antes de producción.
+
 ## [v1.082] - 2026-09-03
 
 ### Added

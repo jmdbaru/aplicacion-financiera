@@ -24,6 +24,8 @@ export type BudgetProgress = {
   amount: number;
   alert_threshold_pct: number;
   time_period_id?: number;
+  starts_on?: string;
+  ends_on?: string | null;
   spent: number;
   remaining: number;
   usage_pct: number;
@@ -144,6 +146,8 @@ export async function createBudget(
     amount: number;
     alert_threshold_pct: number;
     time_period_id: number;
+    starts_on: string;
+    ends_on: string | null;
   },
 ) {
   const { error } = await client().from("budgets").insert({ ...input, user_id: session.user.id });
@@ -153,7 +157,7 @@ export async function createBudget(
 export async function updateBudget(
   session: Session,
   budgetId: string,
-  input: { amount: number; alert_threshold_pct: number; time_period_id?: number; period_start?: string },
+  input: { amount: number; alert_threshold_pct: number; time_period_id?: number; period_start?: string; starts_on?: string; ends_on?: string | null },
 ) {
   const { error } = await client()
     .from("budgets")

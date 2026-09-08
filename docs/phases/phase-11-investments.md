@@ -14,4 +14,4 @@ Crear una cartera, crear un instrumento, registrar una compra, añadir una valor
 
 ## Nota técnica Supabase
 
-El wrapper de migraciones devolvió `INVALID_ARGUMENT` sin detalle para esta fase. La estructura se aplicó con SQL directo verificado, y queda pendiente reconciliar el historial remoto de migraciones antes de producción.
+El wrapper de migraciones devolvió `INVALID_ARGUMENT` sin detalle para esta fase. La estructura se aplicó con SQL directo verificado; el historial se reconcilió el 2026-09-08 con la versión `20260831072000_investments.sql`.

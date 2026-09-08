@@ -1,9 +1,9 @@
 # Estado del proyecto
 
-- Fase actual: Fase 12 — Consolidación de producto, finalizada técnicamente y en revisión funcional.
+- Fase actual: Fase 13 — Cierre de desarrollo, `LISTO CON PENDIENTES`.
 - Última fase aprobada: Fase 6 — Recurrentes y calendario.
 - Estado: experiencia principal simplificada, layout de escritorio ajustado al viewport, base de datos endurecida y validación automática correcta.
-- Actualización: 2026-09-03.
+- Actualización: 2026-09-08.
 - Pendientes centralizados: `PENDIENTES_PROYECTO.md`.
 
 ## Stack objetivo
@@ -20,15 +20,15 @@ React 19/TypeScript 5.9/Vite 7/Tailwind 4; FastAPI/Pydantic/Uvicorn; Supabase Po
 
 Auditoría; arquitectura; modelo e invariantes; estrategia RLS; pruebas/mantenimiento/entornos/despliegue; documentación viva y ADR.
 
-Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles, cuentas, ledger, categorías y presupuestos están protegidos por RLS. La consolidación prioriza el alta rápida de movimientos, reduce la densidad mediante vistas progresivas y mantiene el documento fijo en escritorio: los listados administran su propio scroll sin imponer una barra visible. Inicio usa carrusel, Movimientos incorpora navegación semanal y alturas estables, Cuentas filtra por píldoras, el alta admite plantillas, Objetivos separa activos y completados, Calendario resume el balance diario y Repartos navega al historial sin modal. Configuración permite combinar el color de acento con cuatro estilos completos de espacio. Última validación local: Ruff correcto, 31 pruebas API, lint y TypeScript correctos, 17 pruebas web y build de producción correcto.
+Base FastAPI y frontend React/Vite/Tailwind operativos. Supabase Auth, perfiles, cuentas, ledger, categorías y presupuestos están protegidos por RLS. La consolidación prioriza el alta rápida de movimientos, reduce la densidad mediante vistas progresivas y mantiene el documento fijo en escritorio: los listados administran su propio scroll sin imponer una barra visible. Inicio usa carrusel, Movimientos incorpora navegación semanal y alturas estables, Cuentas filtra por píldoras, el alta admite plantillas, Objetivos separa activos y completados y puede seguir aportaciones o el saldo real de una cuenta, Calendario resume el balance diario y Repartos navega al historial sin modal. Presupuestos admite límites recurrentes por ciclo con vigencia opcional. Configuración permite combinar el color de acento con cuatro estilos completos de espacio. Última validación local: Ruff correcto, 31 pruebas API, lint y TypeScript correctos, 17 pruebas web y build de producción correcto.
 
 ## Bloqueos y acciones
 
-Supabase contiene todas las migraciones funcionales y las dos migraciones de consolidación aplicadas. Se añadieron índices de respaldo para claves foráneas, validación de pertenencia al mismo evento en repartos y búsqueda paginada de movimientos con `SECURITY INVOKER`. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios siguen vigentes. Los pendientes previos a producción de Auth, GraphQL y Excel `.xlsx` siguen registrados. La ausencia de Node global no bloquea el runtime aislado ni la CI remota. Git usa `origin/main`.
+Supabase contiene las migraciones funcionales anteriores y las correcciones de cierre `20260908110000_reports_periods_and_category_hierarchy.sql`, `20260908110100_goal_planning_controls.sql`, `20260908110200_restore_budget_period_helper_execute.sql` y `20260908120000_budget_recurrence_and_goal_tracking.sql`, aplicadas y verificadas el 2026-09-08. La última añade vigencia de límites recurrentes y seguimiento de objetivos con el saldo de una cuenta; los permisos de ambos RPC se verificaron para `authenticated`. Las 31 versiones locales y remotas quedaron reconciliadas sin reejecutar DDL pendiente. Se añadieron índices de respaldo para claves foráneas, validación de pertenencia al mismo evento en repartos y búsqueda paginada de movimientos con `SECURITY INVOKER`. RLS, atomicidad, reversos, jerarquía, archivo y aislamiento entre usuarios siguen vigentes por revisión de migraciones, pero requieren repetición con dos usuarios. El asesor no tiene errores y conserva 34 avisos de exposición GraphQL que requieren una decisión de arquitectura; los pendientes de Auth y Excel `.xlsx` siguen registrados. Git usa `origin/main`.
 
 ## Fase en curso
 
-Fase 12: consolidación de producto. Queda pendiente la validación funcional del usuario antes de ampliar nuevos dominios.
+Fase 13: cierre responsable. Se han verificado lint, tipos, 20 pruebas web, build, Ruff y 31 pruebas API, además de localhost público y health API. En una sesión autenticada se han comprobado sin escritura Informes (Día/Semana/Mes/Año/rango personalizado) y el formulario de Objetivos (estados, prioridad y frecuencia). Las dos correcciones se aplicaron en Supabase con esquema y privilegios verificados. Quedan las mutaciones controladas, la reconciliación del historial, la decisión de GraphQL y el endurecimiento de Auth antes de producción.
 
 ## Referencias
 
@@ -44,3 +44,4 @@ Fase 12: consolidación de producto. Queda pendiente la validación funcional de
 - `docs/phases/phase-10-imports-and-rules.md`
 - `docs/phases/phase-11-investments.md`
 - `docs/phases/phase-12-product-consolidation.md`
+- `docs/phases/phase-13-development-closure.md`

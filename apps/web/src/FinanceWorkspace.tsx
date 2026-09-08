@@ -29,23 +29,13 @@ import {
   X,
 } from "lucide-react";
 import type { FormEvent } from "react";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, lazy, Suspense, type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { BudgetWorkspace } from "./BudgetWorkspace";
-import { DashboardWorkspace } from "./DashboardWorkspace";
-import { RecurringWorkspace } from "./RecurringWorkspace";
-import { GoalsWorkspace } from "./GoalsWorkspace";
-import { WealthWorkspace } from "./WealthWorkspace";
-import { ReportsWorkspace } from "./ReportsWorkspace";
 import { UserMenu } from "./UserMenu";
 import { ModalFrame } from "./ModalFrame";
-import { ImportsWorkspace } from "./ImportsWorkspace";
-import { InvestmentsWorkspace } from "./InvestmentsWorkspace";
-import { SplitWorkspace } from "./SplitWorkspace";
 import { CurrencySelector } from "./CatalogSelectors";
 import { useCurrencyCatalog } from "./catalogs";
-import { CalendarWorkspace } from "./CalendarWorkspace";
 import { LoadingState } from "./LoadingState";
 import { loadTransactionLibrary, saveTransactionLibraryItem, type TransactionLibraryItem } from "./transactionLibrary";
 import { CommandPalette, type CommandItem } from "./CommandPalette";
@@ -66,6 +56,18 @@ import {
   type LedgerTransaction,
   type TransactionType,
 } from "./finance";
+
+const GoalsWorkspace = lazy(async () => ({ default: (await import("./GoalsWorkspace")).GoalsWorkspace }));
+const DashboardWorkspace = lazy(async () => ({ default: (await import("./DashboardWorkspace")).DashboardWorkspace }));
+const BudgetWorkspace = lazy(async () => ({ default: (await import("./BudgetWorkspace")).BudgetWorkspace }));
+const RecurringWorkspace = lazy(async () => ({ default: (await import("./RecurringWorkspace")).RecurringWorkspace }));
+const CalendarWorkspace = lazy(async () => ({ default: (await import("./CalendarWorkspace")).CalendarWorkspace }));
+const WealthWorkspace = lazy(async () => ({ default: (await import("./WealthWorkspace")).WealthWorkspace }));
+const ReportsWorkspace = lazy(async () => ({ default: (await import("./ReportsWorkspace")).ReportsWorkspace }));
+const ImportsWorkspace = lazy(async () => ({ default: (await import("./ImportsWorkspace")).ImportsWorkspace }));
+const InvestmentsWorkspace = lazy(async () => ({ default: (await import("./InvestmentsWorkspace")).InvestmentsWorkspace }));
+const SplitWorkspace = lazy(async () => ({ default: (await import("./SplitWorkspace")).SplitWorkspace }));
+const DeferredWorkspace = ({ children }: { children: ReactNode }) => <Suspense fallback={<LoadingState label="Abriendo espacio…" />}>{children}</Suspense>;
 
 type View = "summary" | "accounts" | "account-detail" | "transactions" | "categories" | "budgets" | "recurring" | "goals" | "wealth" | "reports" | "imports" | "investments" | "split" | "calendar";
 type NavigationGroup = {
@@ -383,19 +385,19 @@ export function FinanceWorkspace({ session, defaultCurrency, profile, onProfileS
     <main id="main-content" className="main-content">{(view === "transactions" || view === "calendar") && <button className="floating-create" type="button" aria-keyshortcuts="N" aria-label={activeAccounts.length ? "Añadir movimiento" : "Crear cuenta"} title={activeAccounts.length ? "Nuevo movimiento · tecla N" : "Crear cuenta"} onClick={() => { setTransactionPreset(null); setTransactionDialogPanel("form"); setDialog(activeAccounts.length ? "transaction" : "account"); }}><Plus size={25} /><span className="sr-only">{activeAccounts.length ? "Movimiento" : "Cuenta"}</span></button>}
       {error && <p className="inline-error" role="alert">{error}</p>}
       {loading ? <LoadingState /> : <AnimatePresence mode="wait" initial={false}><motion.div className="workspace-stage" key={view} initial={reduceMotion ? false : { opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? undefined : { opacity: 0, y: -3 }} transition={{ duration: 0.16, ease: "easeOut" }}>
-        {view === "summary" && <DashboardWorkspace currency={effectiveDashboardCurrency} currencyControl={dashboardCurrencies.length > 1 ? <DashboardCurrencyToggle currency={effectiveDashboardCurrency} currencies={dashboardCurrencies} onChange={setDashboardCurrency} /> : undefined} onCreateAccount={() => setDialog("account")} />}
+        {view === "summary" && <DeferredWorkspace><DashboardWorkspace currency={effectiveDashboardCurrency} currencyControl={dashboardCurrencies.length > 1 ? <DashboardCurrencyToggle currency={effectiveDashboardCurrency} currencies={dashboardCurrencies} onChange={setDashboardCurrency} /> : undefined} onCreateAccount={() => setDialog("account")} /></DeferredWorkspace>}
         {view === "accounts" && <section className="managed-workspace">{accountNotice && <p className="account-toast" role="status">{accountNotice}</p>}<AccountsView accounts={orderedAccounts} visibleTypes={visibleAccountTypes} onToggleType={(type) => setVisibleAccountTypes((current) => current.includes(type) ? current.filter((item) => item !== type) : [...current, type])} balancesVisible={balancesVisible} onToggleBalances={() => setBalancesVisible((visible) => !visible)} busy={busy} onCreate={() => setDialog("account")} onOpen={openAccountDetail} onToggle={(account) => void runAction(async () => { await setAccountActive(session, account.id, !account.is_active); await refresh(); }, "No se pudo cambiar el estado de la cuenta.")} onDelete={(account) => void (async () => { try { await deleteAccount(session, account.id); await refresh(); } catch { setAccountNotice("No podemos borrar esta cuenta porque conserva operaciones o configuraciones vinculadas. Puedes archivarla para mantener tu historial."); window.setTimeout(() => setAccountNotice(""), 1000); } })()} /></section>}
         {view === "account-detail" && selectedAccount && <AccountDetail account={selectedAccount} movements={selectedAccountTransactions} balancesVisible={balancesVisible} onToggleBalances={() => setBalancesVisible((visible) => !visible)} loading={accountDetailLoading} onClose={() => setView("accounts")} />}
         {view === "transactions" && <section className="transactions-workspace"><div className="workspace-toggle workspace-toggle--view" role="tablist" aria-label="Contenido de movimientos"><button type="button" role="tab" aria-selected={transactionPanel === "movements"} className={transactionPanel === "movements" ? "is-active" : ""} onClick={() => setTransactionPanel("movements")}>Movimientos</button><button type="button" role="tab" aria-selected={transactionPanel === "library"} className={transactionPanel === "library" ? "is-active" : ""} onClick={() => setTransactionPanel("library")}>Biblioteca</button></div>{transactionPanel === "movements" ? <>{movementFiltersOpen&&<div className="filter-reveal"><QuickTransactionFilters categories={activeCategories} accounts={activeAccounts} type={transactionTypeFilter} category={transactionCategoryFilter} subcategory={transactionSubcategoryFilter} currency={transactionCurrencyFilter} account={transactionAccountFilter} onType={(value) => { setTransactionTypeFilter(value); setPage(0); }} onCategory={(value) => { setTransactionCategoryFilter(value); setTransactionSubcategoryFilter(""); setPage(0); }} onSubcategory={(value) => { setTransactionSubcategoryFilter(value); setPage(0); }} onCurrency={(value) => { setTransactionCurrencyFilter(value); setPage(0); }} onAccount={(value) => { setTransactionAccountFilter(value); setPage(0); }} /></div>}<TransactionsView movements={filteredMovements} transactions={transactions} count={count} page={page} search={search} weekStart={dateFrom} filtersOpen={movementFiltersOpen} categoryNames={categoryNames} accountNames={new Map(accounts.map((account) => [account.id, account.name]))} canCreate={Boolean(activeAccounts.length)} onCreate={() => { setTransactionPreset(null); setTransactionDialogPanel("form"); setDialog(activeAccounts.length ? "transaction" : "account"); }} onToggleFilters={() => setMovementFiltersOpen((value)=>!value)} onSearch={(value) => { setSearch(value); setPage(0); }} onWeek={(value) => { const start = startFromIsoWeek(value); setDateFrom(start); setDateTo(shiftDate(start, 6)); setPage(0); }} onShiftWeek={(days) => { setDateFrom((current) => shiftDate(current, days)); setDateTo((current) => shiftDate(current, days)); setPage(0); }} onPage={setPage} onReverse={(id) => void runAction(async () => { await reverseTransaction(id); await refresh(); }, "No se pudo revertir el movimiento.")} /></> : <TransactionLibraryView items={libraryItems} count={libraryCount} page={libraryPage} type={libraryType} categoryNames={categoryNames} onType={(value) => { setLibraryType(value); setLibraryPage(0); }} onPage={setLibraryPage} onUse={(item) => { setTransactionPreset(item); setTransactionDialogPanel("form"); setDialog("transaction"); }} />}</section>}
-        {(view === "categories" || view === "budgets") && <BudgetWorkspace session={session} currency={defaultCurrency} categories={categories} mode={view} onCategoriesChanged={refreshCategories} />}
-        {view === "recurring" && <RecurringWorkspace session={session} accounts={accounts} categories={activeCategories} currency={defaultCurrency} />}
-        {view === "goals" && <GoalsWorkspace session={session} currency={defaultCurrency} />}
-        {view === "wealth" && <WealthWorkspace session={session} currency={defaultCurrency} />}
-        {view === "reports" && <ReportsWorkspace currency={defaultCurrency} />}
-        {view === "imports" && <ImportsWorkspace session={session} accounts={accounts} categories={categories} currency={defaultCurrency} onImported={refresh} />}
-        {view === "investments" && <InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} />}
-        {view === "split" && <SplitWorkspace session={session} currency={defaultCurrency} />}
-        {view === "calendar" && <CalendarWorkspace session={session} currency={defaultCurrency} accounts={accounts} />}
+        {(view === "categories" || view === "budgets") && <DeferredWorkspace><BudgetWorkspace session={session} currency={defaultCurrency} categories={categories} mode={view} onCategoriesChanged={refreshCategories} /></DeferredWorkspace>}
+        {view === "recurring" && <DeferredWorkspace><RecurringWorkspace session={session} accounts={accounts} categories={activeCategories} currency={defaultCurrency} /></DeferredWorkspace>}
+        {view === "goals" && <DeferredWorkspace><GoalsWorkspace session={session} currency={defaultCurrency} /></DeferredWorkspace>}
+        {view === "wealth" && <DeferredWorkspace><WealthWorkspace session={session} currency={defaultCurrency} /></DeferredWorkspace>}
+        {view === "reports" && <DeferredWorkspace><ReportsWorkspace currency={defaultCurrency} /></DeferredWorkspace>}
+        {view === "imports" && <DeferredWorkspace><ImportsWorkspace session={session} accounts={accounts} categories={categories} currency={defaultCurrency} onImported={refresh} /></DeferredWorkspace>}
+        {view === "investments" && <DeferredWorkspace><InvestmentsWorkspace session={session} accounts={accounts} currency={defaultCurrency} /></DeferredWorkspace>}
+        {view === "split" && <DeferredWorkspace><SplitWorkspace session={session} currency={defaultCurrency} /></DeferredWorkspace>}
+        {view === "calendar" && <DeferredWorkspace><CalendarWorkspace session={session} currency={defaultCurrency} accounts={accounts} /></DeferredWorkspace>}
       </motion.div></AnimatePresence>}
     </main>
     {dialog && <ModalFrame title={dialog === "account" ? "Nueva cuenta" : transactionDialogPanel === "library" ? "Elegir de la biblioteca" : "Nuevo movimiento"} onClose={() => { setTransactionPreset(null); setTransactionDialogPanel("form"); setDialog(null); }} labelledBy="finance-dialog-title">{dialog === "account" ? <AccountForm currency={defaultCurrency} busy={busy} onSubmit={submitAccount} onCancel={() => setDialog(null)} /> : transactionDialogPanel === "library" ? <TransactionLibraryPicker items={libraryItems} count={libraryCount} page={libraryPage} type={libraryType} categoryNames={categoryNames} onBack={() => setTransactionDialogPanel("form")} onType={(value) => { setLibraryType(value); setLibraryPage(0); }} onPage={setLibraryPage} onUse={(item) => { setTransactionPreset(item); setTransactionDialogPanel("form"); }} /> : <TransactionForm key={transactionPreset?.id ?? "new"} accounts={activeAccounts} categories={activeCategories} busy={busy} preset={transactionPreset} onOpenLibrary={() => setTransactionDialogPanel("library")} onSubmit={submitTransaction} onCancel={() => { setTransactionPreset(null); setTransactionDialogPanel("form"); setDialog(null); }} />}</ModalFrame>}

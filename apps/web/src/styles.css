@@ -209,3 +209,12 @@ body:has(.command-backdrop){overflow:hidden}
 /* Las altas viven en una hoja contextual, no como una ventana flotante en el centro. */
 .dialog-backdrop{place-items:stretch end;padding:0;background:rgba(3,9,6,.58)}.finance-dialog{width:min(100%,42rem);height:100dvh;max-height:none;margin:0;overflow:auto;border-radius:1rem 0 0 1rem;border-color:#3a5d4b;background:#13231d;box-shadow:-24px 0 70px rgba(0,0,0,.38);animation:panel-enter .2s ease-out}.finance-dialog>h2{padding-right:2.4rem}@keyframes panel-enter{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 @media(max-width:760px){.context-action{width:100%}.progressive-form>.form-section,.form-advanced>div{grid-template-columns:1fr}.finance-dialog{width:100%;height:min(92dvh,52rem);align-self:end;border-radius:1rem 1rem 0 0;animation:panel-enter-mobile .2s ease-out}@keyframes panel-enter-mobile{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}}
+
+/* Objetivos: la acción de alta y el selector de estado ocupan carriles distintos. */
+.goals-heading{align-items:flex-start}.goals-toolbar{display:flex;align-items:center;justify-content:flex-start;min-height:2.9rem;margin:0 0 1rem}.goals-toolbar .goals-toggle{margin:0;max-width:100%;overflow:auto}.goals-toolbar .goals-toggle button{white-space:nowrap}@media(max-width:760px){.goals-heading{gap:.8rem}.goals-toolbar{margin-top:.15rem}.goals-toolbar .goals-toggle{width:100%}}
+
+/* Objetivos: la acción de alta y el selector de estado ocupan carriles distintos. */
+.goals-heading{align-items:flex-start}.goals-toolbar{display:flex;align-items:center;justify-content:flex-start;min-height:2.9rem;margin:0 0 1rem}.goals-toolbar .goals-toggle{margin:0;max-width:100%;overflow:auto}.goals-toolbar .goals-toggle button{white-space:nowrap}@media(max-width:760px){.goals-heading{gap:.8rem}.goals-toolbar{margin-top:.15rem}.goals-toolbar .goals-toggle{width:100%}}
+
+/* Objetivos: la acción de alta y el selector de estado ocupan carriles distintos. */
+.goals-heading{align-items:flex-start}.goals-toolbar{display:flex;align-items:center;justify-content:flex-start;min-height:2.9rem;margin:0 0 1rem}.goals-toolbar .goals-toggle{margin:0;max-width:100%;overflow:auto}.goals-toolbar .goals-toggle button{white-space:nowrap}@media(max-width:760px){.goals-heading{gap:.8rem}.goals-toolbar{margin-top:.15rem}.goals-toolbar .goals-toggle{width:100%}}

@@ -32,6 +32,7 @@
 .form-context { grid-column: 1 / -1; display: flex; align-items: center; gap: .6rem; margin: 0; padding: .7rem; border: 1px solid #2c473b; border-radius: .6rem; color: #dbe8de; background: #102019; }
 .empty-state p { max-width: 28rem; margin: 0; color: #82958b; line-height: 1.5; }
 .budget-metrics .metric-card:nth-child(2) { background: linear-gradient(145deg,rgba(42,73,58,.72),rgba(20,35,30,.76)); }
+.budget-cycle{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 0 1.25rem;padding:.8rem;border:1px solid #29443a;border-radius:.9rem;background:linear-gradient(130deg,rgba(22,42,33,.92),rgba(14,28,22,.82))}.budget-cycle__copy{display:flex;align-items:center;gap:.75rem;color:#91a49a;font-size:.76rem}.budget-cycle__navigator{display:flex;align-items:center;gap:.35rem}.budget-cycle__navigator>button{display:grid;place-items:center;width:2rem;height:2rem;border:0;border-radius:.55rem;color:#b8cabe;background:transparent;cursor:pointer}.budget-cycle__navigator>button:hover{color:#fff;background:#254438}.budget-cycle__navigator>label{position:relative;display:flex;align-items:center;gap:.45rem;min-width:12.5rem;padding:.48rem .65rem;border:1px solid #365742;border-radius:.58rem;color:#e0ece2;background:#102019;font-size:.82rem;font-weight:700;text-transform:capitalize;cursor:pointer}.budget-cycle__navigator input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}.budget-cycle__navigator .text-button{width:auto;padding:0 .48rem;color:var(--finance-primary);font-size:.75rem}
 
 @media (max-width: 1050px) { .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) {
@@ -39,6 +40,7 @@
   .view-tabs { padding-bottom: .35rem; }
   .view-tabs button { white-space: nowrap; }
   .month-controls { width: 100%; justify-content: space-between; }
+  .budget-cycle,.budget-cycle__copy{align-items:stretch;flex-direction:column}.budget-cycle__navigator{justify-content:space-between}.budget-cycle__navigator>label{min-width:0;flex:1;justify-content:center}
   .budget-card__footer { align-items: flex-start; }
 }
 

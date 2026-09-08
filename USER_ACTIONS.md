@@ -1,5 +1,14 @@
 # Acciones del usuario
 
+## Fase 13 — Validar con datos ficticios
+
+- Estado: `PENDIENTE PARCIAL`
+- Motivo: las correcciones de Informes, Objetivos y límites recurrentes se aplicaron correctamente al proyecto remoto el 2026-09-08 y las 31 versiones locales/remotas quedaron reconciliadas. Falta validar mutaciones con datos ficticios antes de producción.
+- Pasos: con una cuenta de prueba, crea un objetivo, edítalo, pausa/reanuda y registra una aportación; en Informes cambia entre Día, Semana, Mes y Año, y prueba un rango personalizado.
+- Dato a devolver: confirma resultado por pantalla y mensaje visible, sin compartir credenciales, IDs ni datos financieros reales.
+- Verificación: la prioridad/frecuencia no elimina la fecha objetivo; Objetivos conserva aportaciones; Informes mantiene importes coherentes y muestra categoría raíz/subcategoría cuando existen.
+- Consecuencia de posponer: el historial ya es reproducible, pero faltaría evidencia funcional de las mutaciones antes de declarar lista la aplicación para producción.
+
 ## Fase 12 — Validar la experiencia simplificada
 
 - Estado: `PENDIENTE`
@@ -44,13 +53,13 @@
 - Dato a devolver: indica si funciona o el paso exacto y mensaje visible si falla.
 - Verificación: las operaciones no crean movimientos de efectivo automáticamente y el rendimiento coincide con la metodología documentada.
 
-## Fase 11 — Reconciliar historial remoto de migraciones
+## Fase 11 — Historial remoto de migraciones
 
-- Estado: `PENDIENTE`
-- Motivo: el wrapper de migración de Supabase devolvió `INVALID_ARGUMENT` en Fase 11; la estructura se aplicó por SQL directo y está verificada, pero la migración no aparece aún en `supabase_migrations`.
-- Pasos: antes de producción, reconciliar historial remoto con la migración local `202608310004_investments.sql` o regenerar una migración equivalente desde el estado remoto.
+- Estado: `COMPLETADO`
+- Motivo: el wrapper de migración devolvió `INVALID_ARGUMENT`, pero el historial se normalizó el 2026-09-08 contra las versiones reales del proyecto.
+- Pasos: no requiere acción; `20260831072000_investments.sql` figura en el historial remoto reconciliado.
 - Dato a devolver: no requiere secretos; solo autorización cuando hagamos endurecimiento final.
-- Verificación: la lista remota de migraciones incluye la fase de inversiones o una migración equivalente sin diff pendiente.
+- Verificación: 31 versiones locales y 31 remotas, sin diferencias.
 
 ## Fase 11 — Fuentes de mercado
 

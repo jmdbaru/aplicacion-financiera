@@ -15,6 +15,7 @@ class ReportMonth(BaseModel):
 
 class ReportCategory(BaseModel):
     category_name: str
+    subcategory_name: str | None = None
     transaction_type: str
     amount: Decimal
     operations: int = Field(ge=0)

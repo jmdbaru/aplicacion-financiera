@@ -6,7 +6,10 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-GoalStatus = Literal["active", "completed", "archived"]
+GoalStatus = Literal["active", "paused", "completed", "archived"]
+GoalPriority = Literal["low", "normal", "high"]
+ContributionFrequency = Literal["none", "weekly", "monthly"]
+GoalTrackingMode = Literal["manual", "account_balance"]
 
 
 class GoalCreate(BaseModel):
@@ -14,10 +17,25 @@ class GoalCreate(BaseModel):
     target_amount: Decimal = Field(gt=0, max_digits=20, decimal_places=4)
     currency_code: str = Field(pattern=r"^[A-Z]{3}$")
     target_date: date | None = None
+    priority: GoalPriority = "normal"
+    contribution_frequency: ContributionFrequency = "none"
+    tracking_mode: GoalTrackingMode = "manual"
+    linked_account_id: str | None = None
 
 
 class GoalStatusUpdate(BaseModel):
     status: GoalStatus
+
+
+class GoalUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=120)
+    target_amount: Decimal | None = Field(default=None, gt=0, max_digits=20, decimal_places=4)
+    target_date: date | None = None
+    priority: GoalPriority | None = None
+    contribution_frequency: ContributionFrequency | None = None
+    tracking_mode: GoalTrackingMode | None = None
+    linked_account_id: str | None = None
+    status: GoalStatus | None = None
 
 
 class GoalResponse(BaseModel):
@@ -27,6 +45,10 @@ class GoalResponse(BaseModel):
     currency_code: str
     target_date: date | None = None
     status: GoalStatus
+    priority: GoalPriority = "normal"
+    contribution_frequency: ContributionFrequency = "none"
+    tracking_mode: GoalTrackingMode = "manual"
+    linked_account_id: str | None = None
     created_at: datetime | None = None
 
 

@@ -2,7 +2,18 @@
 
 > Documento único de continuidad. Separa lo que está implementado de lo que todavía requiere validación funcional, decisión de producto o una acción manual de producción.
 >
-> Actualizado: 2026-09-03
+> Actualizado: 2026-09-08
+
+## Cierre de desarrollo — 2026-09-08
+
+- **COMPLETADO:** Informes incorpora periodo diario, semanal, mensual y anual, navegación de calendario y fechas personalizadas. La migración local conserva categoría raíz y subcategoría en el ranking.
+- **COMPLETADO:** Objetivos incorpora edición, pausa/reanudación, prioridad y frecuencia opcional; el ritmo mostrado es informativo y no genera notificaciones.
+- **COMPLETADO:** carga diferida de espacios secundarios y chunks cacheables; el chunk de aplicación queda en 64.36 kB minificado.
+- **COMPLETADO:** `20260908110000_reports_periods_and_category_hierarchy.sql` y `20260908110100_goal_planning_controls.sql` se aplicaron y verificaron en Supabase el 2026-09-08: columnas, restricción `paused`, índice, `SECURITY INVOKER` y ejecución solo para `authenticated`.
+- **COMPLETADO:** `20260908110200_restore_budget_period_helper_execute.sql` restablece la ejecución autenticada del normalizador de periodos, corrigiendo la carga de Presupuestos y Resumen. Se aplicó y verificó en Supabase el 2026-09-08.
+- **COMPLETADO:** se reconciliaron las 31 versiones locales y remotas; no hay versiones faltantes en ningún sentido. La última incorpora presupuestos recurrentes con vigencia y objetivos por saldo de cuenta.
+- **PARCIALMENTE VERIFICADO:** Informes y Objetivos se han recorrido con una sesión ya autenticada sin escribir datos; faltan las mutaciones controladas y el aislamiento con dos usuarios.
+- **PARCIALMENTE VERIFICADO:** la organización correcta ya está accesible; el asesor no reporta errores. Mantiene 34 avisos de exposición GraphQL de objetos públicos a `authenticated`, cuya solución requiere decidir si deshabilitar GraphQL o cambiar permisos sin romper PostgREST.
 
 ## Nueva auditoría de producto — decisiones UX pendientes
 
@@ -101,7 +112,7 @@ Patrimonio, Inversiones e Importar están preparados en código, pero permanecen
 - Añadir la URL de preview y, al publicar, la URL definitiva en **Authentication → URL Configuration**.
 - Eliminar únicamente las cuentas de prueba desde **Authentication → Users** cuando terminen las pruebas.
 - Revisar el aviso de exposición GraphQL de tablas autenticadas. Decidir entre deshabilitar GraphQL o revocar permisos concretos sin romper PostgREST.
-- Reconciliar el historial remoto de migraciones con `supabase/migrations/202608310004_investments.sql`; el SQL está verificado, pero el wrapper no registró esa migración correctamente.
+- Historial remoto de migraciones reconciliado el 2026-09-08, incluida `supabase/migrations/20260831072000_investments.sql`.
 
 ### 4. Mejoras técnicas posteriores
 
